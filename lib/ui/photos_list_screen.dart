@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class PhotosScreen extends StatefulWidget {
+class PhotoListScreen extends StatefulWidget {
   @override
-  _PhotosScreenState createState() => _PhotosScreenState();
+  _PhotoListScreenState createState() => _PhotoListScreenState();
 }
 
-class _PhotosScreenState extends State<PhotosScreen> {
+class _PhotoListScreenState extends State<PhotoListScreen> {
   @override
   void initState() {
     super.initState();

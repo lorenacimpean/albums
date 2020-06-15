@@ -9,8 +9,10 @@ import 'package:http/http.dart';
 class RemoteDataSource {
   //Creating Singleton
   RemoteDataSource._privateConstructor();
+
   static final RemoteDataSource _apiResponse =
       RemoteDataSource._privateConstructor();
+
   factory RemoteDataSource() => _apiResponse;
   AlbumClient client = AlbumClient(Client());
 
@@ -19,7 +21,7 @@ class RemoteDataSource {
       final response =
           await client.request(requestType: RequestType.GET, path: "albums");
       if (response.statusCode == 200) {
-        return Result<AlbumList>.success(AlbumList.fromRawJson(response.body));
+        return Result<Gallery>.success(Gallery.fromRawJson(response.body));
       } else {
         return Result.error("Album list is not available");
       }
