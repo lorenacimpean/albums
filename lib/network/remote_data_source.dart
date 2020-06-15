@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:albums/model/albums.dart';
+import 'package:albums/model/photos.dart';
 import 'package:albums/model/result.dart';
 import 'package:albums/network/album_client.dart';
 import 'package:albums/util/request_type.dart';
@@ -28,5 +29,21 @@ class RemoteDataSource {
     } catch (error) {
       return Result.error("Something went wrong!");
     }
+  }
+
+  Future<Result> getPhotos(int index) async {
+    index = index+1;
+    var path = "albums/$index/photos";
+    try {
+      final response = await client.request(requestType: RequestType.GET, path: path);
+    if (response.statusCode == 200) {
+      return Result<PhotoList>.success(PhotoList.fromRawJson(response.body));
+    } else {
+      return Result.error("Photo list is not available");
+    }
+  } catch (error) {
+  return Result.error("Something went wrong!");
+  }
+
   }
 }
