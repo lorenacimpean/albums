@@ -1,10 +1,8 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
-
 class Album {
-  final String userId;
-  final String id;
+  final int userId;
+  final int id;
   final String title;
 
   Album({this.userId, this.id, this.title});
@@ -19,12 +17,10 @@ class Gallery {
   final List<Album> albumList;
   Gallery({this.albumList});
 
-  factory Gallery.fromRawJson(String str) => Gallery.fromJson(json.decode(str));
-  factory Gallery.fromJson(Map<String, dynamic> json) => Gallery(
-      albumList: List<Album>.from(
-          json["albumList"].map((x) => Album.fromJson(x))).toList());
-
-  Map<String, dynamic> toJson() => {
-        "albumList": List<dynamic>.from(albumList.map((a) => a.toJson())),
-      };
+  factory Gallery.fromRawJson(String str) => Gallery.fromJson(
+      json.decode(str)
+  );
+  factory Gallery.fromJson(List<dynamic> json) => Gallery(
+     albumList: List<Album>.from(
+          json.map((x) => Album.fromJson(x))));
 }
