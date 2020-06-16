@@ -54,13 +54,17 @@ ListTile photoListTile(
     int photoIndex, PhotoList photoList, BuildContext context) {
   var photo = photoList.photos[photoIndex];
   return ListTile(
-      leading: Image.network(photo.thumbnailUrl),
+      leading: Hero(
+        tag: "photoList$photoIndex",
+        child: Image.network(photo.url),
+      ),
       title: Text(photo.title),
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => PhotoScreen(url: photo.url),
+            builder: (context) =>
+                PhotoScreen(url: photo.url, index: photoIndex),
           ),
         );
       });

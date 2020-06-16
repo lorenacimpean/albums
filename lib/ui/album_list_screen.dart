@@ -1,6 +1,7 @@
 import 'package:albums/model/albums.dart';
 import 'package:albums/model/result.dart';
 import 'package:albums/network/remote_data_source.dart';
+import 'package:albums/transitions/fade_route.dart';
 import 'package:albums/ui/photos_list_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -11,6 +12,7 @@ class AlbumListScreen extends StatefulWidget {
 
 class _AlbumListScreenState extends State<AlbumListScreen> {
   RemoteDataSource _apiResponse = RemoteDataSource();
+  bool _isVisible = true;
 
   void initState() {
     super.initState();
@@ -52,11 +54,8 @@ ListTile albumListTile(
       title: Text(albumTitle),
       onTap: () {
         Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) =>
-                PhotoListScreen(title: albumTitle, index: albumIndex),
-          ),
-        );
+            context,
+            FadeRoute(
+                page: PhotoListScreen(title: albumTitle, index: albumIndex)));
       });
 }
