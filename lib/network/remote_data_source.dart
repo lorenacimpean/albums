@@ -32,18 +32,18 @@ class RemoteDataSource {
   }
 
   Future<Result> getPhotos(int index) async {
-    index = index+1;
+    index = index + 1;
     var path = "albums/$index/photos";
     try {
-      final response = await client.request(requestType: RequestType.GET, path: path);
-    if (response.statusCode == 200) {
-      return Result<PhotoList>.success(PhotoList.fromRawJson(response.body));
-    } else {
-      return Result.error("Photo list is not available");
+      final response =
+          await client.request(requestType: RequestType.GET, path: path);
+      if (response.statusCode == 200) {
+        return Result<PhotoList>.success(PhotoList.fromRawJson(response.body));
+      } else {
+        return Result.error("Photo list is not available");
+      }
+    } catch (error) {
+      return Result.error("Something went wrong!");
     }
-  } catch (error) {
-  return Result.error("Something went wrong!");
-  }
-
   }
 }

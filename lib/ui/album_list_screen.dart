@@ -4,12 +4,12 @@ import 'package:albums/network/remote_data_source.dart';
 import 'package:albums/ui/photos_list_screen.dart';
 import 'package:flutter/material.dart';
 
-class AlbumsScreen extends StatefulWidget {
+class AlbumListScreen extends StatefulWidget {
   @override
-  _AlbumsScreenState createState() => _AlbumsScreenState();
+  _AlbumListScreenState createState() => _AlbumListScreenState();
 }
 
-class _AlbumsScreenState extends State<AlbumsScreen> {
+class _AlbumListScreenState extends State<AlbumListScreen> {
   RemoteDataSource _apiResponse = RemoteDataSource();
 
   void initState() {

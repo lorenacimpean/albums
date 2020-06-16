@@ -1,5 +1,4 @@
-import 'package:albums/ui/albums_screen.dart';
-
+import 'package:albums/ui/album_list_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -12,13 +11,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       initialRoute: 'home',
-
       title: 'Albums',
       theme: ThemeData(
         primarySwatch: Colors.pink,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: AlbumsScreen(),
+      home: AlbumListScreen(),
     );
   }
 }

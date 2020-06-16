@@ -16,12 +16,15 @@ class Photo {
       url: json['url'],
       thumbnailUrl: json['thumbnailUrl']);
 }
+
 class PhotoList {
   final List<Photo> photos;
+
   PhotoList({this.photos});
 
-  factory PhotoList.fromRawJson(String str) => PhotoList.fromJson(json.decode(str));
+  factory PhotoList.fromRawJson(String str) =>
+      PhotoList.fromJson(json.decode(str));
 
-  factory PhotoList.fromJson(List <dynamic> json) => PhotoList(
-      photos: List<Photo>.from(json.map((a) => Photo.fromJson(a))));
+  factory PhotoList.fromJson(List<dynamic> json) =>
+      PhotoList(photos: List<Photo>.from(json.map((a) => Photo.fromJson(a))));
 }

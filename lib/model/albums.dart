@@ -15,12 +15,11 @@ class Album {
 
 class Gallery {
   final List<Album> albumList;
+
   Gallery({this.albumList});
 
-  factory Gallery.fromRawJson(String str) => Gallery.fromJson(
-      json.decode(str)
-  );
-  factory Gallery.fromJson(List<dynamic> json) => Gallery(
-     albumList: List<Album>.from(
-          json.map((x) => Album.fromJson(x))));
+  factory Gallery.fromRawJson(String str) => Gallery.fromJson(json.decode(str));
+
+  factory Gallery.fromJson(List<dynamic> json) =>
+      Gallery(albumList: List<Album>.from(json.map((x) => Album.fromJson(x))));
 }

@@ -1,6 +1,7 @@
 import 'package:albums/model/photos.dart';
 import 'package:albums/model/result.dart';
 import 'package:albums/network/remote_data_source.dart';
+import 'package:albums/ui/photo_screen.dart';
 import 'package:flutter/material.dart';
 
 class PhotoListScreen extends StatefulWidget {
@@ -55,5 +56,12 @@ ListTile photoListTile(
   return ListTile(
       leading: Image.network(photo.thumbnailUrl),
       title: Text(photo.title),
-      onTap: () {});
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PhotoScreen(url: photo.url),
+          ),
+        );
+      });
 }
