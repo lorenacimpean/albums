@@ -1,3 +1,5 @@
+import 'dart:core';
+
 import 'package:albums/model/albums.dart';
 import 'package:albums/model/result.dart';
 import 'package:albums/network/remote_data_source.dart';
@@ -11,11 +13,11 @@ class AlbumListScreen extends StatefulWidget {
 }
 
 class _AlbumListScreenState extends State<AlbumListScreen> {
-  RemoteDataSource _apiResponse = RemoteDataSource();
-  bool _isVisible = true;
+  Future<Result> futureAlbums;
 
   void initState() {
     super.initState();
+    futureAlbums = _fetchAlbums();
   }
 
   @override
@@ -26,15 +28,18 @@ class _AlbumListScreenState extends State<AlbumListScreen> {
       ),
       body: Center(
         child: FutureBuilder(
-            future: _apiResponse.getAlbums(),
+            future: futureAlbums,
             builder: (BuildContext context, AsyncSnapshot<Result> snapshot) {
               if (snapshot.data is SuccessState) {
                 Gallery albums = (snapshot.data as SuccessState).value;
-                return ListView.builder(
-                    itemCount: albums.albumList.length,
-                    itemBuilder: (context, index) {
-                      return albumListTile(index, albums, context);
-                    });
+
+                return PageView.builder(
+                  itemBuilder: (context, index) {
+                    return _albumListItem(index, albums, context);
+                  },
+                  itemCount: albums.albumList.length,
+                  physics: BouncingScrollPhysics(),
+                );
               } else if (snapshot.data is ErrorState) {
                 String error = (snapshot.data as ErrorState).msg;
                 return Text(error);
@@ -46,16 +51,42 @@ class _AlbumListScreenState extends State<AlbumListScreen> {
   }
 }
 
-ListTile albumListTile(
-    int albumIndex, Gallery albumList, BuildContext context) {
-  var albumTitle = albumList.albumList[albumIndex].title;
-  return ListTile(
-      leading: Icon(Icons.photo_album),
-      title: Text(albumTitle),
+Future<Result> _fetchAlbums() async {
+  RemoteDataSource _apiResponse = RemoteDataSource();
+  return _apiResponse.getAlbums();
+}
+
+Container _albumListItem(int index, Gallery albums, BuildContext context) {
+  Album album = albums.albumList[index];
+  return Container(
+    margin: EdgeInsets.symmetric(vertical: 100, horizontal: 10),
+    child: GestureDetector(
+      child: Card(
+        color: Colors.pink,
+        elevation: 2,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              padding: EdgeInsets.all(30),
+              alignment: Alignment.center,
+              child: Text(album.title),
+            ),
+            Container(
+              padding: EdgeInsets.all(30),
+              alignment: Alignment.center,
+              child: ImageIcon(
+                AssetImage('assets/images/photoAlbum.png'),
+                color: Colors.white,
+                size: 100.00,
+              ),
+            ),
+          ],
+        ),
+      ),
       onTap: () {
-        Navigator.push(
-            context,
-            FadeRoute(
-                page: PhotoListScreen(title: albumTitle, index: albumIndex)));
-      });
+        Navigator.push(context, FadeRoute(page: PhotoListScreen(album: album)));
+      },
+    ),
+  );
 }

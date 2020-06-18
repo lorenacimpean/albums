@@ -1,4 +1,3 @@
-import 'package:albums/network/remote_data_source.dart';
 import 'package:flutter/material.dart';
 
 class PhotoScreen extends StatefulWidget {
@@ -12,7 +11,6 @@ class PhotoScreen extends StatefulWidget {
 }
 
 class _PhotoScreenState extends State<PhotoScreen> {
-  RemoteDataSource _apiResponse = RemoteDataSource();
 
   void initState() {
     super.initState();
