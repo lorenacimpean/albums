@@ -1,17 +1,16 @@
+import 'package:albums/model/photos.dart';
 import 'package:flutter/material.dart';
 
 class PhotoScreen extends StatefulWidget {
-  final String url;
-  final int index;
+  final Photo photo;
 
   @override
   _PhotoScreenState createState() => _PhotoScreenState();
 
-  PhotoScreen({Key key, @required this.url, this.index}) : super(key: key);
+  PhotoScreen({Key key, @required this.photo}) : super(key: key);
 }
 
 class _PhotoScreenState extends State<PhotoScreen> {
-
   void initState() {
     super.initState();
   }
@@ -19,31 +18,57 @@ class _PhotoScreenState extends State<PhotoScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
+      body: Center(
+          child: PageView(
+        children: [
+          _closeButton(context),
+          _photoWidget(context),
+        ],
+      )),
+    );
+  }
+
+  Widget _photoView(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: <Widget>[
+        _closeButton(context),
+        _photoWidget(context),
+      ],
+    );
+  }
+
+  Widget _closeButton(BuildContext context) {
+    return Positioned(
+      top: 0.0,
+      child: Align(
+        alignment: Alignment.topLeft,
+        child: IconButton(
           icon: Icon(Icons.close),
+          iconSize: 30.0,
+          color: Colors.pink,
           onPressed: () => Navigator.of(context).pop(null),
         ),
-      ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: <Widget>[
-          Center(
-            child: photoWidget(context),
-          ),
-        ],
       ),
     );
   }
 
-  Widget photoWidget(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      child: Hero(
-        tag: "photoList${widget.index}",
-        child: Image.network(widget.url),
-      ),
+  Widget _photoWidget(BuildContext context) {
+    Photo photo = widget.photo;
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        Hero(
+          tag: "photoList${photo.id}",
+          child: Image.network(
+            photo.url,
+            alignment: Alignment.center,
+            fit: BoxFit.fill
+            ,
+          ),
+        ),
+      ],
     );
   }
 }

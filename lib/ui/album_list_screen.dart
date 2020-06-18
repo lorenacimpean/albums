@@ -33,7 +33,7 @@ class _AlbumListScreenState extends State<AlbumListScreen> {
               if (snapshot.data is SuccessState) {
                 Gallery albums = (snapshot.data as SuccessState).value;
 
-                return PageView.builder(
+                return ListView.builder(
                   itemBuilder: (context, index) {
                     return _albumListItem(index, albums, context);
                   },
@@ -56,37 +56,44 @@ Future<Result> _fetchAlbums() async {
   return _apiResponse.getAlbums();
 }
 
-Container _albumListItem(int index, Gallery albums, BuildContext context) {
+ListTile _albumListItem(int index, Gallery albums, BuildContext context) {
   Album album = albums.albumList[index];
-  return Container(
-    margin: EdgeInsets.symmetric(vertical: 100, horizontal: 10),
-    child: GestureDetector(
-      child: Card(
+  return ListTile(
+      leading: ImageIcon(
+        AssetImage('assets/images/photoAlbum.png'),
         color: Colors.pink,
-        elevation: 2,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.all(30),
-              alignment: Alignment.center,
-              child: Text(album.title),
-            ),
-            Container(
-              padding: EdgeInsets.all(30),
-              alignment: Alignment.center,
-              child: ImageIcon(
-                AssetImage('assets/images/photoAlbum.png'),
-                color: Colors.white,
-                size: 100.00,
-              ),
-            ),
-          ],
-        ),
+        size: 50.00,
       ),
+      title: Text(album.title),
       onTap: () {
         Navigator.push(context, FadeRoute(page: PhotoListScreen(album: album)));
-      },
-    ),
-  );
+      });
 }
+//  return Container(
+//    margin: EdgeInsets.symmetric(vertical: 100, horizontal: 10),
+//    child: GestureDetector(
+//      child: Card(
+//        color: Colors.pink,
+//        elevation: 2,
+//        child: Column(
+//          mainAxisAlignment: MainAxisAlignment.center,
+//          children: <Widget>[
+//            Container(
+//              padding: EdgeInsets.all(30),
+//              alignment: Alignment.center,
+//              child: Text(album.title),
+//            ),
+//            Container(
+//              padding: EdgeInsets.all(30),
+//              alignment: Alignment.center,
+//              child:
+//            ),
+//          ],
+//        ),
+//      ),
+//      onTap: () {
+//        Navigator.push(context, FadeRoute(page: PhotoListScreen(album: album)));
+//      },
+//    ),
+//  );
+//}

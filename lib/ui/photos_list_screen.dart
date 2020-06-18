@@ -15,10 +15,11 @@ class PhotoListScreen extends StatefulWidget {
 }
 
 class _PhotoListScreenState extends State<PhotoListScreen> {
-  RemoteDataSource _apiResponse = RemoteDataSource();
+  Future<Result> futurePhotos;
 
   void initState() {
     super.initState();
+    futurePhotos = _fetchPhotos(widget.album.id);
   }
 
   @override
@@ -30,7 +31,7 @@ class _PhotoListScreenState extends State<PhotoListScreen> {
       ),
       body: Center(
         child: FutureBuilder(
-            future: _apiResponse.getPhotos(album.id),
+            future: futurePhotos,
             builder: (BuildContext context, AsyncSnapshot<Result> snapshot) {
               if (snapshot.data is SuccessState) {
                 PhotoList photos = (snapshot.data as SuccessState).value;
@@ -50,12 +51,11 @@ class _PhotoListScreenState extends State<PhotoListScreen> {
   }
 }
 
-ListTile _photoListTile(
-    int albumId, PhotoList photoList, BuildContext context) {
-  Photo photo = photoList.photos[albumId];
+ListTile _photoListTile(int index, PhotoList photoList, BuildContext context) {
+  Photo photo = photoList.photos[index];
   return ListTile(
       leading: Hero(
-        tag: "photoList$albumId",
+        tag: "photoList$index",
         child: Image.network(photo.url),
       ),
       title: Text(photo.title),
@@ -63,8 +63,13 @@ ListTile _photoListTile(
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => PhotoScreen(url: photo.url, index: albumId),
+            builder: (context) => PhotoScreen(photo: photo),
           ),
         );
       });
+}
+
+Future<Result> _fetchPhotos(int id) async {
+  RemoteDataSource _apiResponse = RemoteDataSource();
+  return _apiResponse.getPhotos(id);
 }
