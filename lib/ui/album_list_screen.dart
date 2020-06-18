@@ -69,31 +69,3 @@ ListTile _albumListItem(int index, Gallery albums, BuildContext context) {
         Navigator.push(context, FadeRoute(page: PhotoListScreen(album: album)));
       });
 }
-//  return Container(
-//    margin: EdgeInsets.symmetric(vertical: 100, horizontal: 10),
-//    child: GestureDetector(
-//      child: Card(
-//        color: Colors.pink,
-//        elevation: 2,
-//        child: Column(
-//          mainAxisAlignment: MainAxisAlignment.center,
-//          children: <Widget>[
-//            Container(
-//              padding: EdgeInsets.all(30),
-//              alignment: Alignment.center,
-//              child: Text(album.title),
-//            ),
-//            Container(
-//              padding: EdgeInsets.all(30),
-//              alignment: Alignment.center,
-//              child:
-//            ),
-//          ],
-//        ),
-//      ),
-//      onTap: () {
-//        Navigator.push(context, FadeRoute(page: PhotoListScreen(album: album)));
-//      },
-//    ),
-//  );
-//}

@@ -28,16 +28,6 @@ class _PhotoScreenState extends State<PhotoScreen> {
     );
   }
 
-  Widget _photoView(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: <Widget>[
-        _closeButton(context),
-        _photoWidget(context),
-      ],
-    );
-  }
-
   Widget _closeButton(BuildContext context) {
     return Positioned(
       top: 0.0,
@@ -64,8 +54,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
           child: Image.network(
             photo.url,
             alignment: Alignment.center,
-            fit: BoxFit.fill
-            ,
+            fit: BoxFit.fill,
           ),
         ),
       ],
