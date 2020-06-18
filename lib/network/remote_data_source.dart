@@ -31,9 +31,8 @@ class RemoteDataSource {
     }
   }
 
-  Future<Result> getPhotos(int index) async {
-    index = index + 1;
-    var path = "albums/$index/photos";
+  Future<Result> getPhotos(int id) async {
+    var path = "albums/$id/photos";
     try {
       final response =
           await client.request(requestType: RequestType.GET, path: path);
