@@ -11,5 +11,5 @@ class NetworkResponse {
   factory NetworkResponse.fromJson(Map<String, dynamic> json) =>
       NetworkResponse(message: json["message"]);
 
-  Map<String, dynamic> toJson() => {"message": message};
+  //Map<String, dynamic> toJson() => {"message": message};
 }
