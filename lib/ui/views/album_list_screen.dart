@@ -3,7 +3,7 @@ import 'dart:core';
 import 'package:albums/data/model/albums.dart';
 import 'package:albums/data/model/result.dart';
 import 'package:albums/transitions/fade_route.dart';
-import 'package:albums/ui/photos_list_screen.dart';
+import 'package:albums/ui/views/photos_list_screen.dart';
 import 'package:albums/ui/view_models/album_list_view_model.dart';
 import 'package:flutter/material.dart';
 

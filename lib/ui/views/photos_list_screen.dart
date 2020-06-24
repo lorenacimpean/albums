@@ -1,7 +1,7 @@
 import 'package:albums/data/model/albums.dart';
 import 'package:albums/data/model/photos.dart';
 import 'package:albums/data/model/result.dart';
-import 'package:albums/ui/photo_screen.dart';
+import 'package:albums/ui/views/photo_screen.dart';
 import 'package:albums/ui/view_models/photo_list_view_model.dart';
 import 'package:flutter/material.dart';
 
