@@ -1,8 +1,9 @@
 import 'package:albums/data/model/albums.dart';
 import 'package:albums/data/model/photos.dart';
 import 'package:albums/data/model/result.dart';
-import 'package:albums/ui/views/photo_screen.dart';
+import 'package:albums/data/repo/photos_repo.dart';
 import 'package:albums/ui/view_models/photo_list_view_model.dart';
+import 'package:albums/ui/views/photo_screen.dart';
 import 'package:flutter/material.dart';
 
 class PhotoListScreen extends StatefulWidget {
@@ -16,7 +17,8 @@ class PhotoListScreen extends StatefulWidget {
 
 class _PhotoListScreenState extends State<PhotoListScreen> {
   Future<Result> futurePhotos;
-  final _viewModel = PhotoListViewModel();
+  static final photosRepo = PhotosRepo();
+  final _viewModel = PhotoListViewModel(photosRepo);
 
   void initState() {
     super.initState();

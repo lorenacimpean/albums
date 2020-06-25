@@ -1,10 +1,12 @@
 import 'package:albums/data/model/result.dart';
-import 'package:albums/data/repo/main_repo.dart';
+import 'package:albums/data/repo/photos_repo.dart';
 
 class PhotoListViewModel {
-  final _mainRepo = MainRepo();
+  final PhotosRepo photosRepo;
+
+  PhotoListViewModel(this.photosRepo);
 
   Future<Result> getPhotos(int id) {
-    return _mainRepo.getPhotos(id);
+    return photosRepo.getPhotos(id);
   }
 }

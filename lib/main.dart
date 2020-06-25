@@ -1,5 +1,7 @@
-import 'package:albums/ui/views/album_list_screen.dart';
+import 'package:albums/themes/colors.dart';
+import 'package:albums/ui/splash_screen/splash_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() {
   runApp(AlbumsApp());
@@ -13,10 +15,12 @@ class AlbumsApp extends StatelessWidget {
       initialRoute: 'home',
       title: 'Albums',
       theme: ThemeData(
-        primarySwatch: Colors.pink,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: AlbumListScreen(),
+          primaryColor: AppColors.darkBlue,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+          textTheme: GoogleFonts.nunitoTextTheme(
+            Theme.of(context).textTheme,
+          )),
+      home: SplashScreen(),
     );
   }
 }
