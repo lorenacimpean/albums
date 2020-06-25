@@ -1,3 +1,4 @@
+import 'package:albums/ui/splash_screen/splash_screen.dart';
 import 'package:albums/ui/views/album_list_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -16,7 +17,7 @@ class AlbumsApp extends StatelessWidget {
         primarySwatch: Colors.pink,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: AlbumListScreen(),
+      home: SplashScreen(),
     );
   }
 }
