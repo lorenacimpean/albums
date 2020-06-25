@@ -1,5 +1,5 @@
-import 'package:albums/ui/splash_screen/splash_screen_view_model.dart';
 import 'package:albums/ui/home_screen/home_screen.dart';
+import 'package:albums/ui/splash_screen/splash_screen_view_model.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -11,6 +11,7 @@ class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   AnimationController _controller;
   Animation<double> _animation;
+
   //animation duration
   SplashScreenViewModel _viewModel;
 
@@ -25,10 +26,9 @@ class _SplashScreenState extends State<SplashScreen>
     _viewModel.goToNext().then((value) => route());
   }
 
-
   route() {
-    Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (BuildContext context) => AlbumListScreen()));
+    Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (BuildContext context) => HomeScreen()));
   }
 
   @override
@@ -42,7 +42,6 @@ class _SplashScreenState extends State<SplashScreen>
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset('assets/images/splash.png'),
-
           ],
         ),
       ),

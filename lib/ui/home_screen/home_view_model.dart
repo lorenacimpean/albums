@@ -1,12 +1,34 @@
-import 'package:albums/data/model/result.dart';
-import 'package:albums/data/repo/albumsRepo.dart';
+import 'dart:async';
+
+import 'package:flutter/widgets.dart';
+
+enum NavBarItem { BROWSE, FRIENDS, NEWS, PROFILE }
 
 class HomeViewModel {
-  final AlbumsRepo albumsRepo;
+  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+  final StreamController<NavBarItem> _navigationController =
+      StreamController<NavBarItem>.broadcast();
+  NavBarItem defaultItem = NavBarItem.BROWSE;
 
-  HomeViewModel(this.albumsRepo);
 
-  Future<Result> getAlbums() {
-    return albumsRepo.getAlbums();
+  Stream<NavBarItem> get itemStream => _navigationController.stream;
+
+  void dispose() => _navigationController?.close();
+
+  onTabSelected(int tabIndex) {
+    switch (tabIndex) {
+      case 0:
+        navigatorKey.currentState.pushNamed('AlbumList');
+        break;
+      case 1:
+        navigatorKey.currentState.pushNamed("Friends");
+        break;
+      case 2:
+        navigatorKey.currentState.pushNamed("News");
+        break;
+      case 2:
+        navigatorKey.currentState.pushNamed("Profile");
+        break;
+    }
   }
 }
