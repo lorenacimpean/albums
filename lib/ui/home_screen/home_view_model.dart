@@ -1,34 +1,34 @@
 import 'dart:async';
 
-import 'package:flutter/widgets.dart';
-
 enum NavBarItem { BROWSE, FRIENDS, NEWS, PROFILE }
 
 class HomeViewModel {
-  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-  final StreamController<NavBarItem> _navigationController =
-      StreamController<NavBarItem>.broadcast();
+
   NavBarItem defaultItem = NavBarItem.BROWSE;
+  final StreamController<NavBarItem> _controller = StreamController<NavBarItem>.broadcast();
+  int selectedTabIndex;
+  Stream<NavBarItem> get stream => _controller.stream;
 
 
-  Stream<NavBarItem> get itemStream => _navigationController.stream;
+  void dispose() => _controller?.close();
 
-  void dispose() => _navigationController?.close();
-
-  onTabSelected(int tabIndex) {
-    switch (tabIndex) {
+  void onTabSelected(int i) {
+    selectedTabIndex = i;
+    switch (i) {
       case 0:
-        navigatorKey.currentState.pushNamed('AlbumList');
+        _controller.sink.add(NavBarItem.BROWSE);
         break;
       case 1:
-        navigatorKey.currentState.pushNamed("Friends");
+        _controller.sink.add(NavBarItem.FRIENDS);
         break;
       case 2:
-        navigatorKey.currentState.pushNamed("News");
+        _controller.sink.add(NavBarItem.NEWS);
         break;
-      case 2:
-        navigatorKey.currentState.pushNamed("Profile");
+      case 3:
+        _controller.sink.add(NavBarItem.PROFILE);
         break;
+      default:
+        _controller.sink.add(NavBarItem.BROWSE);
     }
   }
 }
