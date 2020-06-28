@@ -7,18 +7,18 @@ import 'package:albums/data/model/result.dart';
 import 'package:albums/util/request_type.dart';
 import 'package:http/http.dart';
 
-class RemoteDataSource {
-  //Creating Singleton
-  RemoteDataSource._privateConstructor();
-  static final RemoteDataSource _apiResponse =
-      RemoteDataSource._privateConstructor();
-  factory RemoteDataSource() => _apiResponse;
-  AlbumsClient client = AlbumsClient(Client());
-
+class RemoteDataSource extends AlbumsClient{
+   AlbumsClient _albumsClient;
+   //TODO:
+   // The following NoSuchMethodError was thrown building StreamBuilder<NavBarItem>(state: _StreamBuilderBaseState<NavBarItem, AsyncSnapshot<NavBarItem>>#10f87):
+   //The method 'getAlbums' was called on null.
+   //Receiver: null
+   //Tried calling: getAlbums()
+  RemoteDataSource(this._albumsClient): super();
   Future<Result> getAlbums() async {
     try {
       final response =
-          await client.request(requestType: RequestType.GET, path: "albums");
+          await _albumsClient.request(requestType: RequestType.GET, path: "albums");
       if (response.statusCode == 200) {
         return Result<Gallery>.success(Gallery.fromRawJson(response.body));
       } else {
@@ -33,7 +33,7 @@ class RemoteDataSource {
     var path = "albums/$id/photos";
     try {
       final response =
-          await client.request(requestType: RequestType.GET, path: path);
+          await _albumsClient.request(requestType: RequestType.GET, path: path);
       if (response.statusCode == 200) {
         return Result<PhotoList>.success(PhotoList.fromRawJson(response.body));
       } else {

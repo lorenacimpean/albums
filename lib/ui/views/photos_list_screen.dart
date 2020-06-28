@@ -17,12 +17,12 @@ class PhotoListScreen extends StatefulWidget {
 
 class _PhotoListScreenState extends State<PhotoListScreen> {
   Future<Result> futurePhotos;
-  static final photosRepo = PhotosRepo();
-  final _viewModel = PhotoListViewModel(photosRepo);
+  PhotoListViewModel _viewModel;
+
 
   void initState() {
     super.initState();
-
+    _viewModel = PhotoListViewModel(this._viewModel);
     futurePhotos = _viewModel.getPhotos(widget.album.id);
   }
 

@@ -1,12 +1,11 @@
 import 'package:albums/data/model/result.dart';
 import 'package:albums/data/repo/albumsRepo.dart';
 
-class AlbumListViewModel {
-  final AlbumsRepo albumsRepo;
-
-  AlbumListViewModel(this.albumsRepo);
+class AlbumListViewModel extends AlbumsRepo {
+   AlbumsRepo _albumsRepo;
+   AlbumListViewModel(this._albumsRepo) : super(_albumsRepo);
 
   Future<Result> getAlbums() {
-    return albumsRepo.getAlbums();
+    return _albumsRepo.getAlbums();
   }
 }
