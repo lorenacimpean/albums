@@ -1,7 +1,6 @@
 import 'dart:core';
 
 import 'package:albums/themes/colors.dart';
-import 'package:albums/themes/icons.dart';
 import 'package:albums/ui/album_list/album_list_screen.dart';
 import 'package:albums/ui/home_screen/home_view_model.dart';
 import 'package:flutter/material.dart';
@@ -30,33 +29,43 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: StreamBuilder(
-        stream: _viewModel.stream,
-        initialData: _viewModel.defaultItem,
-        builder: (context, tabs) {
-          return _changeScreen(context, tabs);
+        stream: _viewModel.tabs,
+        initialData: List<AppTab>(),
+        builder: (context, snapshot) {
+          return _currentScreen(context, snapshot.data);
         },
       ),
-      bottomNavigationBar: StreamBuilder(
-        stream: _viewModel.stream,
-        initialData: _viewModel.defaultItem,
-        builder: (context, tabs) {
-          return Theme(
-            data: Theme.of(context),
-            child: BottomNavigationBar(
-              type: BottomNavigationBarType.fixed,
-              backgroundColor: AppColors.darkBlue,
-              currentIndex: tabs.data.index,
-              onTap: _viewModel.onTabSelected,
-              items: _navBarItems(),
-            ),
+      bottomNavigationBar: StreamBuilder<List<AppTab>>(
+        stream: _viewModel.tabs,
+        builder: (context, snapshot) {
+          print('snapshot: ${snapshot.data}');
+          //Apptabs widget - clasa separ{ata
+          if (snapshot.data.length < 2) {
+            return Container();
+          }
+          return BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
+            backgroundColor: AppColors.darkBlue,
+            //extensie lista de app tab care sa returneze selected index
+            currentIndex: 0,
+            onTap: (index) {},
+            items: _navBarItems(snapshot.data),
           );
         },
       ),
     );
   }
 
-  Widget _changeScreen(context, tabs) {
-    switch (tabs.data) {
+//extensie pentru lista de apptab care sa returneze selected tab
+  Widget _currentScreen(BuildContext context, List<AppTab> tabs) {
+    //change with firstwhere
+    AppTab selectedTab;
+    tabs.forEach((element) {
+      if (element.isSelected) {
+        selectedTab = element;
+      }
+    });
+    switch (selectedTab?.type) {
       case NavBarItem.BROWSE:
         return AlbumListScreen();
       case NavBarItem.FRIENDS:
@@ -71,41 +80,15 @@ class _HomeScreenState extends State<HomeScreen> {
     return Container(child: Center(child: Text("Coming Soon")));
   }
 
-  List<BottomNavigationBarItem> _navBarItems() {
-    List<BottomNavigationBarItem> tabList = [];
-    int selectedTab = _viewModel.selectedTabIndex;
-    List<String> titleList = _tabTitles();
-    _tabTitles().asMap().forEach((index, item) {
-      tabList.add(
-          _tab(titleList[index], _tabBarIcons[index], index == selectedTab));
-    });
-    return tabList;
+  List<BottomNavigationBarItem> _navBarItems(List<AppTab> tabs) {
+    return tabs.map((e) => _tab(e)).toList();
   }
 
-  BottomNavigationBarItem _tab(String title, AssetImage icon, bool isSelected) {
+  BottomNavigationBarItem _tab(AppTab tab) {
     return BottomNavigationBarItem(
-        title: Text(title),
-//            style: isSelected
-//                ? AppTextStyle.navBarSelected
-//                : AppTextStyle.navBarDefault),
-        icon: ImageIcon(icon));
-          //  , color: isSelected ? AppColors.lightBlue : AppColors.white));
+        title: Text(tab.title), icon: ImageIcon(tab.icon));
   }
-
-  final List<AssetImage> _tabBarIcons = const [
-    AppIcons.browseIcon,
-    AppIcons.friendsIcon,
-    AppIcons.newsIcon,
-    AppIcons.profileIcon
-  ];
-
-  //create list of tab titles from enum
-  List<String> _tabTitles() {
-    List<String> titles = [];
-    //remove 'NavBarItem.'
-    NavBarItem.values.forEach((element) {
-      titles.add('$element'.substring(element.toString().indexOf('.') + 1));
-    });
-    return titles;
-  }
+//Widget
+// TAB widget
+//Tabs widget
 }
