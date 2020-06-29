@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:core';
 
 import 'package:albums/themes/icons.dart';
 import 'package:flutter/widgets.dart';
@@ -10,17 +11,16 @@ const NavBarItem _defaultItem = NavBarItem.BROWSE;
 class HomeViewModel {
   final StreamController<List<AppTab>> _controller =
       StreamController<List<AppTab>>.broadcast();
-  //
 
   Stream<List<AppTab>> get tabs => _controller.stream;
 
   HomeViewModel() {
-    _controller.add(_getTabList());
+    _controller.add(getTabList());
   }
 
   void dispose() => _controller?.close();
 
-  List<AppTab> _getTabList({NavBarItem selectedTab = _defaultItem}) {
+  List<AppTab> getTabList({NavBarItem selectedTab = _defaultItem}) {
     return NavBarItem.values.map((element) {
       if (element == selectedTab) {
         print('$element');
@@ -31,7 +31,7 @@ class HomeViewModel {
   }
 
   void onTabSelected(AppTab tab) {
-    _controller.add(_getTabList(selectedTab: tab.type));
+    _controller.add(getTabList(selectedTab: tab.type));
   }
 }
 
@@ -59,5 +59,21 @@ class AppTab {
       default:
         return null;
     }
+  }
+}
+
+//extensie pentru lista de apptab care sa returneze selected tab
+extension selectedIndex on List<AppTab> {
+  int getSelectedIndex() {
+    AppTab selectedTab = this.getSelectedTab();
+    int index = indexOf(selectedTab);
+    return index;
+  }
+}
+
+extension selectedTab on List<AppTab> {
+  AppTab getSelectedTab() {
+    AppTab selectedTab = this?.firstWhere((tab) => tab.isSelected);
+    return selectedTab;
   }
 }

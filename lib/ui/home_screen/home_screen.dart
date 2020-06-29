@@ -27,44 +27,38 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: StreamBuilder(
+    return StreamBuilder(
         stream: _viewModel.tabs,
-        initialData: List<AppTab>(),
+        initialData: _viewModel.getTabList(),
         builder: (context, snapshot) {
-          return _currentScreen(context, snapshot.data);
-        },
-      ),
-      bottomNavigationBar: StreamBuilder<List<AppTab>>(
-        stream: _viewModel.tabs,
-        builder: (context, snapshot) {
-          print('snapshot: ${snapshot.data}');
-          //Apptabs widget - clasa separ{ata
-          if (snapshot.data.length < 2) {
-            return Container();
-          }
-          return BottomNavigationBar(
-            type: BottomNavigationBarType.fixed,
-            backgroundColor: AppColors.darkBlue,
-            //extensie lista de app tab care sa returneze selected index
-            currentIndex: 0,
-            onTap: (index) {},
-            items: _navBarItems(snapshot.data),
+          return Scaffold(
+            body: _currentScreen(context, snapshot.data),
+            bottomNavigationBar: _bottomNavigationBar(snapshot.data),
           );
-        },
-      ),
+        });
+  }
+
+  Widget _bottomNavigationBar(List<AppTab> tabs) {
+    if ((tabs?.length ?? 0) < 2) {
+      return Container();
+    }
+    return BottomNavigationBar(
+      type: BottomNavigationBarType.fixed,
+      backgroundColor: AppColors.darkBlue,
+      //extensie lista de app tab care sa returneze selected index
+      currentIndex: tabs.getSelectedIndex(),
+      onTap: (index) {
+        AppTab tab = tabs[index];
+        _viewModel.onTabSelected(tab);
+      },
+      items: _navBarItems(tabs),
     );
   }
 
-//extensie pentru lista de apptab care sa returneze selected tab
   Widget _currentScreen(BuildContext context, List<AppTab> tabs) {
     //change with firstwhere
-    AppTab selectedTab;
-    tabs.forEach((element) {
-      if (element.isSelected) {
-        selectedTab = element;
-      }
-    });
+    //added extension to List<AppTab> - can change
+    AppTab selectedTab = tabs.getSelectedTab();
     switch (selectedTab?.type) {
       case NavBarItem.BROWSE:
         return AlbumListScreen();
@@ -88,7 +82,8 @@ class _HomeScreenState extends State<HomeScreen> {
     return BottomNavigationBarItem(
         title: Text(tab.title), icon: ImageIcon(tab.icon));
   }
-//Widget
-// TAB widget
-//Tabs widget
+//Widgets
+// TAB widget + Tabs widget
+// how to create widgets fot these? items:  is not a Widget
+
 }
