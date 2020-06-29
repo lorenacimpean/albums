@@ -1,4 +1,4 @@
-import 'package:albums/model/photos.dart';
+import 'package:albums/data/model/photos.dart';
 import 'package:flutter/material.dart';
 
 class PhotoScreen extends StatefulWidget {
@@ -17,33 +17,36 @@ class _PhotoScreenState extends State<PhotoScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-          child: PageView(
-        children: [
-          _closeButton(context),
-          _photoWidget(context),
-        ],
-      )),
-    );
+    return Scaffold(body: _photoView(context));
   }
 
-  Widget _closeButton(BuildContext context) {
-    return Positioned(
-      top: 0.0,
-      child: Align(
-        alignment: Alignment.topLeft,
-        child: IconButton(
-          icon: Icon(Icons.close),
-          iconSize: 30.0,
-          color: Colors.pink,
-          onPressed: () => Navigator.of(context).pop(null),
-        ),
+  Center _photoView(BuildContext context) {
+    return Center(
+      child: PageView(
+        children: [
+          Stack(
+            children: <Widget>[
+              Positioned(
+                top: 0.0,
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child: IconButton(
+                    icon: Icon(Icons.close),
+                    iconSize: 30.0,
+                    color: Colors.pink,
+                    onPressed: () => Navigator.of(context).pop(null),
+                  ),
+                ),
+              ),
+              _photoWidget(context),
+            ],
+          ),
+        ],
       ),
     );
   }
 
-  Widget _photoWidget(BuildContext context) {
+  Column _photoWidget(BuildContext context) {
     Photo photo = widget.photo;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
