@@ -1,9 +1,10 @@
 import 'dart:core';
 
 import 'package:albums/data/model/albums.dart';
-
 import 'package:albums/data/model/result.dart';
-import 'package:albums/themes/colors.dart';import 'package:albums/transitions/fade_route.dart';
+import 'package:albums/data/repo/repo_factory.dart';
+import 'package:albums/themes/colors.dart';
+import 'package:albums/transitions/fade_route.dart';
 import 'package:albums/ui/views/photos_list_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -12,17 +13,15 @@ import 'album_list_view_model.dart';
 class AlbumListScreen extends StatefulWidget {
   @override
   _AlbumListScreenState createState() => _AlbumListScreenState();
-
 }
 
 class _AlbumListScreenState extends State<AlbumListScreen> {
-
   AlbumListViewModel _viewModel;
   Future<Result> futureAlbums;
 
   void initState() {
     super.initState();
-    _viewModel = AlbumListViewModel(this._viewModel);
+    _viewModel = AlbumListViewModel(buildAlbumsRepo());
     futureAlbums = _viewModel.getAlbums();
   }
 
@@ -63,10 +62,7 @@ class _AlbumListScreenState extends State<AlbumListScreen> {
 
   Widget _albumListItem(int index, Gallery albums, BuildContext context) {
     Album album = albums.albumList[index];
-    final double _screenWidth = MediaQuery
-        .of(context)
-        .size
-        .width;
+    final double _screenWidth = MediaQuery.of(context).size.width;
     return Container(
       padding: EdgeInsets.all(2.0),
       decoration: BoxDecoration(
@@ -104,6 +100,4 @@ class _AlbumListScreenState extends State<AlbumListScreen> {
           }),
     );
   }
-
-
 }

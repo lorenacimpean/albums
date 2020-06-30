@@ -5,9 +5,10 @@ import '../../util/nothing.dart';
 import '../../util/request_type.dart';
 import '../../util/request_type_exception.dart';
 
-class AlbumsClient {
+class AppHttpClient {
 
-  static Client _client = Client();
+  //client ca parametru
+   Client _client = Client();
 
   static const String _baseUrl = "http://jsonplaceholder.typicode.com";
 

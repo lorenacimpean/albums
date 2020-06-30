@@ -1,7 +1,7 @@
 import 'package:albums/data/model/albums.dart';
 import 'package:albums/data/model/photos.dart';
 import 'package:albums/data/model/result.dart';
-import 'package:albums/data/repo/photos_repo.dart';
+import 'package:albums/data/repo/repo_factory.dart';
 import 'package:albums/ui/view_models/photo_list_view_model.dart';
 import 'package:albums/ui/views/photo_screen.dart';
 import 'package:flutter/material.dart';
@@ -19,10 +19,9 @@ class _PhotoListScreenState extends State<PhotoListScreen> {
   Future<Result> futurePhotos;
   PhotoListViewModel _viewModel;
 
-
   void initState() {
     super.initState();
-    _viewModel = PhotoListViewModel(this._viewModel);
+    _viewModel = PhotoListViewModel(buildPhotosRepo());
     futurePhotos = _viewModel.getPhotos(widget.album.id);
   }
 

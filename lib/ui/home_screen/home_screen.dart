@@ -3,6 +3,7 @@ import 'dart:core';
 import 'package:albums/themes/colors.dart';
 import 'package:albums/ui/album_list/album_list_screen.dart';
 import 'package:albums/ui/home_screen/home_view_model.dart';
+import 'package:albums/util/extensions.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -28,9 +29,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        stream: _viewModel.tabs,
-        initialData: _viewModel.getTabList(),
+        stream: _viewModel.tabs.map((event) => event.tabs),
         builder: (context, snapshot) {
+          print('snapshot: $snapshot');
           return Scaffold(
             body: _currentScreen(context, snapshot.data),
             bottomNavigationBar: _bottomNavigationBar(snapshot.data),
@@ -45,7 +46,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
       backgroundColor: AppColors.darkBlue,
-      //extensie lista de app tab care sa returneze selected index
       currentIndex: tabs.getSelectedIndex(),
       onTap: (index) {
         AppTab tab = tabs[index];
@@ -56,8 +56,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _currentScreen(BuildContext context, List<AppTab> tabs) {
-    //change with firstwhere
-    //added extension to List<AppTab> - can change
     AppTab selectedTab = tabs.getSelectedTab();
     switch (selectedTab?.type) {
       case NavBarItem.BROWSE:
@@ -82,8 +80,4 @@ class _HomeScreenState extends State<HomeScreen> {
     return BottomNavigationBarItem(
         title: Text(tab.title), icon: ImageIcon(tab.icon));
   }
-//Widgets
-// TAB widget + Tabs widget
-// how to create widgets fot these? items:  is not a Widget
-
 }

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:core';
 
 import 'package:albums/themes/icons.dart';
+import 'package:albums/util/extensions.dart';
 import 'package:flutter/widgets.dart';
 
 enum NavBarItem { BROWSE, FRIENDS, NEWS, PROFILE }
@@ -9,18 +10,18 @@ enum NavBarItem { BROWSE, FRIENDS, NEWS, PROFILE }
 const NavBarItem _defaultItem = NavBarItem.BROWSE;
 
 class HomeViewModel {
-  final StreamController<List<AppTab>> _controller =
-      StreamController<List<AppTab>>.broadcast();
+  final StreamController<NavBarTabs> _controller =
+      StreamController<NavBarTabs>();
 
-  Stream<List<AppTab>> get tabs => _controller.stream;
+  Stream<NavBarTabs> get tabs => _controller.stream;
 
   HomeViewModel() {
-    _controller.add(getTabList());
+    _controller.add(NavBarTabs(_getTabList()));
   }
 
   void dispose() => _controller?.close();
 
-  List<AppTab> getTabList({NavBarItem selectedTab = _defaultItem}) {
+  List<AppTab> _getTabList({NavBarItem selectedTab = _defaultItem}) {
     return NavBarItem.values.map((element) {
       if (element == selectedTab) {
         print('$element');
@@ -31,8 +32,21 @@ class HomeViewModel {
   }
 
   void onTabSelected(AppTab tab) {
-    _controller.add(getTabList(selectedTab: tab.type));
+    _controller.add(NavBarTabs(_getTabList(selectedTab: tab.type)));
   }
+}
+
+class NavBarTabs {
+  final List<AppTab> tabs;
+
+  NavBarTabs(this.tabs);
+
+  @override
+  int get hashCode => tabs.hash;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) || other is NavBarTabs && tabs.compare(other.tabs);
 }
 
 class AppTab {
@@ -60,20 +74,17 @@ class AppTab {
         return null;
     }
   }
-}
 
-//extensie pentru lista de apptab care sa returneze selected tab
-extension selectedIndex on List<AppTab> {
-  int getSelectedIndex() {
-    AppTab selectedTab = this.getSelectedTab();
-    int index = indexOf(selectedTab);
-    return index;
-  }
-}
+  @override
+  int get hashCode =>
+      type.hashCode ^ title.hashCode ^ icon.hashCode ^ isSelected.hashCode;
 
-extension selectedTab on List<AppTab> {
-  AppTab getSelectedTab() {
-    AppTab selectedTab = this?.firstWhere((tab) => tab.isSelected);
-    return selectedTab;
-  }
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AppTab &&
+          type == other.type &&
+          title == other.title &&
+          icon == other.icon &&
+          isSelected == other.isSelected;
 }
