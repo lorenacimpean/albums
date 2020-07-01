@@ -1,12 +1,12 @@
-import 'package:albums/data/api/remote_data_source.dart';
+import 'package:albums/data/api/albums_remote_data_source.dart';
 import 'package:albums/data/model/result.dart';
 
-class AlbumsRepo  {
+class AlbumsRepo {
+  final AlbumsRemoteDataSource _albumsRemoteDataSource;
 
- final  RemoteDataSource _remoteDataSource;
-  AlbumsRepo(this._remoteDataSource);
+  AlbumsRepo(this._albumsRemoteDataSource);
 
   Future<Result> getAlbums() {
-    return _remoteDataSource.getAlbums();
+    return _albumsRemoteDataSource.getAlbums();
   }
 }

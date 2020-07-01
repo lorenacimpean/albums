@@ -1,5 +1,6 @@
 class AppTextSizes {
-  static const navBarTextSize = 10.0;
-  static const albumTitleTextSize = 14.0;
-  static const albumIdTextSize = 12.0;
+  static const headline1 = 20.0;
+  static const subtitle1 = 14.0;
+  static const subtitle2 = 12.0;
+  static const bodyText = 10.0;
 }

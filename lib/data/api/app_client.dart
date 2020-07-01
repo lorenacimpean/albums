@@ -6,24 +6,22 @@ import '../../util/request_type.dart';
 import '../../util/request_type_exception.dart';
 
 class AppHttpClient {
-
-  //client ca parametru
-   Client _client = Client();
+  AppHttpClient({Client client});
 
   static const String _baseUrl = "http://jsonplaceholder.typicode.com";
 
+  get client => Client();
+
   Future<Response> request(
       {@required RequestType requestType,
-        @required String path,
-        dynamic parameter = Nothing}) async {
+      @required String path,
+      dynamic parameter = Nothing}) async {
     switch (requestType) {
       case RequestType.GET:
-        return _client.get("$_baseUrl/$path");
+        return client.get("$_baseUrl/$path");
       default:
         return throw RequestTypeNotFoundException(
             "The HTTP request mentioned is not found");
     }
   }
-
-
 }

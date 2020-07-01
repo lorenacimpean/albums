@@ -1,8 +1,8 @@
-import 'package:albums/data/api/remote_data_source.dart';
+import 'package:albums/data/api/photos_remote_data_source.dart';
 import 'package:albums/data/model/result.dart';
 
 class PhotosRepo {
-  final RemoteDataSource _remoteDataSource;
+  final PhotosRemoteDataSource _remoteDataSource;
 
   PhotosRepo(this._remoteDataSource);
 

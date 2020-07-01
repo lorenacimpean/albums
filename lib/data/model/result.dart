@@ -5,7 +5,7 @@ class Result<T> {
 
   factory Result.success(T value) = SuccessState<T>;
 
-  factory Result.error(T msg) = ErrorState<T>;
+  factory Result.error(String msg) = ErrorState<T>;
 }
 
 class LoadingState<T> extends Result<T> {
@@ -15,7 +15,7 @@ class LoadingState<T> extends Result<T> {
 
 class ErrorState<T> extends Result<T> {
   ErrorState(this.msg) : super._();
-  final T msg;
+  final String msg;
 }
 
 class SuccessState<T> extends Result<T> {

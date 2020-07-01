@@ -13,13 +13,13 @@ class Album {
   Map<String, dynamic> toJson() => {"userId": userId, "id": id, "title": title};
 }
 
-class Gallery {
+class AlbumList {
   final List<Album> albumList;
 
-  Gallery({this.albumList});
+  AlbumList({this.albumList});
 
-  factory Gallery.fromRawJson(String str) => Gallery.fromJson(json.decode(str));
+  factory AlbumList.fromRawJson(String str) => AlbumList.fromJson(json.decode(str));
 
-  factory Gallery.fromJson(List<dynamic> json) =>
-      Gallery(albumList: List<Album>.from(json.map((x) => Album.fromJson(x))));
+  factory AlbumList.fromJson(List<dynamic> json) =>
+      AlbumList(albumList: List<Album>.from(json.map((x) => Album.fromJson(x))));
 }

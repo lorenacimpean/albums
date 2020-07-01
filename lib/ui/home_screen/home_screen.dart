@@ -73,11 +73,20 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   List<BottomNavigationBarItem> _navBarItems(List<AppTab> tabs) {
-    return tabs.map((e) => _tab(e)).toList();
+    return tabs
+        .map((tab) => _tab(tab.title, tab.icon, tab.isSelected))
+        .toList();
   }
 
-  BottomNavigationBarItem _tab(AppTab tab) {
+  BottomNavigationBarItem _tab(String title, AssetImage icon, bool isSelected) {
     return BottomNavigationBarItem(
-        title: Text(tab.title), icon: ImageIcon(tab.icon));
+        title: Text(title,
+            style: isSelected
+                ? Theme.of(context).textTheme.bodyText1
+                : Theme.of(context).textTheme.bodyText2),
+        icon: ImageIcon(icon,
+            color: isSelected
+                ? Theme.of(context).textTheme.bodyText1.color
+                : Theme.of(context).textTheme.bodyText2.color));
   }
 }

@@ -4,8 +4,12 @@ import 'package:albums/data/model/albums.dart';
 import 'package:albums/data/model/result.dart';
 import 'package:albums/data/repo/repo_factory.dart';
 import 'package:albums/themes/colors.dart';
+import 'package:albums/themes/icons.dart';
+import 'package:albums/themes/paddings.dart';
 import 'package:albums/transitions/fade_route.dart';
-import 'package:albums/ui/views/photos_list_screen.dart';
+import 'package:albums/ui/photo_list_screen/photos_list_screen.dart';
+import 'package:albums/widgets/error_widget.dart';
+import 'package:albums/widgets/progress_indicator.dart';
 import 'package:flutter/material.dart';
 
 import 'album_list_view_model.dart';
@@ -38,66 +42,64 @@ class _AlbumListScreenState extends State<AlbumListScreen> {
           future: futureAlbums,
           builder: (BuildContext context, AsyncSnapshot<Result> snapshot) {
             if (snapshot.data is SuccessState) {
-              Gallery albums = (snapshot.data as SuccessState).value;
+              AlbumList albums = (snapshot.data as SuccessState).value;
               return ListView.separated(
                 itemBuilder: (context, index) {
                   return _albumListItem(index, albums, context);
                 },
                 separatorBuilder: (BuildContext context, int index) {
                   return SizedBox(
-                    height: 15,
+                    height: AppPaddings.separatorHeight,
                   );
                 },
                 itemCount: albums.albumList.length,
                 physics: BouncingScrollPhysics(),
               );
             } else if (snapshot.data is ErrorState) {
-              String error = (snapshot.data as ErrorState).msg;
-              return Text(error);
+              return errorWidget(context, snapshot);
             } else
-              return CircularProgressIndicator();
+              return progressIndicator(context);
           }),
     );
   }
 
-  Widget _albumListItem(int index, Gallery albums, BuildContext context) {
-    Album album = albums.albumList[index];
-    final double _screenWidth = MediaQuery.of(context).size.width;
+  StatelessWidget _albumListItem(
+      int index, AlbumList albums, BuildContext context) {
+    Album currentAlbum = _viewModel.getCurrentAlbum(albums, index);
+
     return Container(
-      padding: EdgeInsets.all(2.0),
+      padding: AppPaddings.listItemPadding,
       decoration: BoxDecoration(
         shape: BoxShape.rectangle,
         border: Border.all(
           color: AppColors.lightGrey,
-          width: 1,
         ),
-        borderRadius: BorderRadius.circular(5),
+        borderRadius: AppPaddings.albumTileRadius,
       ),
-      margin: EdgeInsets.only(
-        left: _screenWidth * 0.05,
-        right: _screenWidth * 0.05,
-      ),
+      margin: AppPaddings.listItemMargin,
       child: ListTile(
           leading: Container(
-            width: 40.0,
-            height: 40.0,
+            width: AppPaddings.blueContainerSize,
+            height: AppPaddings.blueContainerSize,
             decoration: BoxDecoration(
               color: AppColors.lightBlue,
               shape: BoxShape.circle,
             ),
             child: ImageIcon(
-              AssetImage('assets/images/album_icon.png'),
+              AppIcons.albumIcon,
               color: AppColors.darkBlue,
             ),
           ),
-          title: Text('Album name'),
-          subtitle: Text('Album with id: ${album.id}'),
-          trailing: ImageIcon(AssetImage('assets/images/arrow_icon.png'),
-              color: AppColors.darkBlue),
+          title: Text('${currentAlbum.title}'),
+          subtitle: Text('Album with id: ${currentAlbum.id}'),
+          trailing: ImageIcon(AppIcons.arrowIcon, color: AppColors.darkBlue),
           onTap: () {
-            Navigator.push(
-                context, FadeRoute(page: PhotoListScreen(album: album)));
+            _openAlbumScreen(context, currentAlbum);
           }),
     );
+  }
+
+  void _openAlbumScreen(BuildContext context, Album album) {
+    Navigator.push(context, FadeRoute(page: PhotoListScreen(album: album)));
   }
 }
