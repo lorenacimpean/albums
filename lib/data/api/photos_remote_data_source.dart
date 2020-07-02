@@ -6,16 +6,16 @@ import 'package:albums/data/model/result.dart';
 import 'package:albums/util/request_type.dart';
 
 class PhotosRemoteDataSource {
-  AppHttpClient _albumsClient;
+  AppHttpClient _appHttpClient;
 
   //repo factory
-  PhotosRemoteDataSource(this._albumsClient);
+  PhotosRemoteDataSource(this._appHttpClient);
 
   Future<Result> getPhotos(int id) async {
     var path = "albums/$id/photos";
     try {
       final response =
-          await _albumsClient.request(requestType: RequestType.GET, path: path);
+          await _appHttpClient.request(requestType: RequestType.GET, path: path);
       if (response.statusCode == 200) {
         return Result<PhotoList>.success(PhotoList.fromRawJson(response.body));
       } else {

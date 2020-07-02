@@ -31,7 +31,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return StreamBuilder(
         stream: _viewModel.tabs.map((event) => event.tabs),
         builder: (context, snapshot) {
-          print('snapshot: $snapshot');
           return Scaffold(
             body: _currentScreen(context, snapshot.data),
             bottomNavigationBar: _bottomNavigationBar(snapshot.data),
@@ -69,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _dummyScreen(BuildContext context) {
-    return Container(child: Center(child: Text("Coming Soon")));
+    return Text("Coming Soon");
   }
 
   List<BottomNavigationBarItem> _navBarItems(List<AppTab> tabs) {

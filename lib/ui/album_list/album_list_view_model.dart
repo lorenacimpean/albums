@@ -8,7 +8,8 @@ class AlbumListViewModel {
   AlbumListViewModel(this._albumsRepo);
 
   Future<Result> getAlbums() {
-    return _albumsRepo.getAlbums();
+    Future<Result> futureAlbumList = _albumsRepo.getAlbums();
+    return futureAlbumList;
   }
 
   Album getCurrentAlbum(AlbumList albums, int index) {

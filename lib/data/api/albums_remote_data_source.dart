@@ -4,13 +4,13 @@ import 'package:albums/data/model/result.dart';
 import 'package:albums/util/request_type.dart';
 
 class AlbumsRemoteDataSource {
-  AppHttpClient _albumsClient;
+  AppHttpClient _appHttpClient;
 
-  AlbumsRemoteDataSource(this._albumsClient);
+  AlbumsRemoteDataSource(this._appHttpClient);
 
   Future<Result> getAlbums() async {
     try {
-      final response = await _albumsClient.request(
+      final response = await _appHttpClient.request(
           requestType: RequestType.GET, path: "albums");
       if (response.statusCode == 200) {
         return Result<AlbumList>.success(AlbumList.fromRawJson(response.body));

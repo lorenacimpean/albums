@@ -1,7 +1,7 @@
 import 'package:albums/data/model/albums.dart';
 import 'package:albums/data/model/photos.dart';
 import 'package:albums/data/model/result.dart';
-import 'package:albums/data/repo/repo_factory.dart';
+import 'package:albums/data/repo/photos_repo_factory.dart';
 import 'package:albums/ui/photo_list_screen/photo_list_view_model.dart';
 import 'package:albums/ui/photo_screen/photo_screen.dart';
 import 'package:albums/widgets/error_widget.dart';
@@ -56,9 +56,9 @@ class _PhotoListScreenState extends State<PhotoListScreen> {
                     return _photoListTile(albumId, photos, context);
                   });
             } else if (snapshot.data is ErrorState) {
-              return errorWidget(context, snapshot);
+              return ErrorTextWidget(snapshot.error);
             } else
-              return progressIndicator(context);
+              return LoadingIndicator();
           }),
     );
   }

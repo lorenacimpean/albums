@@ -2,7 +2,7 @@ import 'dart:core';
 
 import 'package:albums/data/model/albums.dart';
 import 'package:albums/data/model/result.dart';
-import 'package:albums/data/repo/repo_factory.dart';
+import 'package:albums/data/repo/albums_repo_factory.dart';
 import 'package:albums/themes/colors.dart';
 import 'package:albums/themes/icons.dart';
 import 'package:albums/themes/paddings.dart';
@@ -21,12 +21,12 @@ class AlbumListScreen extends StatefulWidget {
 
 class _AlbumListScreenState extends State<AlbumListScreen> {
   AlbumListViewModel _viewModel;
-  Future<Result> futureAlbums;
+  Future<Result> _futureAlbums;
 
   void initState() {
     super.initState();
     _viewModel = AlbumListViewModel(buildAlbumsRepo());
-    futureAlbums = _viewModel.getAlbums();
+    _futureAlbums = _viewModel.getAlbums();
   }
 
   @override
@@ -39,10 +39,12 @@ class _AlbumListScreenState extends State<AlbumListScreen> {
   Widget _albumList(BuildContext context) {
     return Center(
       child: FutureBuilder(
-          future: futureAlbums,
+          future: _futureAlbums,
           builder: (BuildContext context, AsyncSnapshot<Result> snapshot) {
             if (snapshot.data is SuccessState) {
               AlbumList albums = (snapshot.data as SuccessState).value;
+              albums.sortList();
+              // albums.sortList();
               return ListView.separated(
                 itemBuilder: (context, index) {
                   return _albumListItem(index, albums, context);
@@ -56,16 +58,16 @@ class _AlbumListScreenState extends State<AlbumListScreen> {
                 physics: BouncingScrollPhysics(),
               );
             } else if (snapshot.data is ErrorState) {
-              return errorWidget(context, snapshot);
+              return ErrorTextWidget(snapshot.error);
             } else
-              return progressIndicator(context);
+              return LoadingIndicator();
           }),
     );
   }
 
   StatelessWidget _albumListItem(
       int index, AlbumList albums, BuildContext context) {
-    Album currentAlbum = _viewModel.getCurrentAlbum(albums, index);
+    Album currentAlbum = albums.albumAtIndex(index);
 
     return Container(
       padding: AppPaddings.listItemPadding,
@@ -94,12 +96,12 @@ class _AlbumListScreenState extends State<AlbumListScreen> {
           subtitle: Text('Album with id: ${currentAlbum.id}'),
           trailing: ImageIcon(AppIcons.arrowIcon, color: AppColors.darkBlue),
           onTap: () {
-            _openAlbumScreen(context, currentAlbum);
+            _openAlbumDetailsScreen(context, currentAlbum);
           }),
     );
   }
 
-  void _openAlbumScreen(BuildContext context, Album album) {
+  void _openAlbumDetailsScreen(BuildContext context, Album album) {
     Navigator.push(context, FadeRoute(page: PhotoListScreen(album: album)));
   }
 }

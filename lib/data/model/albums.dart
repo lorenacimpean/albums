@@ -18,8 +18,20 @@ class AlbumList {
 
   AlbumList({this.albumList});
 
-  factory AlbumList.fromRawJson(String str) => AlbumList.fromJson(json.decode(str));
+  factory AlbumList.fromRawJson(String str) =>
+      AlbumList.fromJson(json.decode(str));
 
-  factory AlbumList.fromJson(List<dynamic> json) =>
-      AlbumList(albumList: List<Album>.from(json.map((x) => Album.fromJson(x))));
+  factory AlbumList.fromJson(List<dynamic> json) => AlbumList(
+      albumList: List<Album>.from(json.map((x) => Album.fromJson(x))));
+
+  AlbumList sortList() {
+    this.albumList.sort((a, b) {
+      return (a.title.compareTo(b.title));
+    });
+    return this;
+  }
+
+  Album albumAtIndex(int index) {
+    return this.albumList[index];
+  }
 }
