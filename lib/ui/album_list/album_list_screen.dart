@@ -2,12 +2,10 @@ import 'dart:core';
 
 import 'package:albums/data/model/albums.dart';
 import 'package:albums/data/model/result.dart';
-import 'package:albums/data/repo/albums_repo_factory.dart';
-import 'package:albums/themes/colors.dart';
-import 'package:albums/themes/icons.dart';
+import 'package:albums/data/repo/repo_factory.dart';
 import 'package:albums/themes/paddings.dart';
-import 'package:albums/transitions/fade_route.dart';
 import 'package:albums/ui/photo_list_screen/photos_list_screen.dart';
+import 'package:albums/widgets/album_list_item_widget.dart';
 import 'package:albums/widgets/error_widget.dart';
 import 'package:albums/widgets/progress_indicator.dart';
 import 'package:flutter/material.dart';
@@ -43,11 +41,17 @@ class _AlbumListScreenState extends State<AlbumListScreen> {
           builder: (BuildContext context, AsyncSnapshot<Result> snapshot) {
             if (snapshot.data is SuccessState) {
               AlbumList albums = (snapshot.data as SuccessState).value;
-              albums.sortList();
-              // albums.sortList();
+              _viewModel.sortAlbums(albums);
+
               return ListView.separated(
                 itemBuilder: (context, index) {
-                  return _albumListItem(index, albums, context);
+                  Album currentAlbum = _viewModel.albumAtIndex(albums, index);
+                  return AlbumListItemWidget(
+                    index: index,
+                    albums: albums,
+                    onTap: () => _viewModel.goToNext().then((_) => route(currentAlbum)),
+                    key: Key(currentAlbum.id.toString()),
+                  );
                 },
                 separatorBuilder: (BuildContext context, int index) {
                   return SizedBox(
@@ -65,43 +69,9 @@ class _AlbumListScreenState extends State<AlbumListScreen> {
     );
   }
 
-  StatelessWidget _albumListItem(
-      int index, AlbumList albums, BuildContext context) {
-    Album currentAlbum = albums.albumAtIndex(index);
-
-    return Container(
-      padding: AppPaddings.listItemPadding,
-      decoration: BoxDecoration(
-        shape: BoxShape.rectangle,
-        border: Border.all(
-          color: AppColors.lightGrey,
-        ),
-        borderRadius: AppPaddings.albumTileRadius,
-      ),
-      margin: AppPaddings.listItemMargin,
-      child: ListTile(
-          leading: Container(
-            width: AppPaddings.blueContainerSize,
-            height: AppPaddings.blueContainerSize,
-            decoration: BoxDecoration(
-              color: AppColors.lightBlue,
-              shape: BoxShape.circle,
-            ),
-            child: ImageIcon(
-              AppIcons.albumIcon,
-              color: AppColors.darkBlue,
-            ),
-          ),
-          title: Text('${currentAlbum.title}'),
-          subtitle: Text('Album with id: ${currentAlbum.id}'),
-          trailing: ImageIcon(AppIcons.arrowIcon, color: AppColors.darkBlue),
-          onTap: () {
-            _openAlbumDetailsScreen(context, currentAlbum);
-          }),
-    );
-  }
-
-  void _openAlbumDetailsScreen(BuildContext context, Album album) {
-    Navigator.push(context, FadeRoute(page: PhotoListScreen(album: album)));
+  route(Album album) {
+      Navigator.of(context).push(
+          MaterialPageRoute(builder: (BuildContext context) => PhotoListScreen(album: album)));
+    
   }
 }

@@ -6,12 +6,11 @@ import '../../util/request_type.dart';
 import '../../util/request_type_exception.dart';
 
 class AppHttpClient {
-  Client client = Client();
+  final Client client;
 
-  AppHttpClient({Client client});
+  AppHttpClient({Client client}) : this.client = client ?? Client();
 
   static const String _baseUrl = "http://jsonplaceholder.typicode.com";
-
 
   Future<Response> request(
       {@required RequestType requestType,

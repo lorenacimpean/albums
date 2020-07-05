@@ -12,8 +12,15 @@ class AlbumListViewModel {
     return futureAlbumList;
   }
 
-  Album getCurrentAlbum(AlbumList albums, int index) {
-    Album album = albums.albumList[index];
-    return album;
+  AlbumList sortAlbums(AlbumList albums) {
+    return albums.sortList();
+  }
+
+  Album albumAtIndex(AlbumList albums, int index) {
+    return albums.albumAtIndex(index);
+  }
+
+  Future<bool> goToNext() {
+    return Future.value(true);
   }
 }
