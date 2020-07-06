@@ -2,7 +2,10 @@ import 'dart:core';
 
 import 'package:albums/themes/colors.dart';
 import 'package:albums/ui/album_list/album_list_screen.dart';
+import 'package:albums/ui/friends/friends_screen.dart';
 import 'package:albums/ui/home_screen/home_view_model.dart';
+import 'package:albums/ui/news/news_screen.dart';
+import 'package:albums/ui/profile/profile_screen.dart';
 import 'package:albums/util/extensions.dart';
 import 'package:flutter/material.dart';
 
@@ -60,15 +63,12 @@ class _HomeScreenState extends State<HomeScreen> {
       case NavBarItem.BROWSE:
         return AlbumListScreen();
       case NavBarItem.FRIENDS:
+        return FriendsScreen();
       case NavBarItem.NEWS:
+        return NewsScreen();
       case NavBarItem.PROFILE:
-      default:
-        return _dummyScreen(context);
+        return ProfileScreen();
     }
-  }
-
-  Widget _dummyScreen(BuildContext context) {
-    return Text("Coming Soon");
   }
 
   List<BottomNavigationBarItem> _navBarItems(List<AppTab> tabs) {

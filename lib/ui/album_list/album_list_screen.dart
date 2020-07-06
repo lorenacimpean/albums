@@ -5,8 +5,10 @@ import 'package:albums/data/model/albums.dart';
 import 'package:albums/data/model/result.dart';
 import 'package:albums/data/repo/repo_factory.dart';
 import 'package:albums/themes/paddings.dart';
+import 'package:albums/themes/strings.dart';
 import 'package:albums/ui/photo_list_screen/photos_list_screen.dart';
 import 'package:albums/widgets/album_list_item_widget.dart';
+import 'package:albums/widgets/app_screen_widget.dart';
 import 'package:albums/widgets/error_widget.dart';
 import 'package:albums/widgets/progress_indicator.dart';
 import 'package:flutter/material.dart';
@@ -40,7 +42,9 @@ class _AlbumListScreenState extends State<AlbumListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return AppScreen(
+      title: AppStrings.albumListTitle,
+      key: Key(AppStrings.albumListTitle),
       body: _albumList(context),
     );
   }
