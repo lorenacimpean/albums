@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:core';
 
 import 'package:albums/data/model/albums.dart';
@@ -20,11 +21,21 @@ class AlbumListScreen extends StatefulWidget {
 class _AlbumListScreenState extends State<AlbumListScreen> {
   AlbumListViewModel _viewModel;
   Future<Result> _futureAlbums;
+  StreamSubscription nextScreenSubscription;
 
   void initState() {
     super.initState();
     _viewModel = AlbumListViewModel(buildAlbumsRepo());
     _futureAlbums = _viewModel.getAlbums();
+    nextScreenSubscription = _viewModel.goToNext.stream.listen((nextScreen) {
+      route(nextScreen);
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    nextScreenSubscription.cancel();
   }
 
   @override
@@ -41,15 +52,15 @@ class _AlbumListScreenState extends State<AlbumListScreen> {
           builder: (BuildContext context, AsyncSnapshot<Result> snapshot) {
             if (snapshot.data is SuccessState) {
               AlbumList albums = (snapshot.data as SuccessState).value;
-              _viewModel.sortAlbums(albums);
 
               return ListView.separated(
                 itemBuilder: (context, index) {
-                  Album currentAlbum = _viewModel.albumAtIndex(albums, index);
+                  Album currentAlbum = albums.albumAtIndex(index);
                   return AlbumListItemWidget(
-                    index: index,
-                    albums: albums,
-                    onTap: () => _viewModel.goToNext().then((_) => route(currentAlbum)),
+                    album: currentAlbum,
+                    onTap: () {
+                      _viewModel.onAlbumTap(currentAlbum);
+                    },
                     key: Key(currentAlbum.id.toString()),
                   );
                 },
@@ -69,9 +80,16 @@ class _AlbumListScreenState extends State<AlbumListScreen> {
     );
   }
 
-  route(Album album) {
-      Navigator.of(context).push(
-          MaterialPageRoute(builder: (BuildContext context) => PhotoListScreen(album: album)));
-    
+  route(NextScreen nextScreen) {
+    switch (nextScreen.type) {
+      case ScreenType.AlbumDetails:
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (BuildContext context) =>
+                PhotoListScreen(album: nextScreen.data)));
+        break;
+      case ScreenType.Other:
+        // TODO: Handle this case.
+        break;
+    }
   }
 }

@@ -5,16 +5,15 @@ import 'package:albums/themes/paddings.dart';
 import 'package:flutter/material.dart';
 
 class AlbumListItemWidget extends StatelessWidget {
-  final int index;
-  final AlbumList albums;
+  final Album album;
+
   final GestureTapCallback onTap;
 
-  const AlbumListItemWidget({Key key, this.albums, this.index, this.onTap})
+  const AlbumListItemWidget({Key key, @required this.album, this.onTap})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    Album currentAlbum = albums.albumAtIndex(index);
     return Container(
       padding: AppPaddings.listItemPadding,
       decoration: BoxDecoration(
@@ -38,11 +37,13 @@ class AlbumListItemWidget extends StatelessWidget {
               color: AppColors.darkBlue,
             ),
           ),
-          title: Text('${currentAlbum.title}'),
-          subtitle: Text('Album with id: ${currentAlbum.id}'),
+          title: Text('${album.title}'),
+          subtitle: Text('Album with id: ${album.id}'),
           trailing: ImageIcon(AppIcons.arrowIcon, color: AppColors.darkBlue),
           onTap: () {
-            onTap();
+            if (onTap != null) {
+              onTap();
+            }
           }),
     );
   }
