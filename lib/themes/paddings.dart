@@ -9,4 +9,6 @@ class AppPaddings {
   );
   static final blueContainerSize = 40.0;
   static final albumTileRadius = BorderRadius.circular(5);
+  static final comingSoonContainerHeight = 64.0;
+  static final comingSoonContainerWidth = 320.0;
 }
