@@ -1,9 +1,13 @@
 import 'package:albums/data/model/albums.dart';
 import 'package:albums/data/model/photos.dart';
 import 'package:albums/data/model/result.dart';
-import 'package:albums/ui/views/photo_screen.dart';
-import 'package:albums/ui/view_models/photo_list_view_model.dart';
+import 'package:albums/data/repo/repo_factory.dart';
+import 'package:albums/ui/photo_list_screen/photo_list_view_model.dart';
+import 'package:albums/ui/photo_screen/photo_screen.dart';
+import 'package:albums/widgets/error_widget.dart';
+import 'package:albums/widgets/progress_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class PhotoListScreen extends StatefulWidget {
   final Album album;
@@ -16,11 +20,11 @@ class PhotoListScreen extends StatefulWidget {
 
 class _PhotoListScreenState extends State<PhotoListScreen> {
   Future<Result> futurePhotos;
-  final _viewModel = PhotoListViewModel();
+  PhotoListViewModel _viewModel;
 
   void initState() {
     super.initState();
-
+    _viewModel = PhotoListViewModel(buildPhotosRepo());
     futurePhotos = _viewModel.getPhotos(widget.album.id);
   }
 
@@ -52,10 +56,9 @@ class _PhotoListScreenState extends State<PhotoListScreen> {
                     return _photoListTile(albumId, photos, context);
                   });
             } else if (snapshot.data is ErrorState) {
-              String error = (snapshot.data as ErrorState).msg;
-              return Text(error);
+              return ErrorTextWidget(snapshot.error);
             } else
-              return CircularProgressIndicator();
+              return LoadingIndicator();
           }),
     );
   }

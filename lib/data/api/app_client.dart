@@ -5,12 +5,12 @@ import '../../util/nothing.dart';
 import '../../util/request_type.dart';
 import '../../util/request_type_exception.dart';
 
-class AlbumsClient {
-  //Base url
-  static const String _baseUrl = "http://jsonplaceholder.typicode.com";
+class AppHttpClient {
   final Client client;
 
-  AlbumsClient(this.client);
+  AppHttpClient({Client client}) : this.client = client ?? Client();
+
+  static const String _baseUrl = "http://jsonplaceholder.typicode.com";
 
   Future<Response> request(
       {@required RequestType requestType,

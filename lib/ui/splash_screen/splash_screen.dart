@@ -1,5 +1,5 @@
+import 'package:albums/ui/home_screen/home_screen.dart';
 import 'package:albums/ui/splash_screen/splash_screen_view_model.dart';
-import 'package:albums/ui/views/album_list_screen.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -27,8 +27,8 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   route() {
-    Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (BuildContext context) => AlbumListScreen()));
+    Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (BuildContext context) => HomeScreen()));
   }
 
   @override

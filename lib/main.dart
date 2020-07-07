@@ -1,5 +1,5 @@
+import 'package:albums/themes/app_theme.dart';
 import 'package:albums/ui/splash_screen/splash_screen.dart';
-import 'package:albums/ui/views/album_list_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -13,10 +13,7 @@ class AlbumsApp extends StatelessWidget {
     return MaterialApp(
       initialRoute: 'home',
       title: 'Albums',
-      theme: ThemeData(
-        primarySwatch: Colors.pink,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
+      theme: AppTheme().appTheme(context),
       home: SplashScreen(),
     );
   }
