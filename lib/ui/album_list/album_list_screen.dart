@@ -6,7 +6,7 @@ import 'package:albums/data/model/result.dart';
 import 'package:albums/data/repo/repo_factory.dart';
 import 'package:albums/themes/paddings.dart';
 import 'package:albums/themes/strings.dart';
-import 'package:albums/ui/photo_list_screen/photos_list_screen.dart';
+import 'package:albums/ui/album_details/album_details_screen.dart';
 import 'package:albums/widgets/album_list_item_widget.dart';
 import 'package:albums/widgets/app_screen_widget.dart';
 import 'package:albums/widgets/error_widget.dart';
@@ -70,7 +70,7 @@ class _AlbumListScreenState extends State<AlbumListScreen> {
                 },
                 separatorBuilder: (BuildContext context, int index) {
                   return SizedBox(
-                    height: AppPaddings.separatorHeight,
+                    height: AppPaddings.listViewSeparatorHeight,
                   );
                 },
                 itemCount: albums.albumList.length,
@@ -89,7 +89,7 @@ class _AlbumListScreenState extends State<AlbumListScreen> {
       case ScreenType.AlbumDetails:
         Navigator.of(context).push(MaterialPageRoute(
             builder: (BuildContext context) =>
-                PhotoListScreen(album: nextScreen.data)));
+                AlbumDetailsScreen(album: nextScreen.data)));
         break;
       case ScreenType.Other:
         // TODO: Handle this case.

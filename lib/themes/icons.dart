@@ -8,4 +8,10 @@ class AppIcons {
   static const profileIcon = const AssetImage('assets/images/profile_icon.png');
   static const albumIcon = const AssetImage('assets/images/album_icon.png');
   static const arrowIcon = const AssetImage('assets/images/arrow_icon.png');
+  static const albumTitle =
+      const AssetImage('assets/images/album_title_icon.png');
+  static const saveToFavoritesIcon =
+      const AssetImage('assets/images/save_to_favorites_icon.png');
+  static const addCommentIcon =
+      const AssetImage('assets/images/comment_icon.png');
 }

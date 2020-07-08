@@ -8,6 +8,7 @@ class AppTheme {
     return ThemeData(
       brightness: Brightness.light,
       primaryColor: AppColors.darkBlue,
+      primaryColorDark: AppColors.darkGrey,
       accentColor: AppColors.lightBlue,
       visualDensity: VisualDensity.adaptivePlatformDensity,
       fontFamily: 'Nunito',
@@ -16,8 +17,7 @@ class AppTheme {
           subtitle1: AppTextStyle.subtitle1,
           subtitle2: AppTextStyle.subtitle2,
           bodyText1: AppTextStyle.bodyText1,
-          bodyText2: AppTextStyle.bodyText2
-      ),
+          bodyText2: AppTextStyle.bodyText2),
     );
   }
 }

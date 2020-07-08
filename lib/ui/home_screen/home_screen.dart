@@ -58,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _currentScreen(BuildContext context, List<AppTab> tabs) {
-    AppTab selectedTab = tabs.getSelectedTab();
+    AppTab selectedTab = tabs?.getSelectedTab();
     switch (selectedTab?.type) {
       case NavBarItem.BROWSE:
         return AlbumListScreen();

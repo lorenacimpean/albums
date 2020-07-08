@@ -11,8 +11,8 @@ class ComingSoonWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-        height: AppPaddings.comingSoonContainerHeight,
-        width: AppPaddings.comingSoonContainerWidth,
+        height: AppPaddings.defaultHeight,
+        width: AppPaddings.defaultWidth,
         alignment: Alignment.center,
         decoration: BoxDecoration(
           shape: BoxShape.rectangle,

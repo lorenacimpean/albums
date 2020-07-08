@@ -26,7 +26,7 @@ extension SelectedItems on List<AppTab> {
 
   AppTab getSelectedTab() {
     AppTab selectedTab =
-        this.firstWhere((tab) => tab.isSelected, orElse: () => null);
+        this?.firstWhere((tab) => tab.isSelected, orElse: () => null);
     return selectedTab;
   }
 }
