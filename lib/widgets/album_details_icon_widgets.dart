@@ -4,11 +4,10 @@ import 'package:flutter/material.dart';
 class AlbumActionWidget extends StatelessWidget {
   final AssetImage icon;
   final String text;
-
   final VoidCallback onTap;
 
   const AlbumActionWidget(
-      {Key key, @required this.icon, @required this.text, this.onTap})
+      {Key key, @required this.icon, @required this.text, @required this.onTap})
       : super(key: key);
 
   @override

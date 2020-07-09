@@ -13,4 +13,8 @@ class AppStrings {
   static const addComment = "Add a comment";
   static const albumName = "Album name";
   static const albumWithId = "Album with id";
+  static const saveToFavoritesToastMessage =
+      "Action is Save to favorites for Album with id";
+  static const addCommentToastMessage =
+      "Action is Add Comment for Album with id";
 }

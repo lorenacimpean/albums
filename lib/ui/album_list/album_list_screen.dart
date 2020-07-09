@@ -50,37 +50,40 @@ class _AlbumListScreenState extends State<AlbumListScreen> {
   }
 
   Widget _albumList(BuildContext context) {
-    return Center(
-      child: FutureBuilder(
-          future: _futureAlbums,
-          builder: (BuildContext context, AsyncSnapshot<Result> snapshot) {
-            if (snapshot.data is SuccessState) {
-              AlbumList albums = (snapshot.data as SuccessState).value;
+    return Container(
+      padding: AppPaddings.listTopPadding,
+      child: Center(
+        child: FutureBuilder(
+            future: _futureAlbums,
+            builder: (BuildContext context, AsyncSnapshot<Result> snapshot) {
+              if (snapshot.data is SuccessState) {
+                AlbumList albums = (snapshot.data as SuccessState).value;
 
-              return ListView.separated(
-                itemBuilder: (context, index) {
-                  Album currentAlbum = albums.albumAtIndex(index);
-                  return AlbumListItemWidget(
-                    album: currentAlbum,
-                    onTap: () {
-                      _viewModel.onAlbumTap(currentAlbum);
-                    },
-                    key: Key(currentAlbum.id.toString()),
-                  );
-                },
-                separatorBuilder: (BuildContext context, int index) {
-                  return SizedBox(
-                    height: AppPaddings.listViewSeparatorHeight,
-                  );
-                },
-                itemCount: albums.albumList.length,
-                physics: BouncingScrollPhysics(),
-              );
-            } else if (snapshot.data is ErrorState) {
-              return ErrorTextWidget(snapshot.error);
-            } else
-              return LoadingIndicator();
-          }),
+                return ListView.separated(
+                  itemBuilder: (context, index) {
+                    Album currentAlbum = albums.albumAtIndex(index);
+                    return AlbumListItemWidget(
+                      album: currentAlbum,
+                      onTap: () {
+                        _viewModel.onAlbumTap(currentAlbum);
+                      },
+                      key: Key(currentAlbum.id.toString()),
+                    );
+                  },
+                  separatorBuilder: (BuildContext context, int index) {
+                    return SizedBox(
+                      height: AppPaddings.listViewSeparatorHeight,
+                    );
+                  },
+                  itemCount: albums.albumList.length,
+                  physics: BouncingScrollPhysics(),
+                );
+              } else if (snapshot.data is ErrorState) {
+                return ErrorTextWidget(snapshot.error);
+              } else
+                return LoadingIndicator();
+            }),
+      ),
     );
   }
 

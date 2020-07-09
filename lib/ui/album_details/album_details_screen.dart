@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:albums/data/model/albums.dart';
 import 'package:albums/data/model/photos.dart';
 import 'package:albums/data/model/result.dart';
@@ -27,13 +29,20 @@ class AlbumDetailsScreen extends StatefulWidget {
 }
 
 class AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
-  PhotoListViewModel _viewModel;
+  AlbumDetailsViewModel _viewModel;
   Future<Result> _futurePhotos;
+  Stream<TapAction> _actionFromStream;
 
   void initState() {
     super.initState();
-    _viewModel = PhotoListViewModel(buildPhotosRepo());
+    _viewModel = AlbumDetailsViewModel(buildPhotosRepo());
     _futurePhotos = _viewModel.getPhotos(widget.album.id);
+    _actionFromStream = _viewModel.action;
+  }
+
+  void dispose() {
+    super.dispose();
+    _viewModel.dispose();
   }
 
   @override
@@ -48,10 +57,10 @@ class AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
               PhotoList photos = (snapshot.data as SuccessState).value;
               return ListView.builder(
                 shrinkWrap: true,
-                itemCount: photos.photos.length,
+                itemCount: _viewModel.getPhotosCount(photos),
                 itemBuilder: (context, index) {
                   return index == 0
-                      ? _iconWidgets(context)
+                      ? _iconWidgets(context, photos)
                       : PhotoListTile(photoList: photos, index: index);
                 },
               );
@@ -63,25 +72,24 @@ class AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
     );
   }
 
-  Widget _iconWidgets(BuildContext context) {
+  Widget _iconWidgets(BuildContext context, PhotoList photoList) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
         Container(
           alignment: Alignment.center,
-          padding: AppPaddings.albumDetailsWidgetPadding,
           height: AppPaddings.albumDetailsTitleContainerHeight,
           width: AppPaddings.albumDetailsScreenWidth,
           child: Center(
             child: Column(
               children: <Widget>[
                 AlbumTitleWidget(album: widget.album),
-                HorizontalSeparator(),
               ],
             ),
           ),
         ),
+        HorizontalSeparator(),
         Container(
           width: AppPaddings.albumDetailsScreenWidth,
           height: AppPaddings.albumDetailsIconsContainerHeight,
@@ -92,17 +100,28 @@ class AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
               Row(
                 children: <Widget>[
                   AlbumActionWidget(
-                      icon: AppIcons.saveToFavoritesIcon,
-                      text: AppStrings.saveToFavorites),
+                    icon: AppIcons.saveToFavoritesIcon,
+                    text: AppStrings.saveToFavorites,
+                    onTap: () {
+                      _viewModel.onActionTap(
+                          ActionType.SaveToFavorites, widget.album);
+                      showSnackBar(context);
+                    },
+                  ),
                   VerticalSeparatorWidget(),
-                  //TODO: replace with viewModel getCount
                   PhotosInAlbumWidget(
-                    photosCount: 50,
+                    photosCount: _viewModel.getPhotosCount(photoList),
                   ),
                   VerticalSeparatorWidget(),
                   AlbumActionWidget(
-                      icon: AppIcons.addCommentIcon,
-                      text: AppStrings.addComment),
+                    icon: AppIcons.addCommentIcon,
+                    text: AppStrings.addComment,
+                    onTap: () {
+                      _viewModel.onActionTap(
+                          ActionType.AddComment, widget.album);
+                      showSnackBar(context);
+                    },
+                  ),
                 ],
               ),
             ],
@@ -115,5 +134,13 @@ class AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
         ),
       ],
     );
+  }
+
+  void showSnackBar(BuildContext context) {
+    _actionFromStream.listen((action) {
+      Scaffold.of(context).showSnackBar(SnackBar(
+          duration: const Duration(seconds: 1),
+          content: Text(action.toastMessage)));
+    });
   }
 }
