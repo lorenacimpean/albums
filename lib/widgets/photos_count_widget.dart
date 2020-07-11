@@ -3,18 +3,18 @@ import 'package:albums/themes/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-class PhotosInAlbumWidget extends StatelessWidget {
+class PhotosCountWidget extends StatelessWidget {
   final int photosCount;
 
-  const PhotosInAlbumWidget({
+  const PhotosCountWidget({
     Key key,
     @required this.photosCount,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      flex: AppPaddings.albumDetailsWidgetIconFlex,
+    return Padding(
+      padding: EdgeInsets.all(AppPaddings.defaultPadding),
       child: Column(
         children: <Widget>[
           Text(

@@ -27,4 +27,8 @@ class PhotoList {
 
   factory PhotoList.fromJson(List<dynamic> json) =>
       PhotoList(photos: List<Photo>.from(json.map((a) => Photo.fromJson(a))));
+
+  int photosCount(PhotoList photoList) {
+    return this.photos.length;
+  }
 }

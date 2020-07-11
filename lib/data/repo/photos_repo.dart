@@ -6,7 +6,7 @@ class PhotosRepo {
 
   PhotosRepo(this._remoteDataSource);
 
-  Future<Result> getPhotos(int id) {
+  Future<Result> getPhotoList(int id) {
     return _remoteDataSource.getPhotos(id);
   }
 }

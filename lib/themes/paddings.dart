@@ -1,31 +1,28 @@
 import 'package:flutter/widgets.dart';
 
 class AppPaddings {
-  //album list
-  static final listViewSeparatorHeight = 15.0;
-  static final listItemPadding = EdgeInsets.all(2.0);
-  static final listItemMargin = EdgeInsets.only(
-    left: 20.0,
-    right: 20.0,
-  );
-  static final listTopPadding = EdgeInsets.only(top: 20);
-  static final appBarPadding =
-      EdgeInsets.only(top: 16.0, bottom: 20.0, left: 8.0);
-  static final appBarButtonPadding = EdgeInsets.only(top: 8.0);
-  static final blueContainerSize = 40.0;
-  static final albumTileRadius = BorderRadius.circular(5.0);
-  static final defaultHeight = 64.0;
-  static final defaultWidth = 320.0;
+  //widget Paddings:
+  static final defaultPadding = 24.0;
+  static final extraSmallPadding = 4.0;
+  static final smallPadding = 8.0;
+  static final midPadding = 16.0;
+  static final midLargePadding = 20.0;
+  static final largePadding = 32.0;
+  static final extraLargePadding = 48;
+
+  //icon sizes:
+  static final defaultIconSize = 64.0;
+  static final mediumIconSize = 40.0;
+  static final smallIconSize = 16.0;
+  static final separatorSize = 1.0;
+  static final defaultFlex = 3;
+
+  //widget sizes:
   static final appBarHeight = Size.fromHeight(100.0);
 
-  //album details
-  static final albumDetailsWidgetIconFlex = 3;
-  static final albumDetailsTitlePadding = EdgeInsets.all(10);
-  static final albumDetailsTitleIconSize = 65.0;
-  static final albumDetailsIconButtonSize = 16.0;
-  static final separatorSize = 1.0;
-  static final albumDetailsWidgetPadding = EdgeInsets.only(bottom: 20);
-  static final albumDetailsScreenWidth = 350.0;
-  static final albumDetailsTitleContainerHeight = 246.0;
-  static final albumDetailsIconsContainerHeight = 100.0;
+  //widget radius
+  static final defaultRadius = BorderRadius.circular(5.0);
+
+  //durations
+  static final shortDuration = Duration(seconds: 1);
 }

@@ -12,8 +12,7 @@ class AlbumTitleWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: AppPaddings.albumDetailsTitlePadding,
+    return Center(
       child: Column(
         children: <Widget>[
           Stack(
@@ -22,18 +21,18 @@ class AlbumTitleWidget extends StatelessWidget {
               ImageIcon(
                 AppIcons.albumTitle,
                 color: AppColors.darkBlue,
-                size: AppPaddings.albumDetailsTitleIconSize,
+                size: AppPaddings.defaultIconSize,
               ),
               Text(album.title.substring(0, 1).toUpperCase()),
             ],
           ),
           Container(
-              padding: AppPaddings.albumDetailsTitlePadding,
+              padding: EdgeInsets.all(AppPaddings.smallPadding),
               child: Text('${album.title}',
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.headline1)),
           Container(
-              padding: AppPaddings.albumDetailsTitlePadding,
+              padding: EdgeInsets.all(AppPaddings.smallPadding),
               child: Text('${AppStrings.albumWithId}: ${album.id}',
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.subtitle2)),

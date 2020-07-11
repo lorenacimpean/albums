@@ -51,7 +51,7 @@ class _AlbumListScreenState extends State<AlbumListScreen> {
 
   Widget _albumList(BuildContext context) {
     return Container(
-      padding: AppPaddings.listTopPadding,
+      padding: EdgeInsets.only(top: AppPaddings.defaultPadding),
       child: Center(
         child: FutureBuilder(
             future: _futureAlbums,
@@ -72,14 +72,14 @@ class _AlbumListScreenState extends State<AlbumListScreen> {
                   },
                   separatorBuilder: (BuildContext context, int index) {
                     return SizedBox(
-                      height: AppPaddings.listViewSeparatorHeight,
+                      height: AppPaddings.midPadding,
                     );
                   },
                   itemCount: albums.albumList.length,
                   physics: BouncingScrollPhysics(),
                 );
               } else if (snapshot.data is ErrorState) {
-                return ErrorTextWidget(snapshot.error);
+                return ErrorTextWidget(error: snapshot.error);
               } else
                 return LoadingIndicator();
             }),

@@ -4,6 +4,7 @@ import 'dart:core';
 import 'package:albums/themes/icons.dart';
 import 'package:albums/util/extensions.dart';
 import 'package:flutter/widgets.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 enum NavBarItem { BROWSE, FRIENDS, NEWS, PROFILE }
 

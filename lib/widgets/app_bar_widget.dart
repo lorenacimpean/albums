@@ -18,7 +18,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       child: Column(
         children: <Widget>[
           Container(
-            padding: AppPaddings.appBarPadding,
+            padding: EdgeInsets.only(
+                top: AppPaddings.smallPadding,
+                bottom: AppPaddings.smallPadding,
+                left: AppPaddings.smallPadding),
             child: Stack(
               children: <Widget>[
                 Row(
@@ -26,14 +29,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     hasBackButton ? AppBackButton() : _title(context)
-//
                   ],
                 ),
                 hasBackButton
-                    ? Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[_title(context)],
+                    ? Center(
+                        child: _title(context),
                       )
                     : Container(),
               ],
@@ -47,7 +47,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   Widget _title(BuildContext context) {
     return Container(
-      padding: AppPaddings.appBarPadding,
+      padding: EdgeInsets.only(
+          top: AppPaddings.midPadding,
+          bottom: AppPaddings.midLargePadding,
+          left: AppPaddings.smallPadding),
       child: Text(
         title,
         style: Theme.of(context).textTheme.headline1,

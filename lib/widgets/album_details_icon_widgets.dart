@@ -13,19 +13,21 @@ class AlbumActionWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FlatButton(
+      padding: EdgeInsets.all(AppPaddings.defaultPadding),
       onPressed: onTap,
-      child: Expanded(
-        flex: AppPaddings.albumDetailsWidgetIconFlex,
-        child: Column(
-          children: <Widget>[
-            ImageIcon(
-              icon,
-              color: Theme.of(context).primaryColor,
-              size: AppPaddings.albumDetailsIconButtonSize,
-            ),
-            Text(text, style: Theme.of(context).textTheme.subtitle2),
-          ],
-        ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          ImageIcon(
+            icon,
+            color: Theme.of(context).primaryColor,
+            size: AppPaddings.smallIconSize,
+          ),
+          Text(text,
+              style: Theme.of(context).textTheme.subtitle2,
+              textAlign: TextAlign.center),
+        ],
       ),
     );
   }
