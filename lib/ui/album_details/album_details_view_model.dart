@@ -12,42 +12,44 @@ enum ListItemType { albumInfo, albumAction, photo }
 class AlbumDetailsViewModel {
   final PhotosRepo photosRepo;
   StreamController<TapAction> onTapController = StreamController<TapAction>();
+  StreamController<Photo> nextScreenController = StreamController<Photo>();
 
   AlbumDetailsViewModel(this.photosRepo);
 
-  Future<Result> getPhotos(Album album) {
-    return photosRepo.getPhotoList(album.id);
+  void dispose(){
+    
+    onTapController.close();
+    nextScreenController.close();
   }
 
-  Future<Result<List<ListItem>>> getData(Album album, ListItemType type) {
-    List<ListItem> listItems;
-    switch (type) {
-      case ListItemType.albumInfo:
-        getPhotos(album).then((photolist) {
-          PhotoList result = photolist as PhotoList;
-          result.photos.forEach((photo) {
-            AlbumInfo albumDetails = AlbumInfo(
+  Future<Result<List<ListItem>>> getData(Album album) {
+    return photosRepo.getPhotoList(album.id).then((result) {
+      (result as SuccessState).value;
+      List<ListItem> itemList = [];
+      if (result is SuccessState<PhotoList>) {
+        ListItem albumInfo = ListItem(
+            type: ListItemType.albumInfo,
+            data: AlbumInfo(
                 albumName: album.title,
                 albumId: album.id,
-                photosCount: result.photos.length);
-            ListItem item =
-                ListItem(type: ListItemType.albumInfo, data: albumDetails);
-            listItems.add(item);
-          });
-        });
-        break;
-      case ListItemType.albumAction:
-        // TODO: Handle this case.
-        break;
-      case ListItemType.photo:
+                photosCount: result.value.photosCount()));
+        itemList.add(albumInfo);
 
-        break;
-    }
-  }
+        ListItem albumAction =
+            ListItem(type: ListItemType.albumAction, data: albumInfo.data.photosCount);
+        itemList.add(albumAction);
 
+        itemList.addAll((result as SuccessState<PhotoList>)
+            .value
+            .photos
+            .map((e) => ListItem(type: ListItemType.photo, data: e)));
 
-  int getPhotosCount(PhotoList photoList) {
-    return photoList.photos.length;
+        return Result.success(itemList);
+      } else if (result is ErrorState) {
+        return Result.error((result as ErrorState<PhotoList>).msg);
+      }
+      return Result.loading(null);
+    });
   }
 
   void onActionTap(ActionType actionType, Album album) {
@@ -61,7 +63,12 @@ class AlbumDetailsViewModel {
     action = TapAction(actionType, album, toastMessage);
     onTapController.add(action);
   }
+
+  void onPhotoTap(Photo photo){
+    nextScreenController.add(photo);
+  }
 }
+
 
 class TapAction {
   final ActionType actionType;

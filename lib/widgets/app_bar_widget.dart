@@ -1,4 +1,5 @@
 import 'package:albums/themes/paddings.dart';
+import 'package:albums/widgets/app_bar_title_widget.dart';
 import 'package:albums/widgets/back_button_widget.dart';
 import 'package:albums/widgets/horizontal_separator.dart';
 import 'package:flutter/material.dart';
@@ -28,12 +29,13 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    hasBackButton ? AppBackButton() : _title(context)
+                    hasBackButton ? AppBackButton(onPressed: () => route(context),
+                    ) : AppBarTitle(title: title)
                   ],
                 ),
                 hasBackButton
                     ? Center(
-                        child: _title(context),
+                        child: AppBarTitle(title: title),
                       )
                     : Container(),
               ],
@@ -45,18 +47,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     );
   }
 
-  Widget _title(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(
-          top: AppPaddings.midPadding,
-          bottom: AppPaddings.midLargePadding,
-          left: AppPaddings.smallPadding),
-      child: Text(
-        title,
-        style: Theme.of(context).textTheme.headline1,
-      ),
-    );
-  }
+  route(BuildContext context) => Navigator.pop(context);
 
   @override
   Size get preferredSize => AppPaddings.appBarHeight;

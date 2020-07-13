@@ -23,13 +23,13 @@ class AlbumListScreen extends StatefulWidget {
 class _AlbumListScreenState extends State<AlbumListScreen> {
   AlbumListViewModel _viewModel;
   Future<Result> _futureAlbums;
-  StreamSubscription nextScreenSubscription;
+  StreamSubscription _nextScreenSubscription;
 
   void initState() {
     super.initState();
     _viewModel = AlbumListViewModel(buildAlbumsRepo());
     _futureAlbums = _viewModel.getAlbums();
-    nextScreenSubscription = _viewModel.goToNext.stream.listen((nextScreen) {
+    _nextScreenSubscription = _viewModel.goToNext.stream.listen((nextScreen) {
       route(nextScreen);
     });
   }
@@ -37,7 +37,8 @@ class _AlbumListScreenState extends State<AlbumListScreen> {
   @override
   void dispose() {
     super.dispose();
-    nextScreenSubscription.cancel();
+    _nextScreenSubscription.cancel();
+    _viewModel.dispose();
   }
 
   @override

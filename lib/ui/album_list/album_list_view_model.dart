@@ -12,6 +12,10 @@ class AlbumListViewModel {
 
   AlbumListViewModel(this._albumsRepo);
 
+  void dispose(){
+    goToNext.close();
+  }
+
   Future<Result> getAlbums() {
     Future<Result> futureAlbumList = _albumsRepo.getAlbums();
 

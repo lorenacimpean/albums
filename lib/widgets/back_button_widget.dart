@@ -3,8 +3,9 @@ import 'package:albums/themes/strings.dart';
 import 'package:flutter/material.dart';
 
 class AppBackButton extends StatelessWidget {
+  final GestureTapCallback onPressed;
   const AppBackButton({
-    Key key,
+    Key key, @ required this.onPressed,
   }) : super(key: key);
 
   @override
@@ -19,7 +20,9 @@ class AppBackButton extends StatelessWidget {
         style: Theme.of(context).textTheme.subtitle1,
       ),
       onPressed: () {
-        Navigator.pop(context);
+        if (onPressed != null){
+          onPressed();
+        }
       },
     );
   }

@@ -30,3 +30,9 @@ extension SelectedItems on List<AppTab> {
     return selectedTab;
   }
 }
+extension FirstLetter on String{
+  String firstLetterToUpperCase(){
+    String text = this?.substring(0,1)?.toUpperCase();
+    return text;
+  }
+}

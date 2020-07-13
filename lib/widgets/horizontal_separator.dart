@@ -12,8 +12,7 @@ class HorizontalSeparator extends StatelessWidget {
     return Container(
       color: Theme.of(context).primaryColorDark,
       height: AppPaddings.separatorSize,
-      padding: EdgeInsets.only(
-          left: AppPaddings.defaultPadding, right: AppPaddings.defaultPadding),
+      padding: EdgeInsets.symmetric(horizontal: AppPaddings.defaultPadding),
     );
   }
 }
