@@ -1,20 +1,21 @@
 class AppStrings {
-  static const albumListTitle = "My Albums";
-  static const friendsTitle = "Friends";
-  static const newsTitle = "News";
-  static const profileTitle = "Profile";
-  static const albumDetailsTitle = "Album Details";
+  static const String albumListTitle = "My Albums";
+  static const String friendsTitle = "Friends";
+  static const String newsTitle = "News";
+  static const String profileTitle = "Profile";
+  static const String albumDetailsTitle = "Album Details";
 
-  static const comingSoon = "Coming Soon";
+  static const String comingSoon = "Coming Soon";
 
-  static const backButtonText = "Back";
-  static const photos = "Photos";
-  static const saveToFavorites = "Save to favorites";
-  static const addComment = "Add a comment";
-  static const albumName = "Album name";
-  static const albumWithId = "Album with id";
-  static const saveToFavoritesToastMessage =
+  static const String backButtonText = "Back";
+  static const String photos = "Photos";
+  static const String saveToFavorites = "Save to favorites";
+  static const String addComment = "Add a comment";
+  static const String albumName = "Album name";
+  static const String albumWithId = "Album with id";
+  static const String saveToFavoritesToastMessage =
       "Action is Save to favorites for Album with id";
-  static const addCommentToastMessage =
+  static const String addCommentToastMessage =
       "Action is Add Comment for Album with id";
+  static const String photoWithId = "Photo with id: ";
 }

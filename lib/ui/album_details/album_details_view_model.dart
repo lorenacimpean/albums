@@ -10,20 +10,25 @@ enum ActionType { saveToFavorites, addComment }
 enum ListItemType { albumInfo, albumAction, photo }
 
 class AlbumDetailsViewModel {
-  final PhotosRepo photosRepo;
-  StreamController<TapAction> onTapController = StreamController<TapAction>();
-  StreamController<Photo> nextScreenController = StreamController<Photo>();
+  final PhotosRepo _photosRepo;
+  final StreamController<TapAction> _onTapController =
+      StreamController<TapAction>();
+  final StreamController<Photo> _nextScreenController =
+      StreamController<Photo>();
 
-  AlbumDetailsViewModel(this.photosRepo);
+  Stream<Photo> get nextScreenStream => _nextScreenController.stream;
 
-  void dispose(){
-    
-    onTapController.close();
-    nextScreenController.close();
+  Stream<TapAction> get onTapStream => _onTapController.stream;
+
+  AlbumDetailsViewModel(this._photosRepo);
+
+  void dispose() {
+    _onTapController.close();
+    _nextScreenController.close();
   }
 
   Future<Result<List<ListItem>>> getData(Album album) {
-    return photosRepo.getPhotoList(album.id).then((result) {
+    return _photosRepo.getPhotoList(album.id).then((result) {
       (result as SuccessState).value;
       List<ListItem> itemList = [];
       if (result is SuccessState<PhotoList>) {
@@ -35,8 +40,8 @@ class AlbumDetailsViewModel {
                 photosCount: result.value.photosCount()));
         itemList.add(albumInfo);
 
-        ListItem albumAction =
-            ListItem(type: ListItemType.albumAction, data: albumInfo.data.photosCount);
+        ListItem albumAction = ListItem(
+            type: ListItemType.albumAction, data: albumInfo.data.photosCount);
         itemList.add(albumAction);
 
         itemList.addAll((result as SuccessState<PhotoList>)
@@ -61,14 +66,13 @@ class AlbumDetailsViewModel {
       toastMessage = "${AppStrings.addCommentToastMessage} ${album.id}";
     }
     action = TapAction(actionType, album, toastMessage);
-    onTapController.add(action);
+    _onTapController.add(action);
   }
 
-  void onPhotoTap(Photo photo){
-    nextScreenController.add(photo);
+  void onPhotoTap(Photo photo) {
+    _nextScreenController.add(photo);
   }
 }
-
 
 class TapAction {
   final ActionType actionType;

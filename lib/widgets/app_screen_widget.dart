@@ -17,11 +17,8 @@ class AppScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(hasBackButton: hasBackButton, title: title),
-      body: Builder(
-        builder: (BuildContext context) {
-          return body;
-        },
-      ),
+      body:
+          body,
     );
   }
 }

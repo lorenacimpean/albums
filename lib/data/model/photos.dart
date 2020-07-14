@@ -29,6 +29,6 @@ class PhotoList {
       PhotoList(photos: List<Photo>.from(json.map((a) => Photo.fromJson(a))));
 
   int photosCount() {
-    return this?.photos?.length;
+    return this?.photos?.length ?? 0;
   }
 }

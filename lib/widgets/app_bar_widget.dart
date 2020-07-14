@@ -1,4 +1,5 @@
 import 'package:albums/themes/paddings.dart';
+import 'package:albums/themes/strings.dart';
 import 'package:albums/widgets/app_bar_title_widget.dart';
 import 'package:albums/widgets/back_button_widget.dart';
 import 'package:albums/widgets/horizontal_separator.dart';
@@ -18,36 +19,28 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     return SafeArea(
       child: Column(
         children: <Widget>[
-          Container(
-            padding: EdgeInsets.only(
-                top: AppPaddings.smallPadding,
-                bottom: AppPaddings.smallPadding,
-                left: AppPaddings.smallPadding),
-            child: Stack(
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+          hasBackButton
+              ? Row(
                   children: <Widget>[
-                    hasBackButton ? AppBackButton(onPressed: () => route(context),
-                    ) : AppBarTitle(title: title)
+                    Expanded(
+                        child: AppBackButton(
+                            onPressed: () => Navigator.pop(context),
+                            buttonText: AppStrings.backButtonText)),
+                    Expanded(
+                        flex: AppPaddings.mediumFlex,
+                        child: AppBarTitle(title: title))
                   ],
-                ),
-                hasBackButton
-                    ? Center(
-                        child: AppBarTitle(title: title),
-                      )
-                    : Container(),
-              ],
-            ),
-          ),
+                )
+              : Container(
+                  alignment: Alignment.bottomLeft,
+                  padding: EdgeInsets.symmetric(
+                      vertical: AppPaddings.defaultPadding),
+                  child: AppBarTitle(title: title)),
           HorizontalSeparator(),
         ],
       ),
     );
   }
-
-  route(BuildContext context) => Navigator.pop(context);
 
   @override
   Size get preferredSize => AppPaddings.appBarHeight;

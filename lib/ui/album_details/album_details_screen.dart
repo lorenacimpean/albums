@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:albums/data/model/albums.dart';
 import 'package:albums/data/model/photos.dart';
@@ -25,7 +26,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 class AlbumDetailsScreen extends StatefulWidget {
   final Album album;
 
-  const AlbumDetailsScreen({Key key, this.album}) : super(key: key);
+  const AlbumDetailsScreen({Key key, @required this.album}) : super(key: key);
 
   @override
   _AlbumDetailsScreenState createState() => _AlbumDetailsScreenState();
@@ -34,8 +35,7 @@ class AlbumDetailsScreen extends StatefulWidget {
 class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
   AlbumDetailsViewModel _viewModel;
   FlutterToast _flutterToast;
-  Future<Result> _futureListItem;
-  List<ListItem> _listItem;
+  Future<Result<List<ListItem>>> _futureListItem;
   StreamSubscription _onActionTapSubscription;
   StreamSubscription _nextScreenSubscription;
 
@@ -45,10 +45,10 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
     _flutterToast = FlutterToast(context);
     _futureListItem = _viewModel.getData(widget.album);
     _onActionTapSubscription =
-        _viewModel.onTapController.stream.listen((action) {
+        _viewModel.onTapStream.listen((action) {
       _showSnackBar(action.toastMessage);
     });
-    _nextScreenSubscription = _viewModel.nextScreenController.stream.listen((photo) {
+    _nextScreenSubscription = _viewModel.nextScreenStream.listen((photo) {
     route(photo);
     });
   }
@@ -67,23 +67,15 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
           future: _futureListItem,
           builder: (BuildContext context, AsyncSnapshot<Result> snapshot) {
             if (snapshot.data is SuccessState) {
-              _listItem = (snapshot.data as SuccessState<List<ListItem>>).value;
-              return Padding(
+              List<ListItem> _listItem  = (snapshot.data as SuccessState<List<ListItem>>).value;
+              return ListView.builder(
                 padding: EdgeInsets.all(AppPaddings.defaultPadding),
-                child: Column(
-                  children: <Widget>[
-                    Expanded(
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: _listItem.length,
-                        itemBuilder: (context, index) {
-                          print("index:$index");
-                          return _listTile(context, _listItem[index]);
-                        },
-                      ),
-                    ),
-                  ],
-                ),
+                shrinkWrap: true,
+                itemCount: _listItem.length,
+                itemBuilder: (context, index) {
+                  print("index:$index");
+                  return _listTile(context, _listItem[index]);
+                },
               );
             } else if (snapshot.data is ErrorState) {
               return ErrorTextWidget(error: snapshot.error);
@@ -92,7 +84,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
           }),
     );
   }
-  //make this a custom widget?
+  //make this a custom widget? - no
   Widget _listTile(BuildContext context, ListItem listItem) {
     switch (listItem.type) {
       case ListItemType.albumInfo:
@@ -104,34 +96,44 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
         );
         break;
       case ListItemType.albumAction:
-        return Row(
+        return Column(
           children: <Widget>[
-            Expanded(
-              child: AlbumActionWidget(
-                icon: AppIcons.saveToFavoritesIcon,
-                text: AppStrings.saveToFavorites,
-                onTap: () {
-                  _viewModel.onActionTap(
-                      ActionType.saveToFavorites, widget.album);
-                },
-              ),
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: AlbumActionWidget(
+                    icon: AppIcons.saveToFavoritesIcon,
+                    text: AppStrings.saveToFavorites,
+                    onTap: () {
+                      _viewModel.onActionTap(
+                          ActionType.saveToFavorites, widget.album);
+                    },
+                  ),
+                ),
+                VerticalSeparatorWidget(),
+                Expanded(
+                  child: PhotosCountWidget(
+                    photosCount: listItem.data,
+                  ),
+                ),
+                VerticalSeparatorWidget(),
+                Expanded(
+                  child: AlbumActionWidget(
+                    icon: AppIcons.addCommentIcon,
+                    text: AppStrings.addComment,
+                    onTap: () {
+                      _viewModel.onActionTap(ActionType.addComment, widget.album);
+                    },
+                  ),
+                ),
+              ],
             ),
-            VerticalSeparatorWidget(),
-            Expanded(
-              child: PhotosCountWidget(
-                photosCount: listItem.data,
-              ),
+            HorizontalSeparator(),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: AppPaddings.defaultPadding, vertical:AppPaddings.midPadding ),
+              child: Text("Photos", style: Theme.of(context).textTheme.subtitle2, textAlign: TextAlign.start,),
             ),
-            VerticalSeparatorWidget(),
-            Expanded(
-              child: AlbumActionWidget(
-                icon: AppIcons.addCommentIcon,
-                text: AppStrings.addComment,
-                onTap: () {
-                  _viewModel.onActionTap(ActionType.addComment, widget.album);
-                },
-              ),
-            ),
+
           ],
         );
         break;
