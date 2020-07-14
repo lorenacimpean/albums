@@ -30,26 +30,27 @@ class AlbumDetailsViewModel {
 
   Future<Result<List<ListItem>>> getData(Album album) {
     return _photosRepo.getPhotoList(album.id).then((result) {
-      (result as SuccessState).value;
-      List<ListItem> itemList = [];
-      if (result is SuccessState<PhotoList>) {
-        ListItem albumInfo = ListItem(
-            type: ListItemType.albumInfo,
-            data: AlbumInfo(
-                albumName: album.title,
-                albumId: album.id,
-                photosCount: result.value.photosCount()));
-        itemList.add(albumInfo);
+      if (result is SuccessState) {
+        (result as SuccessState).value;
+        List<ListItem> itemList = [];
+        if (result is SuccessState<PhotoList>) {
+          ListItem albumInfo = ListItem(
+              type: ListItemType.albumInfo,
+              data: AlbumInfo(
+                  albumName: album.title,
+                  albumId: album.id,
+                  photosCount: result.value.photosCount()));
+          itemList.add(albumInfo);
 
-        ListItem albumAction = ListItem(
-            type: ListItemType.albumAction, data: albumInfo.data.photosCount);
-        itemList.add(albumAction);
+          ListItem albumAction = ListItem(
+              type: ListItemType.albumAction, data: albumInfo.data.photosCount);
+          itemList.add(albumAction);
 
-        itemList.addAll((result as SuccessState<PhotoList>)
-            .value
-            .photos
-            .map((e) => ListItem(type: ListItemType.photo, data: e)));
-
+          itemList.addAll((result as SuccessState<PhotoList>)
+              .value
+              .photos
+              .map((e) => ListItem(type: ListItemType.photo, data: e)));
+        }
         return Result.success(itemList);
       } else if (result is ErrorState) {
         return Result.error((result as ErrorState<PhotoList>).msg);
@@ -89,6 +90,14 @@ class ListItem {
   final dynamic data;
 
   ListItem({this.type, this.data});
+
+  @override
+  int get hashCode => type.hashCode ^ data.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ListItem && type == other.type && data == other.data;
 }
 
 class AlbumInfo {
