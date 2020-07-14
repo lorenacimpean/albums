@@ -5,6 +5,7 @@ import 'package:albums/data/model/photos.dart';
 import 'package:albums/data/model/result.dart';
 import 'package:albums/data/repo/photos_repo.dart';
 import 'package:albums/themes/strings.dart';
+import 'package:albums/util/next_screen.dart';
 
 enum ActionType { saveToFavorites, addComment }
 enum ListItemType { albumInfo, albumAction, photo }
@@ -13,10 +14,10 @@ class AlbumDetailsViewModel {
   final PhotosRepo _photosRepo;
   final StreamController<TapAction> _onTapController =
       StreamController<TapAction>();
-  final StreamController<Photo> _nextScreenController =
-      StreamController<Photo>();
+  final StreamController<NextScreen> _nextScreenController =
+      StreamController<NextScreen>();
 
-  Stream<Photo> get nextScreenStream => _nextScreenController.stream;
+  Stream<NextScreen> get nextScreenStream => _nextScreenController.stream;
 
   Stream<TapAction> get onTapStream => _onTapController.stream;
 
@@ -70,7 +71,8 @@ class AlbumDetailsViewModel {
   }
 
   void onPhotoTap(Photo photo) {
-    _nextScreenController.add(photo);
+    NextScreen nextScreen = NextScreen(ScreenType.Photo, photo);
+    _nextScreenController.add(nextScreen);
   }
 }
 

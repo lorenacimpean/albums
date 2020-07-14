@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ui';
 
 import 'package:albums/data/model/albums.dart';
 import 'package:albums/data/model/photos.dart';
@@ -9,7 +8,7 @@ import 'package:albums/themes/icons.dart';
 import 'package:albums/themes/paddings.dart';
 import 'package:albums/themes/strings.dart';
 import 'package:albums/ui/album_details/album_details_view_model.dart';
-import 'package:albums/ui/photo_screen/photo_screen.dart';
+import 'package:albums/util/next_screen.dart';
 import 'package:albums/widgets/album_details_icon_widgets.dart';
 import 'package:albums/widgets/album_details_title_widget.dart';
 import 'package:albums/widgets/app_screen_widget.dart';
@@ -44,12 +43,11 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
     _viewModel = AlbumDetailsViewModel(buildPhotosRepo());
     _flutterToast = FlutterToast(context);
     _futureListItem = _viewModel.getData(widget.album);
-    _onActionTapSubscription =
-        _viewModel.onTapStream.listen((action) {
+    _onActionTapSubscription = _viewModel.onTapStream.listen((action) {
       _showSnackBar(action.toastMessage);
     });
-    _nextScreenSubscription = _viewModel.nextScreenStream.listen((photo) {
-    route(photo);
+    _nextScreenSubscription = _viewModel.nextScreenStream.listen((nextScreen) {
+      route(context, nextScreen);
     });
   }
 
@@ -58,6 +56,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
     _nextScreenSubscription.cancel();
     _onActionTapSubscription.cancel();
   }
+
   @override
   Widget build(BuildContext context) {
     return AppScreen(
@@ -67,7 +66,8 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
           future: _futureListItem,
           builder: (BuildContext context, AsyncSnapshot<Result> snapshot) {
             if (snapshot.data is SuccessState) {
-              List<ListItem> _listItem  = (snapshot.data as SuccessState<List<ListItem>>).value;
+              List<ListItem> _listItem =
+                  (snapshot.data as SuccessState<List<ListItem>>).value;
               return ListView.builder(
                 padding: EdgeInsets.all(AppPaddings.defaultPadding),
                 shrinkWrap: true,
@@ -84,6 +84,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
           }),
     );
   }
+
   //make this a custom widget? - no
   Widget _listTile(BuildContext context, ListItem listItem) {
     switch (listItem.type) {
@@ -122,7 +123,8 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
                     icon: AppIcons.addCommentIcon,
                     text: AppStrings.addComment,
                     onTap: () {
-                      _viewModel.onActionTap(ActionType.addComment, widget.album);
+                      _viewModel.onActionTap(
+                          ActionType.addComment, widget.album);
                     },
                   ),
                 ),
@@ -130,19 +132,28 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
             ),
             HorizontalSeparator(),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: AppPaddings.defaultPadding, vertical:AppPaddings.midPadding ),
-              child: Text("Photos", style: Theme.of(context).textTheme.subtitle2, textAlign: TextAlign.start,),
+              padding: EdgeInsets.symmetric(
+                  horizontal: AppPaddings.defaultPadding,
+                  vertical: AppPaddings.midPadding),
+              child: Container(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  AppStrings.photos,
+                  style: Theme.of(context).textTheme.subtitle2,
+                ),
+              ),
             ),
-
           ],
         );
         break;
       case ListItemType.photo:
         Photo photo = listItem.data;
-        return PhotoListItem(photo: photo,
+        return PhotoListItem(
+          photo: photo,
           onTap: () {
-          _viewModel.onPhotoTap(photo);
-        },);
+            _viewModel.onPhotoTap(photo);
+          },
+        );
         break;
     }
   }
@@ -155,11 +166,5 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
       gravity: ToastGravity.BOTTOM,
       toastDuration: AppPaddings.shortDuration,
     );
-  }
-
-  route(Photo photo){
-    Navigator.of(context).push(
-        MaterialPageRoute(
-        builder: (context) => PhotoScreen(photo: photo)));
   }
 }
