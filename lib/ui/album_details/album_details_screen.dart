@@ -73,7 +73,6 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
                 shrinkWrap: true,
                 itemCount: _listItem.length,
                 itemBuilder: (context, index) {
-                  print("index:$index");
                   return _listTile(context, _listItem[index]);
                 },
               );
@@ -151,7 +150,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
         return PhotoListItem(
           photo: photo,
           onTap: () {
-            _viewModel.onPhotoTap(photo);
+            _viewModel.onPhotoTap(photo, widget.album);
           },
         );
         break;

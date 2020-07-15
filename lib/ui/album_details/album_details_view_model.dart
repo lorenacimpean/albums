@@ -28,8 +28,12 @@ class AlbumDetailsViewModel {
     _nextScreenController.close();
   }
 
+  Future<Result<PhotoList>> _getPhotoList(Album album) {
+    return _photosRepo.getPhotoList(album.id);
+  }
+
   Future<Result<List<ListItem>>> getData(Album album) {
-    return _photosRepo.getPhotoList(album.id).then((result) {
+    return _getPhotoList(album).then((result) {
       if (result is SuccessState) {
         (result as SuccessState).value;
         List<ListItem> itemList = [];
@@ -71,9 +75,16 @@ class AlbumDetailsViewModel {
     _onTapController.add(action);
   }
 
-  void onPhotoTap(Photo photo) {
-    NextScreen nextScreen = NextScreen(ScreenType.Photo, photo);
-    _nextScreenController.add(nextScreen);
+  void onPhotoTap(Photo photo, Album album) {
+    _getPhotoList(album).then((result) {
+      if (result is SuccessState<PhotoList>) {
+        List<Photo> photos = result.value.photos;
+        photos.remove(photo);
+        photos.insert(0, photo);
+        NextScreen nextScreen = NextScreen(ScreenType.Photos, photos);
+        _nextScreenController.add(nextScreen);
+      }
+    });
   }
 }
 
