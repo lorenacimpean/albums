@@ -1,8 +1,9 @@
 import 'package:albums/ui/album_details/album_details_screen.dart';
+import 'package:albums/ui/home_screen/home_screen.dart';
 import 'package:albums/ui/photo_gallery_screen/photo_gallery_screen.dart';
 import 'package:flutter/material.dart';
 
-enum ScreenType { AlbumDetails, Photos }
+enum ScreenType { HomeScreen, AlbumDetails, Photos }
 
 class NextScreen {
   final ScreenType type;
@@ -19,7 +20,13 @@ route(BuildContext context, NextScreen nextScreen) {
       break;
     case ScreenType.Photos:
       Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => PhotoScreen(photos: nextScreen.data)));
+          builder: (context) => PhotoGalleryScreen(
+                galleryDetails: nextScreen.data,
+              )));
+      break;
+    case ScreenType.HomeScreen:
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => HomeScreen()));
       break;
   }
 }

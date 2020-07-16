@@ -4,25 +4,31 @@ import 'package:albums/data/model/photos.dart';
 import 'package:albums/themes/colors.dart';
 import 'package:albums/themes/icons.dart';
 import 'package:albums/themes/paddings.dart';
+import 'package:albums/themes/strings.dart';
+import 'package:albums/ui/album_details/album_details_view_model.dart';
+import 'package:albums/widgets/toolbar_button_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 
-class PhotoScreen extends StatefulWidget {
-  final List<Photo> photos;
+class PhotoGalleryScreen extends StatefulWidget {
+  final GalleryDetails galleryDetails;
 
   @override
-  _PhotoScreenState createState() => _PhotoScreenState();
+  _PhotoGalleryScreenState createState() => _PhotoGalleryScreenState();
 
-  PhotoScreen({Key key, @required this.photos}) : super(key: key);
+  PhotoGalleryScreen({Key key, @required this.galleryDetails})
+      : super(key: key);
 }
 
-class _PhotoScreenState extends State<PhotoScreen> {
+class _PhotoGalleryScreenState extends State<PhotoGalleryScreen> {
   PageController _pageController;
+  int _currentPage;
 
   void initState() {
     super.initState();
-    _pageController = PageController();
+    _currentPage = widget.galleryDetails.selectedIndex;
+    _pageController = PageController(initialPage: _currentPage);
   }
 
   void dispose() {
@@ -32,66 +38,77 @@ class _PhotoScreenState extends State<PhotoScreen> {
 
   @override
   Widget build(BuildContext context) {
+    List<Photo> listOfPhotos = widget.galleryDetails.photoList.photos;
     return SafeArea(
-      child: PageView.builder(
-          controller: _pageController,
-          itemBuilder: (context, int index) {
-            List<Photo> listOfPhotos = widget.photos;
-            return Stack(
-              fit: StackFit.expand,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.all(AppPaddings.largePadding),
-                  child: Align(
-                      alignment: Alignment.topRight,
-                      child: GestureDetector(
-                        child: Text(
-                          "Close",
-                          style: Theme.of(context).textTheme.bodyText2,
-                        ),
-                        onTap: () => Navigator.pop(context),
-                      )),
-                ),
-                Positioned.fill(
-                    child: Image(image: NetworkImage(listOfPhotos[index].url))),
-                Padding(
-                  padding: EdgeInsets.all(AppPaddings.largePadding),
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        DotIndicator(
-                          isSelected: false,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            );
-          }),
+      child: Material(
+        child: Stack(
+          children: <Widget>[
+            _buildPages(context, listOfPhotos),
+            Align(
+              alignment: Alignment.topRight,
+              child: AppToolbarButton(
+                buttonText: AppStrings.close,
+                onPressed: () => Navigator.pop(context),
+              ),
+            ),
+            DotIndicator(total: listOfPhotos.length, selected: _currentPage),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPages(BuildContext context, List<Photo> photos) {
+    return PageView.builder(
+      itemCount: photos.length,
+      controller: _pageController,
+      onPageChanged: ((page) {
+        setState(() {
+          _currentPage = page;
+        });
+      }),
+      itemBuilder: (context, int index) {
+        return Image(image: NetworkImage(photos[index].url));
+      },
+      physics: BouncingScrollPhysics(),
     );
   }
 }
 
 class DotIndicator extends StatelessWidget {
-  final bool isSelected;
-  final int index;
+  static final int max = 5;
+  final int selected;
+  final int total;
 
-  const DotIndicator({Key key, @required this.isSelected, this.index})
-      : super(key: key);
+  const DotIndicator({Key key, @required this.total, @required selected})
+      : this.selected = selected ?? 0,
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(AppPaddings.largePadding),
-      child: Row(
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Padding(
+        padding: EdgeInsets.all(AppPaddings.largePadding),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: List.generate(
-              5,
-              (index) => Image(
+            total < 5 ? total : max,
+            (index) {
+              return Image(
                   image: AppIcons.dotIcon,
-                  color: isSelected ? AppColors.darkBlue : null))),
+                  color: (_computeCurrentDot() == index)
+                      ? AppColors.darkBlue
+                      : null);
+            },
+          ),
+        ),
+      ),
     );
+  }
+
+  int _computeCurrentDot() {
+    int perPage = total ~/ 5 + 1;
+    return (selected ~/ perPage).round();
   }
 }

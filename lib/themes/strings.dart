@@ -18,4 +18,5 @@ class AppStrings {
   static const String addCommentToastMessage =
       "Action is Add Comment for Album with id";
   static const String photoWithId = "Photo with id: ";
+  static const String close = "Close";
 }

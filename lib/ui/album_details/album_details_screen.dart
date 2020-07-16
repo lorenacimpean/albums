@@ -150,7 +150,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
         return PhotoListItem(
           photo: photo,
           onTap: () {
-            _viewModel.onPhotoTap(photo, widget.album);
+            _viewModel.onPhotoTap(photo);
           },
         );
         break;

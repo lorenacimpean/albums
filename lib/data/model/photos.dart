@@ -15,6 +15,7 @@ class Photo {
       title: json['title'],
       url: json['url'],
       thumbnailUrl: json['thumbnailUrl']);
+
 }
 
 class PhotoList {
@@ -30,5 +31,9 @@ class PhotoList {
 
   int photosCount() {
     return this?.photos?.length ?? 0;
+  }
+
+  int selectedIndex(Photo selectedPhoto) {
+    return this.photos?.indexWhere((photo) => photo == selectedPhoto);
   }
 }
