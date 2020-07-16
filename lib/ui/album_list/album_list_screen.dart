@@ -6,7 +6,7 @@ import 'package:albums/data/model/result.dart';
 import 'package:albums/data/repo/repo_factory.dart';
 import 'package:albums/themes/paddings.dart';
 import 'package:albums/themes/strings.dart';
-import 'package:albums/ui/photo_list_screen/photos_list_screen.dart';
+import 'package:albums/util/next_screen.dart';
 import 'package:albums/widgets/album_list_item_widget.dart';
 import 'package:albums/widgets/app_screen_widget.dart';
 import 'package:albums/widgets/error_widget.dart';
@@ -23,21 +23,22 @@ class AlbumListScreen extends StatefulWidget {
 class _AlbumListScreenState extends State<AlbumListScreen> {
   AlbumListViewModel _viewModel;
   Future<Result> _futureAlbums;
-  StreamSubscription nextScreenSubscription;
+  StreamSubscription _nextScreenSubscription;
 
   void initState() {
     super.initState();
     _viewModel = AlbumListViewModel(buildAlbumsRepo());
     _futureAlbums = _viewModel.getAlbums();
-    nextScreenSubscription = _viewModel.goToNext.stream.listen((nextScreen) {
-      route(nextScreen);
+    _nextScreenSubscription = _viewModel.goToNext.stream.listen((nextScreen) {
+      route(context, nextScreen);
     });
   }
 
   @override
   void dispose() {
     super.dispose();
-    nextScreenSubscription.cancel();
+    _nextScreenSubscription.cancel();
+    _viewModel.dispose();
   }
 
   @override
@@ -50,50 +51,40 @@ class _AlbumListScreenState extends State<AlbumListScreen> {
   }
 
   Widget _albumList(BuildContext context) {
-    return Center(
-      child: FutureBuilder(
-          future: _futureAlbums,
-          builder: (BuildContext context, AsyncSnapshot<Result> snapshot) {
-            if (snapshot.data is SuccessState) {
-              AlbumList albums = (snapshot.data as SuccessState).value;
+    return Container(
+      padding: EdgeInsets.only(top: AppPaddings.defaultPadding),
+      child: Center(
+        child: FutureBuilder(
+            future: _futureAlbums,
+            builder: (BuildContext context, AsyncSnapshot<Result> snapshot) {
+              if (snapshot.data is SuccessState) {
+                AlbumList albums = (snapshot.data as SuccessState).value;
 
-              return ListView.separated(
-                itemBuilder: (context, index) {
-                  Album currentAlbum = albums.albumAtIndex(index);
-                  return AlbumListItemWidget(
-                    album: currentAlbum,
-                    onTap: () {
-                      _viewModel.onAlbumTap(currentAlbum);
-                    },
-                    key: Key(currentAlbum.id.toString()),
-                  );
-                },
-                separatorBuilder: (BuildContext context, int index) {
-                  return SizedBox(
-                    height: AppPaddings.separatorHeight,
-                  );
-                },
-                itemCount: albums.albumList.length,
-                physics: BouncingScrollPhysics(),
-              );
-            } else if (snapshot.data is ErrorState) {
-              return ErrorTextWidget(snapshot.error);
-            } else
-              return LoadingIndicator();
-          }),
+                return ListView.separated(
+                  itemBuilder: (context, index) {
+                    Album currentAlbum = albums.albumAtIndex(index);
+                    return AlbumListItemWidget(
+                      album: currentAlbum,
+                      onTap: () {
+                        _viewModel.onAlbumTap(currentAlbum);
+                      },
+                      key: Key(currentAlbum.id.toString()),
+                    );
+                  },
+                  separatorBuilder: (BuildContext context, int index) {
+                    return SizedBox(
+                      height: AppPaddings.midPadding,
+                    );
+                  },
+                  itemCount: albums.albumList.length,
+                  physics: BouncingScrollPhysics(),
+                );
+              } else if (snapshot.data is ErrorState) {
+                return ErrorTextWidget(error: snapshot.error);
+              } else
+                return LoadingIndicator();
+            }),
+      ),
     );
-  }
-
-  route(NextScreen nextScreen) {
-    switch (nextScreen.type) {
-      case ScreenType.AlbumDetails:
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (BuildContext context) =>
-                PhotoListScreen(album: nextScreen.data)));
-        break;
-      case ScreenType.Other:
-        // TODO: Handle this case.
-        break;
-    }
   }
 }

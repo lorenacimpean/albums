@@ -1,4 +1,5 @@
 import 'package:albums/data/api/photos_remote_data_source.dart';
+import 'package:albums/data/model/photos.dart';
 import 'package:albums/data/model/result.dart';
 
 class PhotosRepo {
@@ -6,7 +7,7 @@ class PhotosRepo {
 
   PhotosRepo(this._remoteDataSource);
 
-  Future<Result> getPhotos(int id) {
+  Future<Result<PhotoList>> getPhotoList(int id) {
     return _remoteDataSource.getPhotos(id);
   }
 }

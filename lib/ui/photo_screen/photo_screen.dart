@@ -26,15 +26,17 @@ class _PhotoScreenState extends State<PhotoScreen> {
         children: [
           Stack(
             children: <Widget>[
-              Positioned(
-                top: 0.0,
-                child: Align(
-                  alignment: Alignment.topLeft,
-                  child: IconButton(
-                    icon: Icon(Icons.close),
-                    iconSize: 30.0,
-                    color: Colors.pink,
-                    onPressed: () => Navigator.of(context).pop(null),
+              SafeArea(
+                child: Positioned(
+                  top: 0.0,
+                  child: Align(
+                    alignment: Alignment.topLeft,
+                    child: IconButton(
+                      icon: Icon(Icons.close),
+                      iconSize: 30.0,
+                      color: Colors.pink,
+                      onPressed: () => Navigator.of(context).pop(null),
+                    ),
                   ),
                 ),
               ),

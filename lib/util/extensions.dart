@@ -26,7 +26,13 @@ extension SelectedItems on List<AppTab> {
 
   AppTab getSelectedTab() {
     AppTab selectedTab =
-        this.firstWhere((tab) => tab.isSelected, orElse: () => null);
+        this?.firstWhere((tab) => tab.isSelected, orElse: () => null);
     return selectedTab;
+  }
+}
+extension FirstLetter on String{
+  String firstLetterToUpperCase(){
+    String text = this?.substring(0,1)?.toUpperCase();
+    return text;
   }
 }

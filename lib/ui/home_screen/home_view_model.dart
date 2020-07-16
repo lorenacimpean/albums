@@ -19,7 +19,7 @@ class HomeViewModel {
     _controller.add(NavBarTabs(_getTabList()));
   }
 
-  void dispose() => _controller?.close();
+  void dispose() => _controller.close();
 
   List<AppTab> _getTabList({NavBarItem selectedTab = _defaultItem}) {
     return NavBarItem.values.map((element) {

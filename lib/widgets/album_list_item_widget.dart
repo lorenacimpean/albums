@@ -15,19 +15,18 @@ class AlbumListItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: AppPaddings.listItemPadding,
+      padding: EdgeInsets.all(AppPaddings.extraSmallPadding),
       decoration: BoxDecoration(
         shape: BoxShape.rectangle,
         border: Border.all(
           color: AppColors.lightGrey,
         ),
-        borderRadius: AppPaddings.albumTileRadius,
+        borderRadius: AppPaddings.defaultRadius,
       ),
-      margin: AppPaddings.listItemMargin,
+      margin: EdgeInsets.only(
+          left: AppPaddings.defaultPadding, right: AppPaddings.defaultPadding),
       child: ListTile(
           leading: Container(
-            width: AppPaddings.blueContainerSize,
-            height: AppPaddings.blueContainerSize,
             decoration: BoxDecoration(
               color: AppColors.lightBlue,
               shape: BoxShape.circle,
@@ -35,6 +34,7 @@ class AlbumListItemWidget extends StatelessWidget {
             child: ImageIcon(
               AppIcons.albumIcon,
               color: AppColors.darkBlue,
+              size: AppPaddings.mediumIconSize,
             ),
           ),
           title: Text('${album.title}'),

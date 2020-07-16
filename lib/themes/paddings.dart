@@ -1,14 +1,29 @@
 import 'package:flutter/widgets.dart';
 
 class AppPaddings {
-  static final separatorHeight = 15.0;
-  static final listItemPadding = EdgeInsets.all(2.0);
-  static final listItemMargin = EdgeInsets.only(
-    left: 20.0,
-    right: 20.0,
-  );
-  static final blueContainerSize = 40.0;
-  static final albumTileRadius = BorderRadius.circular(5);
-  static final comingSoonContainerHeight = 64.0;
-  static final comingSoonContainerWidth = 320.0;
+  //widget Paddings:
+  static final double defaultPadding = 24.0;
+  static final double extraSmallPadding = 4.0;
+  static final double smallPadding = 8.0;
+  static final double midPadding = 16.0;
+  static final double midLargePadding = 20.0;
+  static final double largePadding = 32.0;
+  static final double extraLargePadding = 48;
+
+  static final int mediumFlex = 3;
+
+  //icon sizes:
+  static final double defaultIconSize = 64.0;
+  static final double mediumIconSize = 40.0;
+  static final double smallIconSize = 16.0;
+  static final double separatorSize = 1.0;
+
+  //widget sizes:
+  static final Size appBarHeight = Size.fromHeight(100.0);
+
+  //widget radius
+  static final BorderRadius defaultRadius = BorderRadius.circular(5.0);
+
+  //durations
+  static final Duration shortDuration = Duration(seconds: 1);
 }

@@ -26,6 +26,12 @@ class _SplashScreenState extends State<SplashScreen>
     _viewModel.goToNext().then((value) => route());
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+  }
+
   route() {
     Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (BuildContext context) => HomeScreen()));

@@ -24,6 +24,7 @@ dependencies:
   google_fonts: ^1.1.0
   flutter:
     sdk: flutter
+  fluttertoast: ^6.0.0
 
 
 
