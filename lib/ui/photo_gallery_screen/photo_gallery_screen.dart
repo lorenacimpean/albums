@@ -6,7 +6,7 @@ import 'package:albums/themes/icons.dart';
 import 'package:albums/themes/paddings.dart';
 import 'package:albums/themes/strings.dart';
 import 'package:albums/ui/album_details/album_details_view_model.dart';
-import 'package:albums/widgets/toolbar_button_widget.dart';
+import 'package:albums/widgets/text_button_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -46,7 +46,7 @@ class _PhotoGalleryScreenState extends State<PhotoGalleryScreen> {
             _buildPages(context, listOfPhotos),
             Align(
               alignment: Alignment.topRight,
-              child: AppToolbarButton(
+              child: AppTextButton(
                 buttonText: AppStrings.close,
                 onPressed: () => Navigator.pop(context),
               ),

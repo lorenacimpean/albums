@@ -1,11 +1,11 @@
 import 'package:albums/themes/paddings.dart';
 import 'package:flutter/material.dart';
 
-class AppToolbarButton extends StatelessWidget {
+class AppTextButton extends StatelessWidget {
   final GestureTapCallback onPressed;
   final String buttonText;
 
-  const AppToolbarButton(
+  const AppTextButton(
       {Key key, @required this.onPressed, @required this.buttonText})
       : super(key: key);
 
