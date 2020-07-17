@@ -1,7 +1,7 @@
 import 'package:albums/themes/paddings.dart';
 import 'package:albums/themes/strings.dart';
 import 'package:albums/widgets/app_bar_title_widget.dart';
-import 'package:albums/widgets/back_button_widget.dart';
+import 'package:albums/widgets/text_button_widget.dart';
 import 'package:albums/widgets/horizontal_separator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -23,7 +23,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               ? Row(
                   children: <Widget>[
                     Expanded(
-                        child: AppBackButton(
+                        child: AppTextButton(
                             onPressed: () => Navigator.pop(context),
                             buttonText: AppStrings.backButtonText)),
                     Expanded(

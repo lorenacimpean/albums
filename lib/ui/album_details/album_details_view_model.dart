@@ -16,6 +16,7 @@ class AlbumDetailsViewModel {
       StreamController<TapAction>();
   final StreamController<NextScreen> _nextScreenController =
       StreamController<NextScreen>();
+  PhotoList _photoList;
 
   Stream<NextScreen> get nextScreenStream => _nextScreenController.stream;
 
@@ -28,10 +29,14 @@ class AlbumDetailsViewModel {
     _nextScreenController.close();
   }
 
+  Future<Result<PhotoList>> _getPhotoList(Album album) {
+    return _photosRepo.getPhotoList(album.id);
+  }
+
   Future<Result<List<ListItem>>> getData(Album album) {
-    return _photosRepo.getPhotoList(album.id).then((result) {
-      if (result is SuccessState) {
-        (result as SuccessState).value;
+    return _getPhotoList(album).then((result) {
+      if (result is SuccessState<PhotoList>) {
+        _photoList = result.value;
         List<ListItem> itemList = [];
         if (result is SuccessState<PhotoList>) {
           ListItem albumInfo = ListItem(
@@ -71,8 +76,13 @@ class AlbumDetailsViewModel {
     _onTapController.add(action);
   }
 
-  void onPhotoTap(Photo photo) {
-    NextScreen nextScreen = NextScreen(ScreenType.Photo, photo);
+  void onPhotoTap(Photo selectedPhoto) {
+    int selectedPhotoIndex = _photoList.selectedIndex(selectedPhoto);
+
+    NextScreen nextScreen = NextScreen(
+        ScreenType.Photos,
+        GalleryDetails(
+            photoList: _photoList, selectedIndex: selectedPhotoIndex));
     _nextScreenController.add(nextScreen);
   }
 }
@@ -110,4 +120,11 @@ class AlbumInfo {
     this.albumId,
     this.photosCount,
   });
+}
+
+class GalleryDetails {
+  final PhotoList photoList;
+  final int selectedIndex;
+
+  GalleryDetails({this.photoList, this.selectedIndex});
 }

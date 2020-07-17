@@ -4,7 +4,7 @@
 //import 'package:albums/data/repo/repo_factory.dart';
 //import 'package:albums/themes/strings.dart';
 //import 'package:albums/ui/album_details/album_details_view_model.dart';
-//import 'package:albums/ui/photo_screen/photo_screen.dart';
+//import 'package:albums/ui/photo_screen/photo_gallery_screen.dart';
 //import 'package:albums/widgets/app_screen_widget.dart';
 //import 'package:albums/widgets/error_widget.dart';
 //import 'package:albums/widgets/progress_indicator.dart';
