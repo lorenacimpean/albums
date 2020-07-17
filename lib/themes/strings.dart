@@ -21,4 +21,6 @@ class AppStrings {
   static const String close = "Close";
   static const String apply = "Apply";
   static const String contactInfo = "Contact Info";
+  static const String unknown = "Unknown";
+  static const String questionMark = "?";
 }

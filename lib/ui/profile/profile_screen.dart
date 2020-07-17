@@ -1,5 +1,6 @@
 import 'package:albums/themes/icons.dart';
 import 'package:albums/themes/strings.dart';
+import 'package:albums/widgets/app_header_info_widget.dart';
 import 'package:albums/widgets/app_bar_widget.dart';
 import 'package:albums/widgets/app_list_tile_widget.dart';
 import 'package:albums/widgets/app_screen_widget.dart';
@@ -17,14 +18,17 @@ class ProfileScreen extends StatelessWidget {
         print("Tapped on icon");
       },
       key: Key(AppStrings.profileTitle),
-      body: Center(
-        child: AppListTile(
-          title: AppStrings.contactInfo,
-          icon: AppIcons.contactInfoIcon,
-          onTap: () {
-            print("Tapped on Contact Info");
-          },
-        ),
+      body: Column(
+        children: <Widget>[
+          AppHeaderInfo(),
+          AppListTile(
+            title: AppStrings.contactInfo,
+            icon: AppIcons.contactInfoIcon,
+            onTap: () {
+              print("Tapped on Contact Info");
+            },
+          ),
+        ],
       ),
     );
   }

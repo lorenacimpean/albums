@@ -1,15 +1,20 @@
-import 'package:albums/data/model/albums.dart';
 import 'package:albums/themes/colors.dart';
 import 'package:albums/themes/icons.dart';
 import 'package:albums/themes/paddings.dart';
 import 'package:albums/themes/strings.dart';
 import 'package:flutter/material.dart';
-import 'package:albums/util/extensions.dart';
 
-class AlbumTitleWidget extends StatelessWidget {
-  final Album album;
+class AppHeaderInfo extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final String iconText;
 
-  const AlbumTitleWidget({Key key, @required this.album}) : super(key: key);
+  const AppHeaderInfo(
+      {Key key,
+      this.title = AppStrings.unknown,
+      this.subtitle = "",
+      this.iconText = AppStrings.questionMark})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,17 +29,17 @@ class AlbumTitleWidget extends StatelessWidget {
                 color: AppColors.darkBlue,
                 size: AppPaddings.defaultIconSize,
               ),
-              Text(album.title.firstLetterToUpperCase()),
+              Text(iconText, style: Theme.of(context).textTheme.headline1),
             ],
           ),
           Container(
               padding: EdgeInsets.all(AppPaddings.smallPadding),
-              child: Text('${album.title}',
+              child: Text(title,
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.headline1)),
+                  style: Theme.of(context).textTheme.headline2)),
           Container(
               padding: EdgeInsets.all(AppPaddings.smallPadding),
-              child: Text('${AppStrings.albumWithId}: ${album.id}',
+              child: Text(subtitle,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.subtitle2)),
         ],

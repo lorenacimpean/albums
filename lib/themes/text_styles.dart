@@ -4,8 +4,13 @@ import 'package:flutter/material.dart';
 
 class AppTextStyle {
   static const TextStyle headline1 = TextStyle(
-      color: AppColors.navy,
+      color: AppColors.white,
       fontSize: AppTextSizes.headline1,
+      fontWeight: FontWeight.bold);
+
+  static const TextStyle headline2 = TextStyle(
+      color: AppColors.navy,
+      fontSize: AppTextSizes.headline2,
       fontWeight: FontWeight.bold);
 
   static const TextStyle subtitle1 = TextStyle(

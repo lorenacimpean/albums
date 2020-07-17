@@ -13,7 +13,7 @@ class AppBarTitle extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: AppPaddings.midPadding),
       child: Text(
         title,
-        style: Theme.of(context).textTheme.headline1,
+        style: Theme.of(context).textTheme.headline2,
       ),
     );
   }
