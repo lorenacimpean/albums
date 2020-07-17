@@ -23,4 +23,6 @@ class AppIcons {
   static const AssetImage dotIcon = const AssetImage('assets/images/dot.png');
   static const AssetImage notificationsIcon =
       const AssetImage('assets/images/notifications_icon.png');
+  static const AssetImage contactInfoIcon =
+      const AssetImage('assets/images/contact_info_icon.png');
 }
