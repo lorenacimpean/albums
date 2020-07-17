@@ -5,7 +5,7 @@ import 'package:albums/ui/album_list/album_list_screen.dart';
 import 'package:albums/ui/friends/friends_screen.dart';
 import 'package:albums/ui/home_screen/home_view_model.dart';
 import 'package:albums/ui/news/news_screen.dart';
-import 'package:albums/ui/profile/profile_screen.dart';
+import 'package:albums/ui/profile/your_profile_screen.dart';
 import 'package:albums/util/extensions.dart';
 import 'package:flutter/material.dart';
 
@@ -67,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
       case NavBarItem.NEWS:
         return NewsScreen();
       case NavBarItem.PROFILE:
-        return ProfileScreen();
+        return YourProfileScreen();
     }
   }
 

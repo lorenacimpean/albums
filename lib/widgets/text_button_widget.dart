@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:albums/themes/paddings.dart';
 import 'package:flutter/material.dart';
 
@@ -16,7 +18,11 @@ class AppTextButton extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.all(AppPaddings.defaultPadding),
         child: InkWell(
-          child: Text(buttonText, style: Theme.of(context).textTheme.subtitle1),
+          child: Text(
+            buttonText,
+            style: Theme.of(context).textTheme.subtitle1,
+            textAlign: TextAlign.center,
+          ),
           onTap: () {
             if (onPressed != null) {
               onPressed();

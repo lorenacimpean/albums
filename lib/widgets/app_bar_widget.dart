@@ -1,7 +1,10 @@
+import 'dart:ui';
+
 import 'package:albums/themes/paddings.dart';
 import 'package:albums/themes/strings.dart';
 import 'package:albums/widgets/app_bar_title_widget.dart';
 import 'package:albums/widgets/text_button_widget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -40,35 +43,29 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   List<Widget> _buildRow(BuildContext context) {
     List<Widget> rowItems = [];
-    rowItems.add(
-      Expanded(
-        flex: AppPaddings.mediumFlex,
-        child: Padding(
-          padding: EdgeInsets.all(AppPaddings.defaultPadding),
-          child: AppBarTitle(title: title),
-        ),
-      ),
-    );
     if (hasBackButton) {
-      rowItems.insert(
-        0,
-        Expanded(
-            child: AppTextButton(
-                onPressed: () => Navigator.pop(context),
-                buttonText: AppStrings.backButtonText)),
+      rowItems.add(
+        AppTextButton(
+            onPressed: () => Navigator.pop(context),
+            buttonText: AppStrings.backButtonText),
       );
     }
+    rowItems.add(
+      AppBarTitle(
+        title: title,
+        textAlignment: hasBackButton ? TextAlign.center : TextAlign.start,
+      ),
+    );
     if (buttonType != null) {
-      if (buttonType == ButtonType.textButton) {
-        rowItems.add(
-          Expanded(
-              child: AppTextButton(
-                  onPressed: () => Navigator.pop(context),
-                  buttonText: AppStrings.apply)),
-        );
-      } else {
-        rowItems.add(AppBarIconWidget(onPressed: onRightButtonTap));
-      }
+      buttonType == ButtonType.textButton
+          ? rowItems.add(
+              AppTextButton(
+                  onPressed: () => onRightButtonTap,
+                  buttonText: AppStrings.apply),
+            )
+          : rowItems.add(
+              AppBarIconWidget(onPressed: onRightButtonTap),
+            );
     }
     return rowItems;
   }

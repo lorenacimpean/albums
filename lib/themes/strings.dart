@@ -23,4 +23,7 @@ class AppStrings {
   static const String contactInfo = "Contact Info";
   static const String unknown = "Unknown";
   static const String questionMark = "?";
+  static const String notifications = "Notifications";
+
+
 }
