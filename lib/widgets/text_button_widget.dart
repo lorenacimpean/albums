@@ -11,15 +11,18 @@ class AppTextButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(AppPaddings.defaultPadding),
-      child: InkWell(
-        child: Text(buttonText, style: Theme.of(context).textTheme.subtitle1),
-        onTap: () {
-          if (onPressed != null) {
-            onPressed();
-          }
-        },
+    return Material(
+      type: MaterialType.transparency,
+      child: Padding(
+        padding: EdgeInsets.all(AppPaddings.defaultPadding),
+        child: InkWell(
+          child: Text(buttonText, style: Theme.of(context).textTheme.subtitle1),
+          onTap: () {
+            if (onPressed != null) {
+              onPressed();
+            }
+          },
+        ),
       ),
     );
   }

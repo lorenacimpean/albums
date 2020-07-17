@@ -40,20 +40,19 @@ class _PhotoGalleryScreenState extends State<PhotoGalleryScreen> {
   Widget build(BuildContext context) {
     List<Photo> listOfPhotos = widget.galleryDetails.photoList.photos;
     return SafeArea(
-      child: Material(
-        child: Stack(
-          children: <Widget>[
-            _buildPages(context, listOfPhotos),
-            Align(
-              alignment: Alignment.topRight,
-              child: AppTextButton(
-                buttonText: AppStrings.close,
-                onPressed: () => Navigator.pop(context),
-              ),
+      child: Stack(
+        children: <Widget>[
+          _buildPages(context, listOfPhotos),
+          Align(
+            alignment: Alignment.topRight,
+            child: AppTextButton(
+              buttonText: AppStrings.close,
+              onPressed: () => Navigator.pop(context),
             ),
-            DotIndicator(total: listOfPhotos.length, selected: _currentPage),
-          ],
-        ),
+          ),
+          DotIndicatorWidget(
+              total: listOfPhotos.length, selected: _currentPage),
+        ],
       ),
     );
   }
@@ -68,19 +67,19 @@ class _PhotoGalleryScreenState extends State<PhotoGalleryScreen> {
         });
       }),
       itemBuilder: (context, int index) {
-        return Image(image: NetworkImage(photos[index].url));
+        return Image(image: NetworkImage(photos[index].url), fit: BoxFit.cover);
       },
       physics: BouncingScrollPhysics(),
     );
   }
 }
 
-class DotIndicator extends StatelessWidget {
+class DotIndicatorWidget extends StatelessWidget {
   static final int max = 5;
   final int selected;
   final int total;
 
-  const DotIndicator({Key key, @required this.total, @required selected})
+  const DotIndicatorWidget({Key key, @required this.total, @required selected})
       : this.selected = selected ?? 0,
         super(key: key);
 
