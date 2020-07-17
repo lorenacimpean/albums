@@ -10,7 +10,7 @@ class AppBarTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: AppPaddings.extraLargePadding),
+      padding: EdgeInsets.symmetric(horizontal: AppPaddings.midPadding),
       child: Text(
         title,
         style: Theme.of(context).textTheme.headline1,
