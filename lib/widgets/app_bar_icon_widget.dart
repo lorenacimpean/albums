@@ -4,9 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class AppBarIconWidget extends StatelessWidget {
+  final AssetImage icon;
   final GestureTapCallback onPressed;
 
-  const AppBarIconWidget({Key key, @required this.onPressed}) : super(key: key);
+  const AppBarIconWidget({Key key, @required this.onPressed, @required this.icon}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +17,7 @@ class AppBarIconWidget extends StatelessWidget {
         padding: EdgeInsets.all(AppPaddings.defaultPadding),
         child: InkWell(
           child: ImageIcon(
-            AppIcons.notificationsIcon,
+            icon,
             color: Theme.of(context).primaryColor,
             size: AppPaddings.smallIconSize,
           ),

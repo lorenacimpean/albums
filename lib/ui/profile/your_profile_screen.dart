@@ -4,7 +4,7 @@ import 'package:albums/themes/icons.dart';
 import 'package:albums/themes/strings.dart';
 import 'package:albums/ui/profile/your_profile_view_model.dart';
 import 'package:albums/util/next_screen.dart';
-import 'package:albums/widgets/app_bar_widget.dart';
+import 'package:albums/widgets/app_bar_icon_widget.dart';
 import 'package:albums/widgets/app_header_info_widget.dart';
 import 'package:albums/widgets/app_list_tile_widget.dart';
 import 'package:albums/widgets/app_screen_widget.dart';
@@ -38,10 +38,13 @@ class _YourProfileScreenState extends State<YourProfileScreen> {
   Widget build(BuildContext context) {
     return AppScreen(
       title: AppStrings.profileTitle,
-      buttonType: ButtonType.iconButton,
-      onRightButtonTap: () {
-        _viewModel.onNotificationIconTapped();
-      },
+      rightButtons: <Widget>[
+        AppBarIconWidget(
+            icon: AppIcons.notificationsIcon,
+            onPressed: () {
+              _viewModel.onNotificationIconTapped();
+            }),
+      ],
       key: Key(AppStrings.profileTitle),
       body: Column(
         children: <Widget>[

@@ -1,7 +1,7 @@
 import 'package:albums/themes/strings.dart';
-import 'package:albums/widgets/app_bar_widget.dart';
 import 'package:albums/widgets/app_screen_widget.dart';
 import 'package:albums/widgets/coming_soon_widget.dart';
+import 'package:albums/widgets/text_button_widget.dart';
 import 'package:flutter/widgets.dart';
 
 class NotificationsScreen extends StatelessWidget {
@@ -10,10 +10,12 @@ class NotificationsScreen extends StatelessWidget {
     return AppScreen(
       title: AppStrings.notifications,
       hasBackButton: true,
-      buttonType: ButtonType.textButton,
-      onRightButtonTap: () {
-        print("Tapped on Apply");
-      },
+      rightButtons: <Widget>[
+        AppTextButton(
+          buttonText: AppStrings.apply,
+          onPressed: () => print("Tapped on Apply"),
+        )
+      ],
       key: Key(AppStrings.notifications),
       body: ComingSoonWidget(),
     );

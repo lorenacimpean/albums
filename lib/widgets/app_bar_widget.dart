@@ -1,73 +1,64 @@
-import 'dart:ui';
-
 import 'package:albums/themes/paddings.dart';
 import 'package:albums/themes/strings.dart';
 import 'package:albums/widgets/app_bar_title_widget.dart';
+import 'package:albums/widgets/horizontal_separator.dart';
 import 'package:albums/widgets/text_button_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import 'app_bar_icon_widget.dart';
-import 'horizontal_separator.dart';
-
-enum ButtonType { iconButton, textButton }
-
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final bool hasBackButton;
-  final ButtonType buttonType;
-  final GestureTapCallback onRightButtonTap;
+  final List<Widget> rightWidgets;
 
   const CustomAppBar(
       {Key key,
       @required this.title,
       this.hasBackButton = false,
-      this.buttonType,
-      this.onRightButtonTap})
+      this.rightWidgets})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Column(
-        children: <Widget>[
-          Row(
-            children: _buildRow(context),
-          ),
-          HorizontalSeparator(),
-        ],
+      child: Stack(
+        children: _buildStack(context),
       ),
     );
   }
 
-  List<Widget> _buildRow(BuildContext context) {
-    List<Widget> rowItems = [];
+  List<Widget> _buildStack(BuildContext context) {
+    List<Widget> stackItems = [];
     if (hasBackButton) {
-      rowItems.add(
-        AppTextButton(
+      stackItems.add(Align(
+        alignment: Alignment.centerLeft,
+        child: AppTextButton(
             onPressed: () => Navigator.pop(context),
             buttonText: AppStrings.backButtonText),
-      );
+      ));
     }
-    rowItems.add(
-      AppBarTitle(
+    stackItems.add(Align(
+      alignment: hasBackButton ? Alignment.center : Alignment.centerLeft,
+      child: AppBarTitle(
         title: title,
-        textAlignment: hasBackButton ? TextAlign.center : TextAlign.start,
+      ),
+    ));
+    stackItems.add(
+      Align(
+        alignment: Alignment.centerRight,
+        child: Stack(
+          children: rightWidgets,
+        ),
       ),
     );
-    if (buttonType != null) {
-      buttonType == ButtonType.textButton
-          ? rowItems.add(
-              AppTextButton(
-                  onPressed: () => onRightButtonTap,
-                  buttonText: AppStrings.apply),
-            )
-          : rowItems.add(
-              AppBarIconWidget(onPressed: onRightButtonTap),
-            );
-    }
-    return rowItems;
+    stackItems.add(
+      Align(
+        alignment: Alignment.bottomCenter,
+        child: HorizontalSeparator(),
+      ),
+    );
+    return stackItems;
   }
 
   @override

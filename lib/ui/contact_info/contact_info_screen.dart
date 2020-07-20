@@ -1,6 +1,6 @@
 import 'package:albums/themes/strings.dart';
-import 'package:albums/widgets/app_bar_widget.dart';
 import 'package:albums/widgets/app_screen_widget.dart';
+import 'package:albums/widgets/text_button_widget.dart';
 import 'package:flutter/material.dart';
 
 class ContactInfoScreen extends StatelessWidget {
@@ -9,7 +9,12 @@ class ContactInfoScreen extends StatelessWidget {
     return AppScreen(
       title: AppStrings.contactInfo,
       hasBackButton: true,
-      buttonType: ButtonType.textButton,
+      rightButtons: <Widget>[
+        AppTextButton(
+          buttonText: AppStrings.apply,
+          onPressed: () => {print("Tapped on apply button")},
+        ),
+      ],
       body: Container(),
     );
   }
