@@ -8,9 +8,7 @@ class AppPaddings {
   static final double midPadding = 16.0;
   static final double midLargePadding = 20.0;
   static final double largePadding = 32.0;
-  static final double extraLargePadding = 48;
-
-  static final int mediumFlex = 3;
+  static final double extraLargePadding = 121;
 
   //icon sizes:
   static final double defaultIconSize = 64.0;

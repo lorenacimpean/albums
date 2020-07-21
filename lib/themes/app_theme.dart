@@ -14,6 +14,7 @@ class AppTheme {
       fontFamily: 'Nunito',
       textTheme: TextTheme(
           headline1: AppTextStyle.headline1,
+          headline2: AppTextStyle.headline2,
           subtitle1: AppTextStyle.subtitle1,
           subtitle2: AppTextStyle.subtitle2,
           bodyText1: AppTextStyle.bodyText1,

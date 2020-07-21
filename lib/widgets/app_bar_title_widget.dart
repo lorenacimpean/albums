@@ -5,15 +5,19 @@ import 'package:flutter/widgets.dart';
 class AppBarTitle extends StatelessWidget {
   final String title;
 
-  const AppBarTitle({Key key, @required this.title}) : super(key: key);
+  const AppBarTitle({
+    Key key,
+    @required this.title,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: AppPaddings.extraLargePadding),
+      padding: EdgeInsets.all(AppPaddings.defaultPadding),
       child: Text(
         title,
-        style: Theme.of(context).textTheme.headline1,
+        style: Theme.of(context).textTheme.headline2,
+        textAlign: TextAlign.center,
       ),
     );
   }

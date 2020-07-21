@@ -1,15 +1,13 @@
-import 'dart:ui';
-
+import 'package:albums/themes/icons.dart';
 import 'package:albums/themes/paddings.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class AppTextButton extends StatelessWidget {
+class AppBarIconWidget extends StatelessWidget {
+  final AssetImage icon;
   final GestureTapCallback onPressed;
-  final String buttonText;
 
-  const AppTextButton(
-      {Key key, @required this.onPressed, @required this.buttonText})
-      : super(key: key);
+  const AppBarIconWidget({Key key, @required this.onPressed, @required this.icon}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,10 +16,10 @@ class AppTextButton extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.all(AppPaddings.defaultPadding),
         child: InkWell(
-          child: Text(
-            buttonText,
-            style: Theme.of(context).textTheme.subtitle1,
-            textAlign: TextAlign.center,
+          child: ImageIcon(
+            icon,
+            color: Theme.of(context).primaryColor,
+            size: AppPaddings.smallIconSize,
           ),
           onTap: () {
             if (onPressed != null) {
