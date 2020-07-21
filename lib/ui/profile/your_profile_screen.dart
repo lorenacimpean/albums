@@ -25,7 +25,7 @@ class _YourProfileScreenState extends State<YourProfileScreen> {
     super.initState();
     _viewModel = YourProfileViewModel();
     _nextScreenSubscription = _viewModel.nextScreenStream.listen((nextScreen) {
-      route(context, nextScreen);
+      openNextScreen(context, nextScreen);
     });
   }
 

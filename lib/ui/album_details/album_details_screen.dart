@@ -48,7 +48,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
       _showSnackBar(action.toastMessage);
     });
     _nextScreenSubscription = _viewModel.nextScreenStream.listen((nextScreen) {
-      route(context, nextScreen);
+      openNextScreen(context, nextScreen);
     });
   }
 

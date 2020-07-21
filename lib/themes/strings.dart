@@ -24,6 +24,12 @@ class AppStrings {
   static const String unknown = "Unknown";
   static const String questionMark = "?";
   static const String notifications = "Notifications";
-
-
+  static const String firstName = "FIRST NAME";
+  static const String lastName = "LAST NAME";
+  static const String emailAddress = "EMAIL ADDRESS";
+  static const String phoneNumber = "PHONE NUMBER";
+  static const String streetAddress = "STREET ADDRESS";
+  static const String city = "CITY";
+  static const String country = "COUNTRY";
+  static const String zipCode = "ZIP CODE";
 }

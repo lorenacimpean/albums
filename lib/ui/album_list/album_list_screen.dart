@@ -31,7 +31,7 @@ class _AlbumListScreenState extends State<AlbumListScreen> {
     _viewModel = AlbumListViewModel(buildAlbumsRepo());
     _futureAlbums = _viewModel.getAlbums();
     _nextScreenSubscription = _viewModel.goToNext.stream.listen((nextScreen) {
-      route(context, nextScreen);
+      openNextScreen(context, nextScreen);
     });
   }
 
