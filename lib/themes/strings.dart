@@ -32,4 +32,6 @@ class AppStrings {
   static const String city = "CITY";
   static const String country = "COUNTRY";
   static const String zipCode = "ZIP CODE";
+  static const String useMyLocation = "Use my location";
+
 }

@@ -1,13 +1,10 @@
-import 'package:albums/widgets/app_input_field_widget.dart';
+import 'package:albums/ui/contact_info/contact_info_view_model.dart';
 
 class AppTextValidator {
   static const int minimumLength = 3;
-  final String value;
-  final KeyboardType keyboardType;
 
-  AppTextValidator(this.value, this.keyboardType);
-
-  String textValidator() {
+  String textValidator(String value) {
+    print("text validator: $value");
     if (value.isEmpty) {
       return "Field cannot be empty!";
     }
@@ -17,7 +14,7 @@ class AppTextValidator {
     return null;
   }
 
-  String emailValidator() {
+  String emailValidator(String value) {
     RegExp emailRegex = RegExp(r"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
     if (value.isEmpty) {
       return "Field cannot be empty!";
@@ -29,7 +26,7 @@ class AppTextValidator {
     return null;
   }
 
-  String phoneValidator() {
+  String phoneValidator(String value) {
     RegExp phoneRegex = new RegExp(r'^[6-9]\d{9}$');
     if (value.isEmpty) {
       return "Field cannot be empty!";
@@ -41,16 +38,22 @@ class AppTextValidator {
     return null;
   }
 
-  String validate() {
-    switch (keyboardType) {
-      case KeyboardType.textKeyboard:
-        return textValidator();
+  String validate(String value, FieldType fieldType) {
+    switch (fieldType) {
+      case FieldType.firstNameField:
+      case FieldType.lastNameField:
+      case FieldType.streetAddressField:
+      case FieldType.countryField:
+      case FieldType.cityField:
+      case FieldType.zipCodeField:
+        return textValidator(value);
         break;
-      case KeyboardType.numberKeyboard:
-        return phoneValidator();
+
+      case FieldType.emailAddressField:
+        return emailValidator(value);
         break;
-      case KeyboardType.emailKeyboard:
-        return emailValidator();
+      case FieldType.phoneNumberField:
+        return phoneValidator(value);
         break;
       default:
         return null;
