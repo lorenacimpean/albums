@@ -2,32 +2,33 @@ import 'package:albums/ui/contact_info/contact_info_view_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class AppInputFieldWidget extends StatefulWidget {
+class AppInputFieldWidget extends StatelessWidget {
   final String label;
-  final Error error;
-  final FieldType fieldType;
-  final ValueChanged<String> onValueChanged;
+  final String error;
+  final TextInputType textInputType;
+  final String value;
+  final VoidCallback onValueChanged;
 
   const AppInputFieldWidget({
     Key key,
     this.label,
-    this.onValueChanged,
     this.error,
-    this.fieldType,
+    this.value,
+    this.onValueChanged,
+    this.textInputType,
   }) : super(key: key);
 
-  @override
-  _AppInputFieldWidgetState createState() => _AppInputFieldWidgetState();
-}
-
-class _AppInputFieldWidgetState extends State<AppInputFieldWidget> {
-  String error;
+  factory AppInputFieldWidget.fromModel(AppInputFieldModel model) {
+    return AppInputFieldWidget(
+        label: model.label,
+        error: model.error,
+        textInputType: model.textInputType,
+        value: model.value,
+        onValueChanged: () => model.onAppInputFieldChanged(model));
+  }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.error?.fieldType == widget.fieldType) {
-      error = widget.error?.error;
-    }
     return TextField(
       style: Theme.of(context).textTheme.bodyText1,
       decoration: InputDecoration(
@@ -36,33 +37,11 @@ class _AppInputFieldWidgetState extends State<AppInputFieldWidget> {
         enabledBorder: UnderlineInputBorder(
             borderSide:
                 BorderSide(color: Theme.of(context).primaryColor, width: 2)),
-        labelText: widget.label,
+        labelText: label,
         labelStyle: Theme.of(context).textTheme.subtitle1,
       ),
-      keyboardType: textInput(widget.fieldType),
-      onChanged: (string) => widget.onValueChanged(string),
+      keyboardType: textInputType,
+      onChanged: (string) => onValueChanged,
     );
-  }
-
-  TextInputType textInput(FieldType fieldType) {
-    switch (fieldType) {
-      case FieldType.firstNameField:
-      case FieldType.lastNameField:
-      case FieldType.streetAddressField:
-      case FieldType.countryField:
-      case FieldType.cityField:
-        return TextInputType.text;
-        break;
-
-      case FieldType.emailAddressField:
-        return TextInputType.emailAddress;
-        break;
-      case FieldType.phoneNumberField:
-      case FieldType.zipCodeField:
-        return TextInputType.number;
-        break;
-      default:
-        return null;
-    }
   }
 }

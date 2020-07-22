@@ -22,7 +22,6 @@ class AppTextValidator {
     if (!emailRegex.hasMatch(value)) {
       return "Invalid email!";
     }
-    ;
     return null;
   }
 
@@ -34,26 +33,25 @@ class AppTextValidator {
     if (!phoneRegex.hasMatch(value)) {
       return "Invalid phone number!";
     }
-    ;
     return null;
   }
 
-  String validate(String value, FieldType fieldType) {
-    switch (fieldType) {
+  String validate(AppInputFieldModel model) {
+    switch (model.fieldType) {
       case FieldType.firstNameField:
       case FieldType.lastNameField:
       case FieldType.streetAddressField:
       case FieldType.countryField:
       case FieldType.cityField:
       case FieldType.zipCodeField:
-        return textValidator(value);
+        return textValidator(model.value);
         break;
 
       case FieldType.emailAddressField:
-        return emailValidator(value);
+        return emailValidator(model.value);
         break;
       case FieldType.phoneNumberField:
-        return phoneValidator(value);
+        return phoneValidator(model.value);
         break;
       default:
         return null;

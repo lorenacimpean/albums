@@ -1,15 +1,16 @@
 import 'dart:async';
 
-import 'package:albums/data/model/contact_info.dart';
 import 'package:albums/data/repo/repo_factory.dart';
 import 'package:albums/themes/paddings.dart';
 import 'package:albums/themes/strings.dart';
 import 'package:albums/ui/contact_info/contact_info_view_model.dart';
+import 'package:albums/util/validator.dart';
 import 'package:albums/widgets/app_input_field_widget.dart';
 import 'package:albums/widgets/app_screen_widget.dart';
 import 'package:albums/widgets/text_button_widget.dart';
 import 'package:albums/widgets/use_location_button.dart';
 import 'package:flutter/material.dart';
+import 'package:rxdart/rxdart.dart';
 
 class ContactInfoScreen extends StatefulWidget {
   @override
@@ -18,24 +19,31 @@ class ContactInfoScreen extends StatefulWidget {
 
 class _ContactInfoScreenState extends State<ContactInfoScreen> {
   ContactInfoViewModel _viewModel;
-  ContactInfo _contactInfo = ContactInfo();
-  StreamSubscription<Error> _textFieldErrorSubscription;
-  Error _textFieldError = Error(null, null);
+  StreamSubscription listSubscription;
+  List<AppInputFieldModel> _list = [];
 
   @override
   void initState() {
     super.initState();
-    _viewModel = ContactInfoViewModel(buildUserProfileRepo());
-    _textFieldErrorSubscription = _viewModel.error.listen((error) {
-      setState(() {
-        _textFieldError = error;
-      });
-    });
+    _viewModel = ContactInfoViewModel(
+      ContactInfoViewModelInput(
+        PublishSubject(),
+        PublishSubject(),
+        PublishSubject(),
+      ),
+      buildUserProfileRepo(),
+      AppTextValidator(),
+    );
+    listSubscription =
+        _viewModel.output.fieldList.listen((list) => setState(() {
+              _list = list;
+            }));
+    _viewModel.input.onStart.add(true);
   }
 
   @override
   void dispose() {
-    _textFieldErrorSubscription.cancel();
+    listSubscription.cancel();
     super.dispose();
   }
 
@@ -49,7 +57,6 @@ class _ContactInfoScreenState extends State<ContactInfoScreen> {
           buttonText: AppStrings.apply,
           onPressed: () => {
             print("Tapped on apply button"),
-            _viewModel.onApply()
           },
         ),
       ],
@@ -69,41 +76,27 @@ class _ContactInfoScreenState extends State<ContactInfoScreen> {
                 Expanded(
                   child: Padding(
                     padding: EdgeInsets.only(right: AppPaddings.defaultPadding),
-                    child: AppInputFieldWidget(
-                      label: AppStrings.firstName,
-                      error: _textFieldError,
-                      fieldType: FieldType.firstNameField,
-                      onValueChanged: (string) {
-                        _viewModel.onValueChanged(
-                            string, FieldType.firstNameField);
-                      },
-                    ),
+                    child: AppInputFieldWidget.fromModel(_list.first),
                   ),
                 ),
                 Expanded(
-                  child: AppInputFieldWidget(
-                      label: AppStrings.lastName,
-                      fieldType: FieldType.lastNameField,
-                      error: _textFieldError,
-                      onValueChanged: (string) {
-                        _viewModel.onValueChanged(
-                            string, FieldType.lastNameField);
-                      }),
+                  child: Padding(
+                    padding: EdgeInsets.only(right: AppPaddings.defaultPadding),
+                    child: AppInputFieldWidget.fromModel(_list[1]),
+                  ),
                 ),
               ],
             ),
-            AppInputFieldWidget(
-              label: AppStrings.emailAddress,
+            Padding(
+              padding: EdgeInsets.only(right: AppPaddings.defaultPadding),
+              child: AppInputFieldWidget.fromModel(_list[2]),
             ),
             Row(
               children: <Widget>[
                 Expanded(
                   child: Padding(
                     padding: EdgeInsets.only(right: AppPaddings.defaultPadding),
-                    child: AppInputFieldWidget(
-                      label: AppStrings.phoneNumber,
-                      fieldType: FieldType.phoneNumberField,
-                    ),
+                    child: AppInputFieldWidget.fromModel(_list[3]),
                   ),
                 ),
                 Expanded(child: Container()),
@@ -112,25 +105,19 @@ class _ContactInfoScreenState extends State<ContactInfoScreen> {
             Container(
               padding: EdgeInsets.all(AppPaddings.defaultPadding),
             ),
-            AppInputFieldWidget(
-              label: AppStrings.streetAddress,
-              fieldType: FieldType.streetAddressField,
-            ),
+            AppInputFieldWidget.fromModel(_list[4]),
             Row(
               children: <Widget>[
                 Expanded(
                   child: Padding(
                     padding: EdgeInsets.only(right: AppPaddings.defaultPadding),
-                    child: AppInputFieldWidget(
-                      label: AppStrings.city,
-                      fieldType: FieldType.cityField,
-                    ),
+                    child: AppInputFieldWidget.fromModel(_list[5]),
                   ),
                 ),
                 Expanded(
-                  child: AppInputFieldWidget(
-                    label: AppStrings.country,
-                    fieldType: FieldType.countryField,
+                  child: Padding(
+                    padding: EdgeInsets.only(right: AppPaddings.defaultPadding),
+                    child: AppInputFieldWidget.fromModel(_list[6]),
                   ),
                 ),
               ],
@@ -140,10 +127,7 @@ class _ContactInfoScreenState extends State<ContactInfoScreen> {
                 Expanded(
                   child: Padding(
                     padding: EdgeInsets.only(right: AppPaddings.defaultPadding),
-                    child: AppInputFieldWidget(
-                      label: AppStrings.zipCode,
-                      fieldType: FieldType.zipCodeField,
-                    ),
+                    child: AppInputFieldWidget.fromModel(_list[7]),
                   ),
                 ),
                 Expanded(
