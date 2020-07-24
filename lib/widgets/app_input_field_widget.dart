@@ -1,4 +1,3 @@
-import 'package:albums/themes/paddings.dart';
 import 'package:albums/themes/strings.dart';
 import 'package:flutter/material.dart';
 
@@ -46,47 +45,36 @@ class AppInputFieldWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> list = [];
-    list.add(
-      TextField(
-        style: error == null
-            ? Theme.of(context).textTheme.subtitle2
+    return TextField(
+      style: error == null
+          ? Theme.of(context).textTheme.subtitle2
+          : Theme.of(context).textTheme.button,
+      controller: controller,
+      decoration: InputDecoration(
+        errorText: error,
+        enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(
+                color: error == null
+                    ? Theme.of(context).primaryColor
+                    : Theme.of(context).errorColor,
+                width: 2)),
+        labelText: label,
+        labelStyle: error == null
+            ? Theme.of(context).textTheme.subtitle1
             : Theme.of(context).textTheme.button,
-        controller: controller,
-        decoration: InputDecoration(
-          enabledBorder: UnderlineInputBorder(
-              borderSide: BorderSide(
-                  color: error == null
-                      ? Theme.of(context).primaryColor
-                      : Theme.of(context).errorColor,
-                  width: 2)),
-          labelText: label,
-          labelStyle: error == null
-              ? Theme.of(context).textTheme.subtitle1
-              : Theme.of(context).textTheme.button,
-        ),
-        keyboardType: textInputType,
-        onChanged: onValueChanged,
       ),
+      keyboardType: textInputType,
+      onChanged: onValueChanged,
     );
-    if (error != null) {
-      list.add(
-        Positioned(
-          top: AppPaddings.largePadding,
-          child: Text(error, style: Theme.of(context).textTheme.button),
-        ),
-      );
-    }
-    return Stack(children: list);
   }
 }
 
 class AppInputFieldModel {
   final FieldType fieldType;
   final TextEditingController textController;
+  final OnAppInputFieldChange onValueChanged;
   String error;
   String value;
-  OnAppInputFieldChange onValueChanged;
 
   AppInputFieldModel(
       {this.fieldType,

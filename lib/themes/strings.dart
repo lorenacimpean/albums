@@ -34,7 +34,7 @@ class AppStrings {
   static const String zipCode = "ZIP CODE";
   static const String useMyLocation = "Use my location";
   static const String fieldEmptyError = "Required";
-  static const String fieldInvalidError = "Invalid input!";
-  static const String emailFieldInvalidError = "Invalid email!";
-  static const String phoneFieldInvalidError = "Invalid phone number!";
+  static const String fieldInvalidError = "Minimum 3 characters";
+  static const String emailFieldInvalidError = "Invalid email";
+  static const String phoneFieldInvalidError = "Invalid phone number";
 }

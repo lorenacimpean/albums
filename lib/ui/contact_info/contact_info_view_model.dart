@@ -26,9 +26,6 @@ class ContactInfoViewModel {
       input.onApply.flatMap((event) {
         _list.forEach((field) {
           field.error = _validator.validate(field);
-          if (field.error != null) {
-            field.textController.clear();
-          }
         });
         if (_list.areAllFieldsValid()) {
           ContactInfo contactInfo =
