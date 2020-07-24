@@ -9,6 +9,7 @@ import 'package:albums/util/validator.dart';
 import 'package:albums/widgets/app_input_field_widget.dart';
 import 'package:albums/widgets/app_rounded_text_button.dart';
 import 'package:albums/widgets/app_screen_widget.dart';
+import 'package:albums/widgets/progress_indicator.dart';
 import 'package:albums/widgets/text_button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
@@ -56,10 +57,14 @@ class _ContactInfoScreenState extends State<ContactInfoScreen> {
       rightButtons: <Widget>[
         AppTextButton(
           buttonText: AppStrings.apply,
-          onPressed: () => {_viewModel.input.onApply.add(true)},
+          onPressed: () {
+            _viewModel.input.onApply.add(true);
+          },
         ),
       ],
-      body: _buildTextFields(context),
+      body: (_list?.isNotEmpty ?? false)
+          ? _buildTextFields(context)
+          : LoadingIndicator(),
     );
   }
 

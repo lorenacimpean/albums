@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:albums/themes/colors.dart';
 import 'package:albums/themes/text_sizes.dart';
 import 'package:flutter/material.dart';
@@ -32,4 +34,10 @@ class AppTextStyle {
       color: AppColors.white,
       fontSize: AppTextSizes.bodyText,
       fontWeight: FontWeight.normal);
+
+  static const TextStyle button = TextStyle(
+    color: AppColors.brownRed,
+    fontSize: AppTextSizes.subtitle1,
+    fontWeight: FontWeight.normal,
+  );
 }

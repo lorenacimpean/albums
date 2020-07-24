@@ -5,6 +5,7 @@ import 'package:albums/data/repo/user_profile_repo.dart';
 import 'package:albums/util/extensions.dart';
 import 'package:albums/util/validator.dart';
 import 'package:albums/widgets/app_input_field_widget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:rxdart/rxdart.dart';
 
 class ContactInfoViewModel {
@@ -18,18 +19,16 @@ class ContactInfoViewModel {
     initFields(_list);
     Stream<List<AppInputFieldModel>> onList = MergeStream([
       input.onStart.map((field) => _list),
-      input.onValueChanged.map((event) {
-        _list.map((field) {
-          String error = _validator.validate(field);
-          field.error = error;
-          _list.removeWhere((field) => field.fieldType == field.fieldType);
-          _list.add(field..error = null);
-        });
+      input.onValueChanged.map((field) {
+        field.error = null;
         return _list;
       }),
       input.onApply.flatMap((event) {
         _list.forEach((field) {
           field.error = _validator.validate(field);
+          if (field.error != null) {
+            field.textController.text = field.error;
+          }
         });
         if (_list.areAllFieldsValid()) {
           ContactInfo contactInfo =
@@ -50,6 +49,7 @@ class ContactInfoViewModel {
     FieldType.values.forEach((element) {
       _list.add(AppInputFieldModel(
           fieldType: element,
+          textController: TextEditingController(),
           onValueChanged: (model) {
             input.onValueChanged.add(model);
           }));

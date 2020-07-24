@@ -16,65 +16,71 @@ typedef OnAppInputFieldChange(AppInputFieldModel model);
 
 class AppInputFieldWidget extends StatelessWidget {
   final TextInputType textInputType;
-  final TextEditingController controller = TextEditingController();
+  final TextEditingController controller;
   final String label;
   final String error;
-
-  final OnAppInputFieldChange onValueChanged;
+  final ValueChanged<String> onValueChanged;
 
   AppInputFieldWidget({
     Key key,
-    String value,
+    this.controller,
     this.textInputType,
     this.label,
     this.error,
     this.onValueChanged,
-  }) : super(key: key) {
-    controller.text = value;
-  }
+  }) : super(key: key);
 
   factory AppInputFieldWidget.fromModel({AppInputFieldModel model}) {
     return AppInputFieldWidget(
+      textInputType: model.textInputType,
+      controller: model.textController,
       label: model.label,
       error: model.error,
-      value: model.value,
-      textInputType: model.textInputType,
-      onValueChanged: model.onValueChanged,
+      onValueChanged: (newValue) {
+        model.value = newValue;
+        model.onValueChanged(model);
+      },
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return TextField(
-      style: Theme.of(context).textTheme.bodyText1,
+      style: error == null
+          ? Theme.of(context).textTheme.subtitle2
+          : Theme.of(context).textTheme.button,
       controller: controller,
       decoration: InputDecoration(
-        errorText: error,
-        errorMaxLines: 2,
         enabledBorder: UnderlineInputBorder(
-            borderSide:
-            BorderSide(color: Theme.of(context).primaryColor, width: 2)),
+            borderSide: BorderSide(
+                color: error == null
+                    ? Theme.of(context).primaryColor
+                    : Theme.of(context).errorColor,
+                width: 2)),
         labelText: label,
-        labelStyle: Theme.of(context).textTheme.subtitle1,
+        labelStyle: error == null
+            ? Theme.of(context).textTheme.subtitle1
+            : Theme.of(context).textTheme.button,
       ),
       keyboardType: textInputType,
-      onChanged: (model) => onValueChanged,
+      onChanged: onValueChanged,
     );
   }
 }
 
 class AppInputFieldModel {
   final FieldType fieldType;
+  final TextEditingController textController;
   String error;
   String value;
   OnAppInputFieldChange onValueChanged;
 
-  AppInputFieldModel({
-    this.error,
-    this.value,
-    this.fieldType,
-    this.onValueChanged,
-  });
+  AppInputFieldModel(
+      {this.fieldType,
+      this.textController,
+      this.error,
+      this.value,
+      this.onValueChanged});
 
   String get label {
     switch (fieldType) {
@@ -128,4 +134,3 @@ class AppInputFieldModel {
     }
   }
 }
-
