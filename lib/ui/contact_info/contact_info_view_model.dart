@@ -27,7 +27,7 @@ class ContactInfoViewModel {
         _list.forEach((field) {
           field.error = _validator.validate(field);
           if (field.error != null) {
-            field.textController.text = field.error;
+            field.textController.clear();
           }
         });
         if (_list.areAllFieldsValid()) {

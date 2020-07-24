@@ -33,9 +33,8 @@ class AppStrings {
   static const String country = "COUNTRY";
   static const String zipCode = "ZIP CODE";
   static const String useMyLocation = "Use my location";
-  static const String fieldEmptyError = "Field cannot be empty!";
-  static const String fieldInvalidError =
-      "Invalid input! The field must contain at least 3 characters";
+  static const String fieldEmptyError = "Required";
+  static const String fieldInvalidError = "Invalid input!";
   static const String emailFieldInvalidError = "Invalid email!";
   static const String phoneFieldInvalidError = "Invalid phone number!";
 }
