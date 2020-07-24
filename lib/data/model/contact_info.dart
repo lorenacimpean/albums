@@ -1,12 +1,15 @@
+import 'package:albums/util/extensions.dart';
+import 'package:albums/widgets/app_input_field_widget.dart';
+
 class ContactInfo {
- String firstName;
+  String firstName;
   String lastName;
-   String phoneNumber;
-   String emailAddress;
-   String streetAddress;
-   String city;
-   String country;
-   String zipCode;
+  String phoneNumber;
+  String emailAddress;
+  String streetAddress;
+  String city;
+  String country;
+  String zipCode;
 
   ContactInfo(
       {this.firstName,
@@ -31,6 +34,23 @@ class ContactInfo {
       city: json['city'],
       country: json['country'],
       zipCode: json['zipCode'],
+    );
+  }
+
+  factory ContactInfo.fromAppInputFieldModelList(
+      List<AppInputFieldModel> list) {
+    if (list == null) {
+      return null;
+    }
+    return ContactInfo(
+      firstName: list.valueForFieldType(FieldType.firstNameField),
+      lastName: list.valueForFieldType(FieldType.lastNameField),
+      emailAddress: list.valueForFieldType(FieldType.emailAddressField),
+      phoneNumber: list.valueForFieldType(FieldType.phoneNumberField),
+      streetAddress: list.valueForFieldType(FieldType.streetAddressField),
+      city: list.valueForFieldType(FieldType.cityField),
+      country: list.valueForFieldType(FieldType.countryField),
+      zipCode: list.valueForFieldType(FieldType.zipCodeField),
     );
   }
 

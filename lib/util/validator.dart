@@ -1,37 +1,37 @@
-import 'package:albums/ui/contact_info/contact_info_view_model.dart';
+import 'package:albums/themes/strings.dart';
+import 'package:albums/widgets/app_input_field_widget.dart';
 
 class AppTextValidator {
   static const int minimumLength = 3;
 
-  String textValidator(String value) {
-    print("text validator: $value");
-    if (value.isEmpty) {
-      return "Field cannot be empty!";
+  String emptyValidator(String value) {
+    if (value == null || value.isEmpty) {
+      return AppStrings.fieldEmptyError;
     }
+  }
+
+  String textValidator(String value) {
+    emptyValidator(value);
     if (value.length < minimumLength) {
-      return "Invalid input! The field must contain at least 3 characters";
+      return AppStrings.fieldInvalidError;
     }
     return null;
   }
 
   String emailValidator(String value) {
     RegExp emailRegex = RegExp(r"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
-    if (value.isEmpty) {
-      return "Field cannot be empty!";
-    }
+    emptyValidator(value);
     if (!emailRegex.hasMatch(value)) {
-      return "Invalid email!";
+      return AppStrings.emailFieldInvalidError;
     }
     return null;
   }
 
   String phoneValidator(String value) {
     RegExp phoneRegex = new RegExp(r'^[6-9]\d{9}$');
-    if (value.isEmpty) {
-      return "Field cannot be empty!";
-    }
+    emptyValidator(value);
     if (!phoneRegex.hasMatch(value)) {
-      return "Invalid phone number!";
+      return AppStrings.phoneFieldInvalidError;
     }
     return null;
   }

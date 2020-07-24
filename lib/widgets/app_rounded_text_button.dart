@@ -2,11 +2,11 @@ import 'package:albums/themes/paddings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-class UseMyLocationButton extends StatelessWidget {
+class AppRoundedTextButton extends StatelessWidget {
   final GestureTapCallback onTap;
   final String text;
 
-  const UseMyLocationButton(
+  const AppRoundedTextButton(
       {Key key, @required this.onTap, @required this.text})
       : super(key: key);
 
