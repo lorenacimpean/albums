@@ -42,16 +42,7 @@ class ContactInfo {
     if (list == null) {
       return null;
     }
-    return ContactInfo(
-      firstName: list.valueForFieldType(FieldType.firstNameField),
-      lastName: list.valueForFieldType(FieldType.lastNameField),
-      emailAddress: list.valueForFieldType(FieldType.emailAddressField),
-      phoneNumber: list.valueForFieldType(FieldType.phoneNumberField),
-      streetAddress: list.valueForFieldType(FieldType.streetAddressField),
-      city: list.valueForFieldType(FieldType.cityField),
-      country: list.valueForFieldType(FieldType.countryField),
-      zipCode: list.valueForFieldType(FieldType.zipCodeField),
-    );
+    return list.toContactInfo();
   }
 
   Map<String, dynamic> toJson() => {

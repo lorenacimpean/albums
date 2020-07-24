@@ -19,19 +19,16 @@ class ContactInfoViewModel {
     Stream<List<AppInputFieldModel>> onList = MergeStream([
       input.onStart.map((field) => _list),
       input.onValueChanged.map((event) {
-        _list.forEach((field) {
-          field.value = field.controller.value.text;
+        _list.map((field) {
           String error = _validator.validate(field);
           field.error = error;
           _list.removeWhere((field) => field.fieldType == field.fieldType);
           _list.add(field..error = null);
         });
-
         return _list;
       }),
       input.onApply.flatMap((event) {
         _list.forEach((field) {
-          field.value = field.controller.value.text;
           field.error = _validator.validate(field);
         });
         if (_list.areAllFieldsValid()) {
@@ -52,8 +49,10 @@ class ContactInfoViewModel {
   initFields(List<AppInputFieldModel> list) {
     FieldType.values.forEach((element) {
       _list.add(AppInputFieldModel(
-        fieldType: element,
-      ));
+          fieldType: element,
+          onValueChanged: (model) {
+            input.onValueChanged.add(model);
+          }));
     });
   }
 }

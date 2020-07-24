@@ -4,14 +4,10 @@ import 'package:albums/widgets/app_input_field_widget.dart';
 class AppTextValidator {
   static const int minimumLength = 3;
 
-  String emptyValidator(String value) {
+  String textValidator(String value) {
     if (value == null || value.isEmpty) {
       return AppStrings.fieldEmptyError;
     }
-  }
-
-  String textValidator(String value) {
-    emptyValidator(value);
     if (value.length < minimumLength) {
       return AppStrings.fieldInvalidError;
     }
@@ -20,7 +16,9 @@ class AppTextValidator {
 
   String emailValidator(String value) {
     RegExp emailRegex = RegExp(r"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
-    emptyValidator(value);
+    if (value == null || value.isEmpty) {
+      return AppStrings.fieldEmptyError;
+    }
     if (!emailRegex.hasMatch(value)) {
       return AppStrings.emailFieldInvalidError;
     }
@@ -28,8 +26,10 @@ class AppTextValidator {
   }
 
   String phoneValidator(String value) {
-    RegExp phoneRegex = new RegExp(r'^[6-9]\d{9}$');
-    emptyValidator(value);
+    RegExp phoneRegex = new RegExp(r'^[0-9\-\+]{9,15}$');
+    if (value == null || value.isEmpty) {
+      return AppStrings.fieldEmptyError;
+    }
     if (!phoneRegex.hasMatch(value)) {
       return AppStrings.phoneFieldInvalidError;
     }
@@ -46,7 +46,6 @@ class AppTextValidator {
       case FieldType.zipCodeField:
         return textValidator(model.value);
         break;
-
       case FieldType.emailAddressField:
         return emailValidator(model.value);
         break;

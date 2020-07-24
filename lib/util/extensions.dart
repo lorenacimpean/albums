@@ -1,3 +1,4 @@
+import 'package:albums/data/model/contact_info.dart';
 import 'package:albums/ui/home_screen/home_view_model.dart';
 import 'package:albums/widgets/app_input_field_widget.dart';
 
@@ -41,7 +42,7 @@ extension FirstLetter on String {
 
 extension ModelFromFieldType on List<AppInputFieldModel> {
   AppInputFieldModel getModelFromFieldType(FieldType fieldType) {
-    AppInputFieldModel model = this.firstWhere(
+    AppInputFieldModel model = this?.firstWhere(
         (model) => model.fieldType == fieldType,
         orElse: () => null);
     return model;
@@ -60,5 +61,20 @@ extension FieldValidator on List<AppInputFieldModel> {
 extension FieldValueForType on List<AppInputFieldModel> {
   String valueForFieldType(FieldType fieldType) {
     return this.getModelFromFieldType(fieldType).value;
+  }
+}
+
+extension ToContactInfo on List<AppInputFieldModel> {
+  ContactInfo toContactInfo() {
+    return ContactInfo(
+      firstName: this.valueForFieldType(FieldType.firstNameField),
+      lastName: this.valueForFieldType(FieldType.lastNameField),
+      emailAddress: this.valueForFieldType(FieldType.emailAddressField),
+      phoneNumber: this.valueForFieldType(FieldType.phoneNumberField),
+      streetAddress: this.valueForFieldType(FieldType.streetAddressField),
+      city: this.valueForFieldType(FieldType.cityField),
+      country: this.valueForFieldType(FieldType.countryField),
+      zipCode: this.valueForFieldType(FieldType.zipCodeField),
+    );
   }
 }

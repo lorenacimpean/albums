@@ -16,7 +16,7 @@ class UserProfileRepo {
   }
 
   Future<Result<bool>> saveContactInfo(ContactInfo contactInfo) {
-    SharedPreferences.getInstance().then((sharedPref) {
+   return SharedPreferences.getInstance().then((sharedPref) {
       return sharedPref.setString(key, json.encode(contactInfo?.toJson())).then(
           (value) => value
               ? Result.success(value)

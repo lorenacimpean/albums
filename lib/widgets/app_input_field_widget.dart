@@ -16,29 +16,29 @@ typedef OnAppInputFieldChange(AppInputFieldModel model);
 
 class AppInputFieldWidget extends StatelessWidget {
   final TextInputType textInputType;
-  final TextEditingController controller;
+  final TextEditingController controller = TextEditingController();
   final String label;
   final String error;
-  final String value;
+
   final OnAppInputFieldChange onValueChanged;
 
   AppInputFieldWidget({
     Key key,
+    String value,
     this.textInputType,
-    this.controller,
     this.label,
     this.error,
-    this.value,
     this.onValueChanged,
-  }) : super(key: key);
+  }) : super(key: key) {
+    controller.text = value;
+  }
 
   factory AppInputFieldWidget.fromModel({AppInputFieldModel model}) {
     return AppInputFieldWidget(
-      controller: model.controller,
       label: model.label,
       error: model.error,
-      textInputType: model.textInputType,
       value: model.value,
+      textInputType: model.textInputType,
       onValueChanged: model.onValueChanged,
     );
   }
@@ -53,34 +53,28 @@ class AppInputFieldWidget extends StatelessWidget {
         errorMaxLines: 2,
         enabledBorder: UnderlineInputBorder(
             borderSide:
-                BorderSide(color: Theme.of(context).primaryColor, width: 2)),
+            BorderSide(color: Theme.of(context).primaryColor, width: 2)),
         labelText: label,
         labelStyle: Theme.of(context).textTheme.subtitle1,
       ),
       keyboardType: textInputType,
-      onChanged: (string) => onValueChanged,
+      onChanged: (model) => onValueChanged,
     );
   }
 }
 
 class AppInputFieldModel {
   final FieldType fieldType;
-  TextEditingController controller;
   String error;
   String value;
   OnAppInputFieldChange onValueChanged;
 
-  AppInputFieldModel(
-      {this.error,
-      this.value,
-      this.fieldType,
-      this.onValueChanged,
-      this.controller}) {
-    this.controller = controller ?? TextEditingController();
-    this.value = value;
-    this.error = error;
-    this.onValueChanged = onValueChanged;
-  }
+  AppInputFieldModel({
+    this.error,
+    this.value,
+    this.fieldType,
+    this.onValueChanged,
+  });
 
   String get label {
     switch (fieldType) {
@@ -134,3 +128,4 @@ class AppInputFieldModel {
     }
   }
 }
+
