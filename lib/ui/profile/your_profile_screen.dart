@@ -4,6 +4,7 @@ import 'package:albums/data/model/contact_info.dart';
 import 'package:albums/data/model/result.dart';
 import 'package:albums/data/repo/repo_factory.dart';
 import 'package:albums/themes/icons.dart';
+import 'package:albums/themes/paddings.dart';
 import 'package:albums/themes/strings.dart';
 import 'package:albums/ui/profile/your_profile_view_model.dart';
 import 'package:albums/util/extensions.dart';
@@ -58,16 +59,23 @@ class _YourProfileScreenState extends State<YourProfileScreen> {
       key: Key(AppStrings.profileTitle),
       body: Column(
         children: <Widget>[
-          AppHeaderInfo(
-            title: _contactInfo != null
-                ? _contactInfo.firstName.firstLetterToUpperCase()
-                : "",
-            subtitle: _contactInfo != null
-                ? _contactInfo.firstName + _contactInfo.lastName
-                : "",
+          Padding(
+            padding: EdgeInsets.all(AppPaddings.largePadding),
+            child: AppHeaderInfo(
+              title: _contactInfo != null
+                  ? _contactInfo.firstName + _contactInfo.lastName
+                  : "",
+              subtitle: _contactInfo != null ? _contactInfo.emailAddress : "",
+              iconText: _contactInfo != null
+                  ? _contactInfo.firstName.firstLetterToUpperCase()
+                  : AppStrings.questionMark,
+            ),
           ),
           AppListTile(
             title: AppStrings.contactInfo,
+            subtitle: _contactInfo != null
+                ? '${AppStrings.emailAddress}: ${_contactInfo.emailAddress}'
+                : "",
             icon: AppIcons.contactInfoIcon,
             onTap: () {
               _viewModel.onContactInfoTapped();

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:albums/data/model/contact_info.dart';
+import 'package:albums/data/model/result.dart';
 import 'package:albums/data/repo/user_profile_repo.dart';
 import 'package:albums/util/extensions.dart';
 import 'package:albums/util/validator.dart';
@@ -28,8 +29,7 @@ class ContactInfoViewModel {
           field.error = _validator.validate(field);
         });
         if (_list.areAllFieldsValid()) {
-          ContactInfo contactInfo =
-              ContactInfo.fromAppInputFieldModelList(_list);
+          ContactInfo contactInfo = _list.toContactInfo();
           return _userProfileRepo
               .saveContactInfo(contactInfo)
               .asStream()
@@ -43,13 +43,18 @@ class ContactInfoViewModel {
   }
 
   initFields(List<AppInputFieldModel> list) {
-    FieldType.values.forEach((element) {
-      _list.add(AppInputFieldModel(
-          fieldType: element,
-          textController: TextEditingController(),
-          onValueChanged: (model) {
-            input.onValueChanged.add(model);
-          }));
+    _userProfileRepo.fetchContactInfo().then((Result<ContactInfo> contactInfo) {
+      SuccessState<ContactInfo> result =
+          contactInfo as SuccessState<ContactInfo>;
+      FieldType.values.forEach((fieldType) {
+        String fieldValue = result.value.fromContactInfo(fieldType);
+        _list.add(AppInputFieldModel(
+            fieldType: fieldType,
+            textController: TextEditingController()..text = fieldValue,
+            onValueChanged: (model) {
+              input.onValueChanged.add(model);
+            }));
+      });
     });
   }
 }

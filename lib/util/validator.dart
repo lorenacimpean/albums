@@ -15,7 +15,7 @@ class AppTextValidator {
   }
 
   String emailValidator(String value) {
-    RegExp emailRegex = RegExp(r"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
+    RegExp emailRegex = RegExp(r'^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$');
     if (value == null || value.isEmpty) {
       return AppStrings.fieldEmptyError;
     }

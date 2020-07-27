@@ -37,12 +37,36 @@ class ContactInfo {
     );
   }
 
-  factory ContactInfo.fromAppInputFieldModelList(
-      List<AppInputFieldModel> list) {
-    if (list == null) {
-      return null;
+
+  String fromContactInfo(FieldType fieldType) {
+    switch (fieldType) {
+      case FieldType.firstNameField:
+        return this.firstName;
+        break;
+      case FieldType.lastNameField:
+        return this.lastName;
+        break;
+      case FieldType.emailAddressField:
+        return this.emailAddress;
+        break;
+      case FieldType.phoneNumberField:
+        return this.phoneNumber;
+        break;
+      case FieldType.streetAddressField:
+        return this.streetAddress;
+        break;
+      case FieldType.cityField:
+        return this.city;
+        break;
+      case FieldType.countryField:
+        return this.country;
+        break;
+      case FieldType.zipCodeField:
+        return this.zipCode;
+        break;
+      default:
+        return null;
     }
-    return list.toContactInfo();
   }
 
   Map<String, dynamic> toJson() => {

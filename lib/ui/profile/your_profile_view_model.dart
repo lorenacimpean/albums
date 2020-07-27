@@ -26,6 +26,6 @@ class YourProfileViewModel {
   }
 
   Future<Result<ContactInfo>> userProfile() {
-    return _userProfileRepo.getContactInfo();
+    return _userProfileRepo.fetchContactInfo();
   }
 }

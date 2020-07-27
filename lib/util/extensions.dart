@@ -47,25 +47,22 @@ extension ModelFromFieldType on List<AppInputFieldModel> {
         orElse: () => null);
     return model;
   }
-}
 
-extension FieldValidator on List<AppInputFieldModel> {
   bool areAllFieldsValid() {
     return this.firstWhere(
             (field) => field.error != null || field.value == null,
             orElse: () => null) ==
         null;
   }
-}
 
-extension FieldValueForType on List<AppInputFieldModel> {
   String valueForFieldType(FieldType fieldType) {
     return this.getModelFromFieldType(fieldType).value;
   }
-}
 
-extension ToContactInfo on List<AppInputFieldModel> {
   ContactInfo toContactInfo() {
+    if (this == null) {
+      return null;
+    }
     return ContactInfo(
       firstName: this.valueForFieldType(FieldType.firstNameField),
       lastName: this.valueForFieldType(FieldType.lastNameField),
