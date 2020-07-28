@@ -134,4 +134,18 @@ class AppInputFieldModel {
         return null;
     }
   }
+
+  @override
+  int get hashCode =>
+      fieldType.hashCode ^
+      error.hashCode ^
+      value.hashCode;
+
+  @override
+  bool operator ==(other) =>
+      identical(this, other) ||
+      other is AppInputFieldModel &&
+          fieldType == other.fieldType &&
+          error == other.error &&
+          value == other.value;
 }

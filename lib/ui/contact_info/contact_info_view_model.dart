@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:albums/data/model/contact_info.dart';
 import 'package:albums/data/model/result.dart';
 import 'package:albums/data/repo/user_profile_repo.dart';
-import 'package:albums/ui/extensions.dart';
 import 'package:albums/ui/contact_info/validator.dart';
+import 'package:albums/ui/extensions.dart';
 import 'package:albums/widgets/app_input_field_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:rxdart/rxdart.dart';
@@ -64,6 +64,7 @@ class ContactInfoViewModel {
           );
         });
       }
+
       return _list;
     });
   }
