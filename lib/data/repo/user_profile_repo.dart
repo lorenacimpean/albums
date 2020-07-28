@@ -6,29 +6,26 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class UserProfileRepo {
   static final String key = 'contactInfo';
-  Future<SharedPreferences> sharedPreferences;
 
-  Future<Result<ContactInfo>> fetchContactInfo() {
-    return getSharedPref().then((sharedPref) {
+  Stream<Result<ContactInfo>> fetchContactInfo() {
+    return SharedPreferences.getInstance().then((sharedPref) {
       String encodedInfo = sharedPref.getString(key);
-      return Result<ContactInfo>.success(ContactInfo.fromJson(
-          encodedInfo != null ? json.decode(encodedInfo) : null));
-    });
+      return Result<ContactInfo>.success(
+        ContactInfo.fromJson(
+            encodedInfo != null ? json.decode(encodedInfo) : null),
+      );
+    }).asStream();
   }
 
-  Future<Result<bool>> saveContactInfo(ContactInfo contactInfo) {
-    return getSharedPref().then((sharedPref) {
-      return sharedPref.setString(key, json.encode(contactInfo?.toJson())).then(
-          (value) => value
-              ? Result.success(value)
-              : Result.error("Could not save contact info!"));
-    });
-  }
-
-  Future<SharedPreferences> getSharedPref() {
-    if (sharedPreferences == null) {
-      sharedPreferences = SharedPreferences.getInstance();
-    }
-    return sharedPreferences;
+  Stream<Result<bool>> saveContactInfo(ContactInfo contactInfo) {
+    return SharedPreferences.getInstance().then((sharedPref) {
+      return sharedPref
+          .setString(key, json.encode(contactInfo?.toJson()))
+          .then((value) {
+        return value
+            ? Result.success(value)
+            : Result.error("Could not save contact info!");
+      });
+    }).asStream();
   }
 }

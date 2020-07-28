@@ -1,25 +1,24 @@
-import 'package:albums/util/extensions.dart';
-import 'package:albums/widgets/app_input_field_widget.dart';
+import 'package:albums/data/model/location_info.dart';
 
 class ContactInfo {
-  String firstName;
-  String lastName;
-  String phoneNumber;
-  String emailAddress;
-  String streetAddress;
-  String city;
-  String country;
-  String zipCode;
+  final String firstName;
+  final String lastName;
+  final String phoneNumber;
+  final String emailAddress;
+  final LocationInfo locationInfo;
+
+  static const String jsonFirstName = 'firstName';
+  static const String jsonLastName = 'lastName';
+  static const String jsonPhoneNumber = 'phoneNumber';
+  static const String jsonEmailAddress = 'emailAddress';
+  static const String jsonLocationInfo = 'locationInfo';
 
   ContactInfo(
       {this.firstName,
       this.lastName,
       this.phoneNumber,
       this.emailAddress,
-      this.streetAddress,
-      this.city,
-      this.country,
-      this.zipCode});
+      this.locationInfo});
 
   factory ContactInfo.fromJson(Map<String, dynamic> json) {
     if (json == null) {
@@ -30,53 +29,15 @@ class ContactInfo {
       lastName: json['lastName'],
       phoneNumber: json['phoneNumber'],
       emailAddress: json['emailAddress'],
-      streetAddress: json['streetAddress'],
-      city: json['city'],
-      country: json['country'],
-      zipCode: json['zipCode'],
+      locationInfo: LocationInfo.fromJson(json[jsonLocationInfo]),
     );
   }
 
-
-  String fromContactInfo(FieldType fieldType) {
-    switch (fieldType) {
-      case FieldType.firstNameField:
-        return this.firstName;
-        break;
-      case FieldType.lastNameField:
-        return this.lastName;
-        break;
-      case FieldType.emailAddressField:
-        return this.emailAddress;
-        break;
-      case FieldType.phoneNumberField:
-        return this.phoneNumber;
-        break;
-      case FieldType.streetAddressField:
-        return this.streetAddress;
-        break;
-      case FieldType.cityField:
-        return this.city;
-        break;
-      case FieldType.countryField:
-        return this.country;
-        break;
-      case FieldType.zipCodeField:
-        return this.zipCode;
-        break;
-      default:
-        return null;
-    }
-  }
-
   Map<String, dynamic> toJson() => {
-        'firstName': firstName,
-        'lastName': lastName,
-        'phoneNumber': phoneNumber,
-        'emailAddress': emailAddress,
-        'streetAddress': streetAddress,
-        'city': city,
-        'country': country,
-        'zipCode': zipCode,
+        jsonFirstName: firstName,
+        jsonLastName: lastName,
+        jsonPhoneNumber: phoneNumber,
+        jsonEmailAddress: emailAddress,
+        jsonLocationInfo: locationInfo.toJson()
       };
 }

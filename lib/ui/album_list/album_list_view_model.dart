@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:albums/data/model/albums.dart';
 import 'package:albums/data/model/result.dart';
-import 'package:albums/data/repo/albumsRepo.dart';
-import 'package:albums/util/next_screen.dart';
+import 'package:albums/data/repo/album_repo.dart';
+import 'package:albums/ui/next_screen.dart';
 
 class AlbumListViewModel {
   final AlbumsRepo _albumsRepo;

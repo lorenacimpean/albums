@@ -7,7 +7,7 @@ import 'package:albums/data/repo/repo_factory.dart';
 import 'package:albums/themes/icons.dart';
 import 'package:albums/themes/paddings.dart';
 import 'package:albums/themes/strings.dart';
-import 'package:albums/util/next_screen.dart';
+import 'package:albums/ui/next_screen.dart';
 import 'package:albums/widgets/app_list_tile_widget.dart';
 import 'package:albums/widgets/app_screen_widget.dart';
 import 'package:albums/widgets/error_widget.dart';

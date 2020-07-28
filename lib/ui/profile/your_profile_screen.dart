@@ -6,9 +6,9 @@ import 'package:albums/data/repo/repo_factory.dart';
 import 'package:albums/themes/icons.dart';
 import 'package:albums/themes/paddings.dart';
 import 'package:albums/themes/strings.dart';
+import 'package:albums/ui/extensions.dart';
+import 'package:albums/ui/next_screen.dart';
 import 'package:albums/ui/profile/your_profile_view_model.dart';
-import 'package:albums/util/extensions.dart';
-import 'package:albums/util/next_screen.dart';
 import 'package:albums/widgets/app_bar_icon_widget.dart';
 import 'package:albums/widgets/app_header_info_widget.dart';
 import 'package:albums/widgets/app_list_tile_widget.dart';
@@ -33,7 +33,7 @@ class _YourProfileScreenState extends State<YourProfileScreen> {
     _nextScreenSubscription = _viewModel.nextScreenStream.listen((nextScreen) {
       openNextScreen(context, nextScreen);
     });
-    _viewModel.userProfile().then((Result<ContactInfo> value) {
+    _viewModel.userProfile().listen((Result<ContactInfo> value) {
       setState(() {
         _contactInfo = (value as SuccessState<ContactInfo>)?.value;
       });

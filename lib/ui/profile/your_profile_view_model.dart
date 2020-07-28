@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:albums/data/model/contact_info.dart';
 import 'package:albums/data/model/result.dart';
 import 'package:albums/data/repo/user_profile_repo.dart';
-import 'package:albums/util/next_screen.dart';
+import 'package:albums/ui/next_screen.dart';
 
 class YourProfileViewModel {
   final UserProfileRepo _userProfileRepo;
@@ -25,7 +25,7 @@ class YourProfileViewModel {
     _nextScreenController.add(nextScreen);
   }
 
-  Future<Result<ContactInfo>> userProfile() {
+  Stream<Result<ContactInfo>> userProfile() {
     return _userProfileRepo.fetchContactInfo();
   }
 }

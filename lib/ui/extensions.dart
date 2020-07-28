@@ -1,4 +1,5 @@
 import 'package:albums/data/model/contact_info.dart';
+import 'package:albums/data/model/location_info.dart';
 import 'package:albums/ui/home_screen/home_view_model.dart';
 import 'package:albums/widgets/app_input_field_widget.dart';
 
@@ -68,10 +69,46 @@ extension ModelFromFieldType on List<AppInputFieldModel> {
       lastName: this.valueForFieldType(FieldType.lastNameField),
       emailAddress: this.valueForFieldType(FieldType.emailAddressField),
       phoneNumber: this.valueForFieldType(FieldType.phoneNumberField),
+      locationInfo: this.toLocationInfo(),
+    );
+  }
+
+  LocationInfo toLocationInfo() {
+    if (this == null) {
+      return null;
+    }
+    return LocationInfo(
       streetAddress: this.valueForFieldType(FieldType.streetAddressField),
       city: this.valueForFieldType(FieldType.cityField),
       country: this.valueForFieldType(FieldType.countryField),
       zipCode: this.valueForFieldType(FieldType.zipCodeField),
     );
+  }
+}
+
+extension ContactInfoFromEnum on FieldType {
+  String fromContactInfo(ContactInfo info) {
+    switch (this) {
+      case FieldType.firstNameField:
+        return info?.firstName;
+        break;
+      case FieldType.lastNameField:
+        return info?.lastName;
+        break;
+      case FieldType.emailAddressField:
+        return info?.emailAddress;
+        break;
+      case FieldType.phoneNumberField:
+        return info?.phoneNumber;
+        break;
+      case FieldType.streetAddressField:
+      case FieldType.cityField:
+      case FieldType.countryField:
+      case FieldType.zipCodeField:
+        return info?.locationInfo?.fromLocationInfo(this);
+        break;
+      default:
+        return null;
+    }
   }
 }

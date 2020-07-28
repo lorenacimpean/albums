@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:albums/data/api/app_client.dart';
 import 'package:albums/data/model/photos.dart';
 import 'package:albums/data/model/result.dart';
-import 'package:albums/util/request_type.dart';
+import 'package:albums/data/api/request_type.dart';
 
 class PhotosRemoteDataSource {
   AppHttpClient _appHttpClient;
