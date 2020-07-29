@@ -25,8 +25,8 @@ class LocationInfo {
     return LocationInfo(
       streetAddress: json[jsonStreetAddress],
       city: json[jsonCity],
-      country: json['country'],
-      zipCode: json['zipCode'],
+      country: json[jsonCountry],
+      zipCode: json[jsonZipCode],
     );
   }
 

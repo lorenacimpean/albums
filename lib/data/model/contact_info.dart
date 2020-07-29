@@ -1,17 +1,17 @@
 import 'package:albums/data/model/location_info.dart';
 
+const String jsonFirstName = 'firstName';
+const String jsonLastName = 'lastName';
+const String jsonPhoneNumber = 'phoneNumber';
+const String jsonEmailAddress = 'emailAddress';
+const String jsonLocationInfo = 'locationInfo';
+
 class ContactInfo {
   final String firstName;
   final String lastName;
   final String phoneNumber;
   final String emailAddress;
   final LocationInfo locationInfo;
-
-  static const String jsonFirstName = 'firstName';
-  static const String jsonLastName = 'lastName';
-  static const String jsonPhoneNumber = 'phoneNumber';
-  static const String jsonEmailAddress = 'emailAddress';
-  static const String jsonLocationInfo = 'locationInfo';
 
   ContactInfo(
       {this.firstName,
@@ -25,10 +25,10 @@ class ContactInfo {
       return null;
     }
     return ContactInfo(
-      firstName: json['firstName'],
-      lastName: json['lastName'],
-      phoneNumber: json['phoneNumber'],
-      emailAddress: json['emailAddress'],
+      firstName: json[jsonFirstName],
+      lastName: json[jsonLastName],
+      phoneNumber: json[jsonPhoneNumber],
+      emailAddress: json[jsonEmailAddress],
       locationInfo: LocationInfo.fromJson(json[jsonLocationInfo]),
     );
   }
