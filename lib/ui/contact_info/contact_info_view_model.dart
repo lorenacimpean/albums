@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:albums/data/model/contact_info.dart';
 import 'package:albums/data/model/result.dart';
+import 'package:albums/data/repo/location_repo.dart';
 import 'package:albums/data/repo/user_profile_repo.dart';
 import 'package:albums/ui/contact_info/validator.dart';
 import 'package:albums/ui/extensions.dart';
@@ -13,13 +14,17 @@ class ContactInfoViewModel {
   final ContactInfoViewModelInput input;
   final UserProfileRepo _userProfileRepo;
   final AppTextValidator _validator;
+  final LocationRepo _locationRepo;
   ContactInfoViewModelOutput output;
   List<AppInputFieldModel> _list = List<AppInputFieldModel>();
+
+  LocationDescription locationDescription = LocationDescription();
 
   ContactInfoViewModel(
     this.input,
     this._userProfileRepo,
     this._validator,
+    this._locationRepo,
   ) {
     Stream<List<AppInputFieldModel>> onList = MergeStream([
       input.onStart.flatMap((_) => _initFields()),
@@ -33,14 +38,44 @@ class ContactInfoViewModel {
         });
         if (_list.areAllFieldsValid()) {
           ContactInfo contactInfo = _list.toContactInfo();
-          return _userProfileRepo
-              .saveContactInfo(contactInfo)
-              .map((event) => _list);
-        } else {
-          return Stream.value(_list);
+          return _userProfileRepo.saveContactInfo(contactInfo).map((event) {
+            return _list;
+          });
         }
-      })
+        return Stream.value(_list);
+      }),
+      input.onLocationButtonPressed.flatMap((event) {
+        return _locationRepo
+            .decodeUserLocation()
+            .flatMap((locationDescription) {
+          if (locationDescription != null) {
+            debugPrint('$locationDescription');
+            _list.forEach((model) {
+              if (model.fieldType == FieldType.streetAddressField) {
+                model.value = locationDescription.street;
+                model.textController.text = locationDescription.street;
+              }
+              if (model.fieldType == FieldType.cityField) {
+                model.value = locationDescription.city;
+                model.textController.text = locationDescription.city;
+              }
+              if (model.fieldType == FieldType.countryField) {
+                model.value = locationDescription.country;
+                model.textController.text = locationDescription.country;
+              }
+              if (model.fieldType == FieldType.zipCodeField) {
+                model.value = locationDescription.zipcode;
+                model.textController.text = locationDescription.zipcode;
+              }
+              debugPrint('$_list');
+              return _list;
+            });
+          }
+          return Stream.value(_list);
+        });
+      }),
     ]);
+
     output = ContactInfoViewModelOutput(onList);
   }
 
@@ -74,11 +109,13 @@ class ContactInfoViewModelInput {
   final Subject<bool> onStart;
   final Subject<bool> onApply;
   final Subject<AppInputFieldModel> onValueChanged;
+  final Subject<bool> onLocationButtonPressed;
 
   ContactInfoViewModelInput(
     this.onStart,
     this.onApply,
     this.onValueChanged,
+    this.onLocationButtonPressed,
   );
 }
 

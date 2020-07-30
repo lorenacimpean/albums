@@ -1,3 +1,4 @@
+import 'package:albums/data/repo/location_repo.dart';
 import 'package:albums/data/repo/photos_repo.dart';
 import 'package:albums/data/repo/remote_data_source_factory.dart';
 import 'package:albums/data/repo/user_profile_repo.dart';
@@ -14,4 +15,8 @@ PhotosRepo buildPhotosRepo() {
 
 UserProfileRepo buildUserProfileRepo() {
   return UserProfileRepo();
+}
+
+LocationRepo buildLocationRepo() {
+  return LocationRepo();
 }

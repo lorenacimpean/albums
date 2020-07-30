@@ -2,8 +2,8 @@ import 'package:albums/data/repo/repo_factory.dart';
 import 'package:albums/themes/paddings.dart';
 import 'package:albums/themes/strings.dart';
 import 'package:albums/ui/contact_info/contact_info_view_model.dart';
-import 'package:albums/ui/extensions.dart';
 import 'package:albums/ui/contact_info/validator.dart';
+import 'package:albums/ui/extensions.dart';
 import 'package:albums/widgets/app_input_field_widget.dart';
 import 'package:albums/widgets/app_rounded_text_button.dart';
 import 'package:albums/widgets/app_screen_widget.dart';
@@ -30,9 +30,11 @@ class _ContactInfoScreenState extends BaseState<ContactInfoScreen> {
         PublishSubject(),
         PublishSubject(),
         PublishSubject(),
+        PublishSubject(),
       ),
       buildUserProfileRepo(),
       AppTextValidator(),
+      buildLocationRepo(),
     );
 
     disposeLater(_viewModel.output.fieldList.listen((list) {
@@ -156,7 +158,9 @@ class _ContactInfoScreenState extends BaseState<ContactInfoScreen> {
             //use location
             AppRoundedTextButton(
               text: AppStrings.useMyLocation,
-              onTap: () {},
+              onTap: () {
+                _viewModel.input.onLocationButtonPressed.add(true);
+              },
             )
           ],
         ),
