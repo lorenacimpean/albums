@@ -1,11 +1,9 @@
 import 'package:geocoder/geocoder.dart';
-import 'package:geolocator/geolocator.dart' as geolocator;
 import 'package:location/location.dart';
 import 'package:rxdart/rxdart.dart';
 
 class LocationRepo {
-  geolocator.Geolocator locator;
-  Location location = Location();
+  final Location location = Location();
 
   Stream<Coordinates> getCurrentLocation() {
     return location.requestPermission().asStream().flatMap((permission) {
@@ -16,7 +14,7 @@ class LocationRepo {
           return coordinates;
         });
       }
-      return Stream.value(null);
+      return null;
     });
   }
 
