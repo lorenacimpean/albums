@@ -7,7 +7,7 @@ import 'package:albums/data/repo/user_profile_repo.dart';
 import 'package:albums/ui/contact_info/validator.dart';
 import 'package:albums/ui/extensions.dart';
 import 'package:albums/widgets/app_input_field_widget.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
 import 'package:rxdart/rxdart.dart';
 
 class ContactInfoViewModel {
@@ -45,29 +45,14 @@ class ContactInfoViewModel {
         return Stream.value(_list);
       }),
       input.onLocationButtonPressed.flatMap((event) {
-        return _locationRepo
-            .decodeUserLocation()
-            .flatMap((locationDescription) {
-          if (locationDescription != null) {
-            debugPrint('$locationDescription');
-            _list.forEach((model) {
-              if (model.fieldType == FieldType.streetAddressField) {
-                model.value = locationDescription.street;
-                model.textController.text = locationDescription.street;
-              }
-              if (model.fieldType == FieldType.cityField) {
-                model.value = locationDescription.city;
-                model.textController.text = locationDescription.city;
-              }
-              if (model.fieldType == FieldType.countryField) {
-                model.value = locationDescription.country;
-                model.textController.text = locationDescription.country;
-              }
-              if (model.fieldType == FieldType.zipCodeField) {
-                model.value = locationDescription.zipcode;
-                model.textController.text = locationDescription.zipcode;
-              }
-              debugPrint('$_list');
+        return _locationRepo.getCurrentLocation().flatMap((result) {
+          if (result is SuccessState) {
+            return _locationRepo
+                .decodeUserLocation(result.value)
+                .map((address) {
+              LocationDescription locationDescription =
+                  LocationDescription.fromAddress(address);
+              _updateLocationFields(locationDescription);
               return _list;
             });
           }
@@ -75,7 +60,6 @@ class ContactInfoViewModel {
         });
       }),
     ]);
-
     output = ContactInfoViewModelOutput(onList);
   }
 
@@ -102,6 +86,29 @@ class ContactInfoViewModel {
 
       return _list;
     });
+  }
+
+  void _updateLocationFields(LocationDescription locationDescription) {
+    if (locationDescription != null) {
+      _list.forEach((model) {
+        if (model.fieldType == FieldType.streetAddressField) {
+          model.value = locationDescription.street;
+          model.textController.text = locationDescription.street;
+        }
+        if (model.fieldType == FieldType.cityField) {
+          model.value = locationDescription.city;
+          model.textController.text = locationDescription.city;
+        }
+        if (model.fieldType == FieldType.countryField) {
+          model.value = locationDescription.country;
+          model.textController.text = locationDescription.country;
+        }
+        if (model.fieldType == FieldType.zipCodeField) {
+          model.value = locationDescription.zipcode;
+          model.textController.text = locationDescription.zipcode;
+        }
+      });
+    }
   }
 }
 
