@@ -3,7 +3,9 @@ import 'package:location/location.dart';
 import 'package:rxdart/rxdart.dart';
 
 class LocationRepo {
-  final Location location = Location();
+  final Location location;
+
+  LocationRepo({Location location}) : this.location = location ?? Location();
 
   Stream<Coordinates> getCurrentLocation() {
     return location.requestPermission().asStream().flatMap((permission) {
