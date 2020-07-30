@@ -1,7 +1,7 @@
 import 'package:albums/data/api/app_client.dart';
 import 'package:albums/data/model/albums.dart';
 import 'package:albums/data/model/result.dart';
-import 'package:albums/util/request_type.dart';
+import 'package:albums/data/api/request_type.dart';
 
 class AlbumsRemoteDataSource {
   AppHttpClient _appHttpClient;

@@ -5,7 +5,7 @@ import 'package:albums/data/model/photos.dart';
 import 'package:albums/data/model/result.dart';
 import 'package:albums/data/repo/photos_repo.dart';
 import 'package:albums/themes/strings.dart';
-import 'package:albums/util/next_screen.dart';
+import 'package:albums/ui/next_screen.dart';
 
 enum ActionType { saveToFavorites, addComment }
 enum ListItemType { albumInfo, albumAction, photo }

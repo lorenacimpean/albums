@@ -8,8 +8,7 @@ import 'package:albums/themes/icons.dart';
 import 'package:albums/themes/paddings.dart';
 import 'package:albums/themes/strings.dart';
 import 'package:albums/ui/album_details/album_details_view_model.dart';
-import 'package:albums/util/extensions.dart';
-import 'package:albums/util/next_screen.dart';
+import 'package:albums/ui/extensions.dart';
 import 'package:albums/widgets/album_details_icon_widgets.dart';
 import 'package:albums/widgets/app_header_info_widget.dart';
 import 'package:albums/widgets/app_screen_widget.dart';
@@ -22,6 +21,8 @@ import 'package:albums/widgets/toast_widget.dart';
 import 'package:albums/widgets/vertical_separator_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+
+import '../next_screen.dart';
 
 class AlbumDetailsScreen extends StatefulWidget {
   final Album album;
@@ -48,7 +49,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
       _showSnackBar(action.toastMessage);
     });
     _nextScreenSubscription = _viewModel.nextScreenStream.listen((nextScreen) {
-      route(context, nextScreen);
+      openNextScreen(context, nextScreen);
     });
   }
 

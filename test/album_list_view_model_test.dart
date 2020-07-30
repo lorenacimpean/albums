@@ -2,7 +2,7 @@ import 'package:albums/data/api/albums_remote_data_source.dart';
 import 'package:albums/data/api/app_client.dart';
 import 'package:albums/data/model/albums.dart';
 import 'package:albums/data/model/result.dart';
-import 'package:albums/data/repo/albumsRepo.dart';
+import 'package:albums/data/repo/album_repo.dart';
 import 'package:albums/ui/album_list/album_list_view_model.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';

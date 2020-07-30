@@ -1,9 +1,9 @@
 import 'package:http/http.dart';
 import 'package:meta/meta.dart';
 
-import '../../util/nothing.dart';
-import '../../util/request_type.dart';
-import '../../util/request_type_exception.dart';
+import 'nothing.dart';
+import 'request_type.dart';
+import 'request_type_exception.dart';
 
 class AppHttpClient {
   final Client client;

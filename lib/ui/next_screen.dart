@@ -20,7 +20,7 @@ class NextScreen {
   NextScreen(this.type, this.data);
 }
 
-route(BuildContext context, NextScreen nextScreen) {
+void openNextScreen(BuildContext context, NextScreen nextScreen) {
   switch (nextScreen.type) {
     case ScreenType.HomeScreen:
       Navigator.of(context).pushReplacement(

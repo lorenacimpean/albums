@@ -1,5 +1,5 @@
 import 'package:albums/data/api/app_client.dart';
-import 'package:albums/util/request_type.dart';
+import 'package:albums/data/api/request_type.dart';
 import 'package:http/http.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';

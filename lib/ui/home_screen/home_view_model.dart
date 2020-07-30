@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:core';
 
 import 'package:albums/themes/icons.dart';
-import 'package:albums/util/extensions.dart';
+import 'package:albums/ui/extensions.dart';
 import 'package:flutter/widgets.dart';
 
 enum NavBarItem { BROWSE, FRIENDS, NEWS, PROFILE }
