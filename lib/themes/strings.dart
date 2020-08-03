@@ -37,4 +37,5 @@ class AppStrings {
   static const String fieldInvalidError = "Minimum 3 characters";
   static const String emailFieldInvalidError = "Invalid email";
   static const String phoneFieldInvalidError = "Invalid phone number";
+  static const String noInternet = "No internet connection!";
 }
