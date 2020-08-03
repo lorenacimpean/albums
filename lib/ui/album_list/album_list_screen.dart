@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:core';
 
 import 'package:albums/data/model/albums.dart';
@@ -10,9 +9,9 @@ import 'package:albums/themes/strings.dart';
 import 'package:albums/ui/next_screen.dart';
 import 'package:albums/widgets/app_list_tile_widget.dart';
 import 'package:albums/widgets/app_screen_widget.dart';
-import 'package:albums/widgets/error_widget.dart';
-import 'package:albums/widgets/progress_indicator.dart';
+import 'package:albums/widgets/error_handling_state.dart';
 import 'package:flutter/material.dart';
+import 'package:rxdart/rxdart.dart';
 
 import 'album_list_view_model.dart';
 
@@ -21,25 +20,40 @@ class AlbumListScreen extends StatefulWidget {
   _AlbumListScreenState createState() => _AlbumListScreenState();
 }
 
-class _AlbumListScreenState extends State<AlbumListScreen> {
+class _AlbumListScreenState extends ErrorHandlingState<AlbumListScreen> {
   AlbumListViewModel _viewModel;
-  Future<Result> _futureAlbums;
-  StreamSubscription _nextScreenSubscription;
+  AlbumList _albums = AlbumList();
 
   void initState() {
     super.initState();
-    _viewModel = AlbumListViewModel(buildAlbumsRepo());
-    _futureAlbums = _viewModel.getAlbums();
-    _nextScreenSubscription = _viewModel.goToNext.stream.listen((nextScreen) {
+    _viewModel = AlbumListViewModel(
+        buildAlbumsRepo(),
+        AlbumListViewModelInput(
+          PublishSubject(),
+          PublishSubject(),
+        ));
+
+    disposeLater(
+      _viewModel.output.albums.listen((result) {
+        setState(() {
+          if (result is ErrorState) {
+            handleError(result);
+          }
+          if (result is SuccessState) {
+            _albums = result.value;
+          }
+        });
+      }),
+    );
+    _viewModel.output.onNextScreen.listen((nextScreen) {
       openNextScreen(context, nextScreen);
     });
+    _viewModel.input.onStart.add(true);
   }
 
   @override
   void dispose() {
     super.dispose();
-    _nextScreenSubscription.cancel();
-    _viewModel.dispose();
   }
 
   @override
@@ -55,36 +69,27 @@ class _AlbumListScreenState extends State<AlbumListScreen> {
     return Container(
       padding: EdgeInsets.only(top: AppPaddings.defaultPadding),
       child: Center(
-        child: FutureBuilder(
-            future: _futureAlbums,
-            builder: (BuildContext context, AsyncSnapshot<Result> snapshot) {
-              if (snapshot.data is SuccessState) {
-                AlbumList albums = (snapshot.data as SuccessState).value;
-
-                return ListView.separated(
-                  itemBuilder: (context, index) {
-                    Album currentAlbum = albums.albumAtIndex(index);
-                    return AppListTile(
-                      icon: AppIcons.albumIcon,
-                      title: currentAlbum.title,
-                      subtitle: '${AppStrings.albumWithId} ${currentAlbum.id}',
-                      onTap: () => _viewModel.onAlbumTap(currentAlbum),
-                      key: Key(currentAlbum.id.toString()),
-                    );
-                  },
-                  separatorBuilder: (BuildContext context, int index) {
-                    return SizedBox(
-                      height: AppPaddings.midPadding,
-                    );
-                  },
-                  itemCount: albums.albumList.length,
-                  physics: BouncingScrollPhysics(),
-                );
-              } else if (snapshot.data is ErrorState) {
-                return ErrorTextWidget(error: snapshot.error);
-              } else
-                return LoadingIndicator();
-            }),
+        child: ListView.separated(
+          itemBuilder: (context, index) {
+            Album currentAlbum = _albums.albumAtIndex(index);
+            return AppListTile(
+              icon: AppIcons.albumIcon,
+              title: currentAlbum.title,
+              subtitle: '${AppStrings.albumWithId} ${currentAlbum.id}',
+              onTap: () {
+                _viewModel.input.onTap.add(currentAlbum);
+              },
+              key: Key(currentAlbum.id.toString()),
+            );
+          },
+          separatorBuilder: (BuildContext context, int index) {
+            return SizedBox(
+              height: AppPaddings.midPadding,
+            );
+          },
+          itemCount: _albums.albumList.length,
+          physics: BouncingScrollPhysics(),
+        ),
       ),
     );
   }

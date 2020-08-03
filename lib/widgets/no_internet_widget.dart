@@ -5,6 +5,11 @@ import 'package:albums/widgets/app_rounded_text_button.dart';
 import 'package:flutter/material.dart';
 
 class NoInternetConnectionWidget extends StatelessWidget {
+  final VoidCallback retry;
+
+  const NoInternetConnectionWidget({Key key, @required this.retry})
+      : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -24,7 +29,11 @@ class NoInternetConnectionWidget extends StatelessWidget {
             child: Text(AppStrings.noInternet,
                 style: Theme.of(context).textTheme.subtitle1),
           ),
-          AppRoundedTextButton(text: null, onTap: () => {}),
+          AppRoundedTextButton(
+              text: null,
+              onTap: () {
+                return retry;
+              }),
         ],
       ),
     );
