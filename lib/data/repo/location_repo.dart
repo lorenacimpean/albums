@@ -8,7 +8,7 @@ class LocationRepo {
 
   LocationRepo({Location location}) : this.location = location ?? Location();
 
-  Stream<Result> getCurrentLocation() {
+  Stream<Result<Coordinates>> getCurrentLocation() {
     return location.requestPermission().asStream().flatMap((permission) {
       if (permission == PermissionStatus.granted) {
         return location.getLocation().asStream().map((locationData) {
@@ -20,7 +20,7 @@ class LocationRepo {
       if (permission == PermissionStatus.denied) {
         return Stream.value(Result.error("Location Permission was denied"));
       }
-      return Stream.value(Result.loading("loading"));
+      return Stream.value(Result.loading(null));
     });
   }
 
@@ -29,7 +29,7 @@ class LocationRepo {
         .findAddressesFromCoordinates(coordinates)
         .asStream()
         .map((addressList) {
-      return addressList.first;
+      return addressList?.first;
     });
   }
 }

@@ -8,6 +8,7 @@ import 'package:albums/ui/contact_info/validator.dart';
 import 'package:albums/ui/extensions.dart';
 import 'package:albums/widgets/app_input_field_widget.dart';
 import 'package:flutter/widgets.dart';
+import 'package:geocoder/geocoder.dart';
 import 'package:rxdart/rxdart.dart';
 
 class ContactInfoViewModel {
@@ -48,11 +49,9 @@ class ContactInfoViewModel {
         return _locationRepo.getCurrentLocation().flatMap((result) {
           if (result is SuccessState) {
             return _locationRepo
-                .decodeUserLocation(result.value)
+                .decodeUserLocation((result as SuccessState).value)
                 .map((address) {
-              LocationDescription locationDescription =
-                  LocationDescription.fromAddress(address);
-              _updateLocationFields(locationDescription);
+              _updateLocationFields(address);
               return _list;
             });
           }
@@ -88,24 +87,28 @@ class ContactInfoViewModel {
     });
   }
 
-  void _updateLocationFields(LocationDescription locationDescription) {
-    if (locationDescription != null) {
+  void _updateLocationFields(Address address) {
+    if (address != null) {
+      String street = '${address.featureName} ${address.thoroughfare} ';
+      String country = address.countryName;
+      String city = address.locality;
+      String zipcode = address.postalCode;
       _list.forEach((model) {
         if (model.fieldType == FieldType.streetAddressField) {
-          model.value = locationDescription.street;
-          model.textController.text = locationDescription.street;
+          model.value = street;
+          model.textController.text = street;
         }
         if (model.fieldType == FieldType.cityField) {
-          model.value = locationDescription.city;
-          model.textController.text = locationDescription.city;
+          model.value = country;
+          model.textController.text = country;
         }
         if (model.fieldType == FieldType.countryField) {
-          model.value = locationDescription.country;
-          model.textController.text = locationDescription.country;
+          model.value = city;
+          model.textController.text = city;
         }
         if (model.fieldType == FieldType.zipCodeField) {
-          model.value = locationDescription.zipcode;
-          model.textController.text = locationDescription.zipcode;
+          model.value = zipcode;
+          model.textController.text = zipcode;
         }
       });
     }
