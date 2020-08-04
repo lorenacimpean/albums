@@ -25,16 +25,20 @@ void main() {
       'time': 0
     };
     LocationData locationData = LocationData.fromMap(dataMap);
-    Coordinates expectedCoordinates = Coordinates(latitude, longitude);
+    AppCoordinates expectedCoordinates = AppCoordinates(
+      latitude: latitude,
+      longitude: longitude,
+    );
     when(mockLocation.requestPermission())
         .thenAnswer((_) => Future.value(PermissionStatus.granted));
     when(mockLocation.getLocation())
         .thenAnswer((_) => Future.value(locationData));
-    Stream<Result<Coordinates>> actualResult =
+    Stream<Result<AppCoordinates>> actualResult =
         locationRepo.getCurrentLocation();
+
     expect(actualResult, isNotNull);
-    expect(
-        actualResult, emits(Result<Coordinates>.success(expectedCoordinates)));
+    expect(actualResult,
+        emits(Result<AppCoordinates>.success(expectedCoordinates)));
   });
 
   test('getCurrentLocation Error', () {
@@ -43,21 +47,23 @@ void main() {
 
     when(mockLocation.requestPermission())
         .thenAnswer((_) => Future.value(PermissionStatus.denied));
-    Stream<Result<Coordinates>> actualResult =
+    Stream<Result<AppCoordinates>> actualResult =
         locationRepo.getCurrentLocation();
+
     expect(actualResult, isNotNull);
     expect(actualResult,
-        emits(Result<Coordinates>.error(AppStrings.locationError)));
+        emits(Result<AppCoordinates>.error(AppStrings.locationError)));
   });
+
   test('getCurrentLocation Loading', () {
     MockLocation mockLocation = MockLocation();
     LocationRepo locationRepo = LocationRepo(location: mockLocation);
 
     when(mockLocation.requestPermission())
         .thenAnswer((_) => Future.value(null));
-    Stream<Result<Coordinates>> actualResult =
+    Stream<Result<AppCoordinates>> actualResult =
         locationRepo.getCurrentLocation();
     expect(actualResult, isNotNull);
-    expect(actualResult, emits(Result<Coordinates>.loading(null)));
+    expect(actualResult, emits(Result<AppCoordinates>.loading(null)));
   });
 }
