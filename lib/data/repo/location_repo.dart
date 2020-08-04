@@ -1,4 +1,5 @@
 import 'package:albums/data/model/result.dart';
+import 'package:albums/themes/strings.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:location/location.dart';
 import 'package:rxdart/rxdart.dart';
@@ -14,13 +15,14 @@ class LocationRepo {
         return location.getLocation().asStream().map((locationData) {
           Coordinates coordinates =
               Coordinates(locationData.latitude, locationData.longitude);
-          return Result.success(coordinates);
+          return Result<Coordinates>.success(coordinates);
         });
       }
       if (permission == PermissionStatus.denied) {
-        return Stream.value(Result.error("Location Permission was denied"));
+        return Stream.value(
+            Result<Coordinates>.error(AppStrings.locationError));
       }
-      return Stream.value(Result.loading(null));
+      return Stream.value(Result<Coordinates>.loading(null));
     });
   }
 
@@ -31,28 +33,5 @@ class LocationRepo {
         .map((addressList) {
       return addressList?.first;
     });
-  }
-}
-
-class LocationDescription {
-  final street;
-  final city;
-  final country;
-  final zipcode;
-
-  LocationDescription({
-    this.street,
-    this.city,
-    this.country,
-    this.zipcode,
-  });
-
-  factory LocationDescription.fromAddress(Address address) {
-    return LocationDescription(
-      street: '${address.featureName} ${address.thoroughfare} ',
-      country: address.countryName,
-      city: address.locality,
-      zipcode: address.postalCode,
-    );
   }
 }

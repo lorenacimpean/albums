@@ -19,8 +19,6 @@ class ContactInfoViewModel {
   ContactInfoViewModelOutput output;
   List<AppInputFieldModel> _list = List<AppInputFieldModel>();
 
-  LocationDescription locationDescription = LocationDescription();
-
   ContactInfoViewModel(
     this.input,
     this._userProfileRepo,
