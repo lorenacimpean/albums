@@ -10,6 +10,7 @@ import 'package:albums/ui/next_screen.dart';
 import 'package:albums/widgets/app_list_tile_widget.dart';
 import 'package:albums/widgets/app_screen_widget.dart';
 import 'package:albums/widgets/error_handling_state.dart';
+import 'package:albums/widgets/progress_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -36,11 +37,11 @@ class _AlbumListScreenState extends ErrorHandlingState<AlbumListScreen> {
     disposeLater(
       _viewModel.output.albums.listen((result) {
         setState(() {
-          if (result is ErrorState) {
-            handleError(result);
-          }
           if (result is SuccessState) {
+            debugPrint('$result');
             _albums = result.value;
+          } else {
+            handleError(error)
           }
         });
       }),
@@ -69,27 +70,29 @@ class _AlbumListScreenState extends ErrorHandlingState<AlbumListScreen> {
     return Container(
       padding: EdgeInsets.only(top: AppPaddings.defaultPadding),
       child: Center(
-        child: ListView.separated(
-          itemBuilder: (context, index) {
-            Album currentAlbum = _albums.albumAtIndex(index);
-            return AppListTile(
-              icon: AppIcons.albumIcon,
-              title: currentAlbum.title,
-              subtitle: '${AppStrings.albumWithId} ${currentAlbum.id}',
-              onTap: () {
-                _viewModel.input.onTap.add(currentAlbum);
-              },
-              key: Key(currentAlbum.id.toString()),
-            );
-          },
-          separatorBuilder: (BuildContext context, int index) {
-            return SizedBox(
-              height: AppPaddings.midPadding,
-            );
-          },
-          itemCount: _albums.albumList.length,
-          physics: BouncingScrollPhysics(),
-        ),
+        child: _albums.albumList == null
+            ? LoadingIndicator()
+            : ListView.separated(
+                itemBuilder: (context, index) {
+                  Album currentAlbum = _albums.albumAtIndex(index);
+                  return AppListTile(
+                    icon: AppIcons.albumIcon,
+                    title: currentAlbum.title,
+                    subtitle: '${AppStrings.albumWithId} ${currentAlbum.id}',
+                    onTap: () {
+                      _viewModel.input.onTap.add(currentAlbum);
+                    },
+                    key: Key(currentAlbum.id.toString()),
+                  );
+                },
+                separatorBuilder: (BuildContext context, int index) {
+                  return SizedBox(
+                    height: AppPaddings.midPadding,
+                  );
+                },
+                itemCount: _albums.albumList.length,
+                physics: BouncingScrollPhysics(),
+              ),
       ),
     );
   }

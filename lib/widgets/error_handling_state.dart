@@ -17,7 +17,7 @@ abstract class ErrorHandlingState<T extends StatefulWidget>
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (context) {
         return NoInternetConnectionWidget(
-          retry: retry,
+          retry: () => retry,
         );
       }),
     );
