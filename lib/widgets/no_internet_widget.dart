@@ -30,10 +30,9 @@ class NoInternetConnectionWidget extends StatelessWidget {
                 style: Theme.of(context).textTheme.subtitle1),
           ),
           AppRoundedTextButton(
-              text: null,
-              onTap: () {
-                return retry;
-              }),
+            text: AppStrings.retry,
+            onTap: retry,
+          ),
         ],
       ),
     );

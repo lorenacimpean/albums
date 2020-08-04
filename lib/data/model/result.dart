@@ -21,4 +21,11 @@ class ErrorState<T> extends Result<T> {
 class SuccessState<T> extends Result<T> {
   SuccessState(this.value) : super._();
   final T value;
+
+  @override
+  int get hashCode => value.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) || other is SuccessState && value == other.value;
 }

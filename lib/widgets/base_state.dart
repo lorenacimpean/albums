@@ -14,7 +14,7 @@ abstract class BaseState<T extends StatefulWidget> extends State<T> {
     _subscriptions?.forEach((element) {
       element?.cancel();
     });
-    _subscriptions.clear();
+    _subscriptions?.clear();
     super.dispose();
   }
 }

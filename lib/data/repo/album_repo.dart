@@ -6,7 +6,7 @@ class AlbumsRepo {
 
   AlbumsRepo(this._albumsRemoteDataSource);
 
-  Future<Result> getAlbums() {
+  Stream<Result> getAlbums() {
     return _albumsRemoteDataSource.getAlbums();
   }
 }

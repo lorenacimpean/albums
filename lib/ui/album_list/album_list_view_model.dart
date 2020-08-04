@@ -12,22 +12,19 @@ class AlbumListViewModel {
   AlbumListViewModelOutput output;
 
   AlbumListViewModel(this._albumsRepo, this.input) {
-    Stream<Result> onList = MergeStream([
-      input.onStart.flatMap((_) {
-        return _getAlbums();
-      })
-    ]);
-    Stream<NextScreen> nextScreen = MergeStream([
-      input.onTap.map((album) {
-        return NextScreen(ScreenType.AlbumDetails, album);
-      })
-    ]);
+    Stream<Result<AlbumList>> onList = input.onStart.flatMap((_) {
+      return _getAlbums();
+    });
+
+    Stream<NextScreen> nextScreen = input.onTap.map((album) {
+      return NextScreen(ScreenType.AlbumDetails, album);
+    });
 
     output = AlbumListViewModelOutput(onList, nextScreen);
   }
 
-  Stream<Result> _getAlbums() {
-    return _albumsRepo.getAlbums().asStream().map((value) {
+  Stream<Result<AlbumList>> _getAlbums() {
+    return _albumsRepo.getAlbums().map((value) {
       if (value is SuccessState) {
         value.value.sortList();
       }
@@ -44,7 +41,7 @@ class AlbumListViewModelInput {
 }
 
 class AlbumListViewModelOutput {
-  final Stream<Result> albums;
+  final Stream<Result<AlbumList>> albums;
   final Stream<NextScreen> onNextScreen;
 
   AlbumListViewModelOutput(this.albums, this.onNextScreen);

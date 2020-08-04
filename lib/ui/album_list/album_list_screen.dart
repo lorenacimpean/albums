@@ -39,9 +39,9 @@ class _AlbumListScreenState extends ErrorHandlingState<AlbumListScreen> {
         setState(() {
           if (result is SuccessState) {
             debugPrint('$result');
-            _albums = result.value;
+            _albums = (result as SuccessState).value;
           } else {
-            handleError(error)
+           // handleError(error)
           }
         });
       }),
@@ -69,31 +69,29 @@ class _AlbumListScreenState extends ErrorHandlingState<AlbumListScreen> {
   Widget _albumList(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(top: AppPaddings.defaultPadding),
-      child: Center(
-        child: _albums.albumList == null
-            ? LoadingIndicator()
-            : ListView.separated(
-                itemBuilder: (context, index) {
-                  Album currentAlbum = _albums.albumAtIndex(index);
-                  return AppListTile(
-                    icon: AppIcons.albumIcon,
-                    title: currentAlbum.title,
-                    subtitle: '${AppStrings.albumWithId} ${currentAlbum.id}',
-                    onTap: () {
-                      _viewModel.input.onTap.add(currentAlbum);
-                    },
-                    key: Key(currentAlbum.id.toString()),
-                  );
-                },
-                separatorBuilder: (BuildContext context, int index) {
-                  return SizedBox(
-                    height: AppPaddings.midPadding,
-                  );
-                },
-                itemCount: _albums.albumList.length,
-                physics: BouncingScrollPhysics(),
-              ),
-      ),
+      child: _albums.albumList == null
+          ? LoadingIndicator()
+          : ListView.separated(
+              itemBuilder: (context, index) {
+                Album currentAlbum = _albums.albumAtIndex(index);
+                return AppListTile(
+                  icon: AppIcons.albumIcon,
+                  title: currentAlbum.title,
+                  subtitle: '${AppStrings.albumWithId} ${currentAlbum.id}',
+                  onTap: () {
+                    _viewModel.input.onTap.add(currentAlbum);
+                  },
+                  key: Key(currentAlbum.id.toString()),
+                );
+              },
+              separatorBuilder: (BuildContext context, int index) {
+                return SizedBox(
+                  height: AppPaddings.midPadding,
+                );
+              },
+              itemCount: _albums.albumList.length,
+              physics: BouncingScrollPhysics(),
+            ),
     );
   }
 }

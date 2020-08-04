@@ -38,4 +38,5 @@ class AppStrings {
   static const String emailFieldInvalidError = "Invalid email";
   static const String phoneFieldInvalidError = "Invalid phone number";
   static const String noInternet = "No internet connection!";
+  static const String retry = "Retry";
 }
