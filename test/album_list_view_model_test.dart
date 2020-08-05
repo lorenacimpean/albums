@@ -22,7 +22,7 @@ final MockAlbumsRepo mockAlbumsRepo = MockAlbumsRepo();
 final AlbumListViewModel viewModel = AlbumListViewModel(mockAlbumsRepo, input);
 
 main() {
-  test('getAlbums', () async {
+  test('getAlbums success', () async {
     Album album1 = Album(userId: 1, id: 1, title: "title 1");
     Album album2 = Album(userId: 2, id: 2, title: "title 2");
     List<Album> list1 = List<Album>();
@@ -36,14 +36,4 @@ main() {
     expect(actualResult, emits(Result.success(expectedList)));
     viewModel.input.onStart.add(true);
   });
-//  test('getAlbums', ()  {
-//    when(mockAlbumsRepo.getAlbums())
-//        .thenAnswer((_) => Stream.value(Result<AlbumList>.error('error')));
-//
-//    Stream<Result<AlbumList>> actualResult = viewModel.output.albums;
-//    expect(actualResult, emits(Result.error('error')));
-//    viewModel.input.onStart.add(true);
-//  });
-
-
 }
