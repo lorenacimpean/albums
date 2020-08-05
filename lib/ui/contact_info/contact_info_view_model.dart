@@ -8,7 +8,6 @@ import 'package:albums/ui/contact_info/validator.dart';
 import 'package:albums/ui/extensions.dart';
 import 'package:albums/widgets/app_input_field_widget.dart';
 import 'package:flutter/widgets.dart';
-import 'package:geocoder/geocoder.dart';
 import 'package:rxdart/rxdart.dart';
 
 class ContactInfoViewModel {
@@ -49,7 +48,7 @@ class ContactInfoViewModel {
             return _locationRepo
                 .decodeUserLocation((result as SuccessState).value)
                 .map((address) {
-              _updateLocationFields(address);
+              _updateLocationFields((address as SuccessState).value);
               return _list;
             });
           }
@@ -80,27 +79,26 @@ class ContactInfoViewModel {
           );
         });
       }
-
       return _list;
     });
   }
 
-  void _updateLocationFields(Address address) {
+  void _updateLocationFields(AppAddress address) {
     if (address != null) {
       String street = '${address.featureName} ${address.thoroughfare} ';
       String country = address.countryName;
-      String city = address.locality;
+      String city = address.cityName;
       String zipcode = address.postalCode;
       _list.forEach((model) {
         if (model.fieldType == FieldType.streetAddressField) {
           model.value = street;
           model.textController.text = street;
         }
-        if (model.fieldType == FieldType.cityField) {
+        if (model.fieldType == FieldType.countryField) {
           model.value = country;
           model.textController.text = country;
         }
-        if (model.fieldType == FieldType.countryField) {
+        if (model.fieldType == FieldType.cityField) {
           model.value = city;
           model.textController.text = city;
         }

@@ -2,13 +2,18 @@ import 'package:albums/data/model/result.dart';
 import 'package:albums/themes/strings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:geocoder/geocoder.dart';
+import 'package:geocoder/services/base.dart';
 import 'package:location/location.dart';
 import 'package:rxdart/rxdart.dart';
 
 class LocationRepo {
   final Location location;
+  final Geocoding geocoding;
 
-  LocationRepo({Location location}) : this.location = location ?? Location();
+  LocationRepo({this.location, this.geocoding}) {
+    this.location ?? Location();
+    this.geocoding ?? Geocoder.local;
+  }
 
   Stream<Result<AppCoordinates>> getCurrentLocation() {
     return location.requestPermission().asStream().flatMap((permission) {
@@ -20,20 +25,22 @@ class LocationRepo {
           return Result<AppCoordinates>.success(coordinates);
         });
       }
-      if (permission == PermissionStatus.denied) {
-        return Stream.value(
-            Result<AppCoordinates>.error(AppStrings.locationError));
-      }
-      return Stream.value(Result<AppCoordinates>.loading(null));
+      return Stream.value(
+          Result<AppCoordinates>.error(AppStrings.locationError));
     });
   }
 
-  Stream<Address> decodeUserLocation(Coordinates coordinates) {
-    return Geocoder.local
+  Stream<Result<AppAddress>> decodeUserLocation(AppCoordinates coordinates) {
+    return geocoding
         .findAddressesFromCoordinates(coordinates)
         .asStream()
         .map((addressList) {
-      return addressList?.first;
+      if (addressList != null && addressList.isNotEmpty) {
+        Address currentAddress = addressList.first;
+        return Result<AppAddress>.success(
+            AppAddress.fromAddress(currentAddress));
+      } else
+        return Result<AppAddress>.error(AppStrings.noAddressesError);
     });
   }
 }
@@ -45,6 +52,11 @@ class AppCoordinates extends Coordinates {
   AppCoordinates({@required this.latitude, @required this.longitude})
       : super(latitude, longitude);
 
+  factory AppCoordinates.fromCoordinates(Coordinates coordinates) {
+    return AppCoordinates(
+        latitude: coordinates.latitude, longitude: coordinates.longitude);
+  }
+
   @override
   int get hashCode => latitude.hashCode ^ longitude.hashCode;
 
@@ -54,4 +66,60 @@ class AppCoordinates extends Coordinates {
       other is AppCoordinates &&
           latitude == other.latitude &&
           longitude == other.longitude;
+}
+
+class AppAddress extends Address {
+  final AppCoordinates coordinates;
+  final String featureName;
+  final String thoroughfare;
+  final String countryName;
+  final String cityName;
+  final String postalCode;
+
+  AppAddress(
+      {this.coordinates,
+      this.featureName,
+      this.thoroughfare,
+      this.countryName,
+      this.cityName,
+      this.postalCode})
+      : super(
+          coordinates: coordinates,
+          featureName: featureName,
+          thoroughfare: thoroughfare,
+          countryName: countryName,
+          locality: cityName,
+          postalCode: postalCode,
+        );
+
+  factory AppAddress.fromAddress(Address address) {
+    return AppAddress(
+      coordinates: AppCoordinates.fromCoordinates(address.coordinates),
+      featureName: address.featureName,
+      thoroughfare: address.thoroughfare,
+      countryName: address.countryName,
+      cityName: address.locality,
+      postalCode: address.postalCode,
+    );
+  }
+
+  @override
+  int get hashCode =>
+      coordinates.hashCode ^
+      featureName.hashCode ^
+      thoroughfare.hashCode ^
+      countryName.hashCode ^
+      cityName.hashCode ^
+      postalCode.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AppAddress &&
+          coordinates == other.coordinates &&
+          featureName == other.featureName &&
+          thoroughfare == other.thoroughfare &&
+          countryName == other.countryName &&
+          cityName == other.cityName &&
+          postalCode == other.postalCode;
 }
