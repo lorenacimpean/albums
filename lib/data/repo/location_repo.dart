@@ -35,12 +35,12 @@ class LocationRepo {
         .findAddressesFromCoordinates(coordinates)
         .asStream()
         .map((addressList) {
-      if (addressList != null && addressList.isNotEmpty) {
-        Address currentAddress = addressList.first;
+      if (addressList?.isNotEmpty ?? true) {
+        Address currentAddress = addressList?.first;
         return Result<AppAddress>.success(
             AppAddress.fromAddress(currentAddress));
-      } else
-        return Result<AppAddress>.error(AppStrings.noAddressesError);
+      }
+      return Result<AppAddress>.error(AppStrings.noAddressesError);
     });
   }
 }

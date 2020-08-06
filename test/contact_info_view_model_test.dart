@@ -31,10 +31,10 @@ main() {
   final AppTextValidator validator = AppTextValidator();
   final ContactInfoViewModel viewModel = ContactInfoViewModel(
       input, mockUserProfileRepo, validator, mockLocationRepo);
-  String firstName = 'test';
+  String firstName = 'initial';
   String lastName = 'lastName';
   String email = 'test@test.com';
-  String phoneNumber = '123456';
+  String phoneNumber = '123456789';
 
   LocationInfo locationInfo = LocationInfo(
     streetAddress: "street",
@@ -113,29 +113,93 @@ main() {
   test(
       'test viewmodel onValueChanged => error is null after calling onValueChanged',
       () {
-    AppInputFieldModel testModel = AppInputFieldModel(
+    AppInputFieldModel firstNameWithError = AppInputFieldModel(
       fieldType: FieldType.firstNameField,
-      value: firstName,
-      error: "test",
+      value: 'test error is null',
+      error: 'error',
     );
-
-    AppInputFieldModel expectedTestModel = AppInputFieldModel(
+    AppInputFieldModel firstNameNoError = AppInputFieldModel(
       fieldType: FieldType.firstNameField,
-      value: firstName,
+      value: 'test error is null',
       error: null,
     );
+    ContactInfo newContactInfo = ContactInfo(
+      firstName: 'test error is null',
+      lastName: lastName,
+      emailAddress: email,
+      phoneNumber: phoneNumber,
+      locationInfo: locationInfo,
+    );
 
-    modelList.replaceRange(0, 1, [expectedTestModel]);
-    when(mockUserProfileRepo.fetchContactInfo())
-        .thenAnswer((_) => Stream.value(Result.success(contactInfo)));
+    List<AppInputFieldModel> updatedList = [];
+    updatedList.addAll(modelList);
+    updatedList.replaceRange(0, 1, [firstNameNoError]);
 
-    expect(viewModel.output.fieldList, emits(modelList));
-    viewModel.input.onValueChanged.add(testModel);
+    when(mockUserProfileRepo.fetchContactInfo()).thenAnswer((_) {
+      return Stream.value(Result<ContactInfo>.success(contactInfo));
+    });
+    when(mockUserProfileRepo.saveContactInfo(newContactInfo)).thenAnswer((_) {
+      return Stream.value(Result<bool>.success(true));
+    });
+
+    expect(viewModel.output, isNotNull);
+    expect(viewModel.output.fieldList, emitsInOrder([modelList, updatedList]));
     viewModel.input.onStart.add(true);
+
+    Stream.value(true).delay(Duration(milliseconds: 100)).listen((event) {
+      viewModel.input.onValueChanged.add(firstNameWithError);
+    });
   });
 
-  test('apply changed value', () {
-    AppInputFieldModel model1 = AppInputFieldModel(
+  test('test errors onApply', () {
+    List<AppInputFieldModel> listWithError = [];
+    List<AppInputFieldModel> listWithNoError = [];
+
+    AppInputFieldModel firstNameWithError = AppInputFieldModel(
+      fieldType: FieldType.firstNameField,
+      value: '',
+      error: 'Required',
+    );
+    AppInputFieldModel firstNameNoError = AppInputFieldModel(
+      fieldType: FieldType.firstNameField,
+      value: '',
+    );
+    ContactInfo newContactInfo = ContactInfo(
+      firstName: '',
+      lastName: lastName,
+      emailAddress: email,
+      phoneNumber: phoneNumber,
+      locationInfo: locationInfo,
+    );
+
+    listWithError.addAll(modelList);
+    listWithError.replaceRange(0, 1, [firstNameWithError]);
+    listWithNoError.addAll(modelList);
+    listWithNoError.replaceRange(0, 1, [firstNameNoError]);
+
+    when(mockUserProfileRepo.fetchContactInfo()).thenAnswer((_) {
+      return Stream.value(Result<ContactInfo>.success(newContactInfo));
+    });
+    when(mockUserProfileRepo.saveContactInfo(newContactInfo)).thenAnswer((_) {
+      return Stream.value(Result<bool>.success(true));
+    });
+
+    expect(viewModel.output, isNotNull);
+    expect(
+        viewModel.output.fieldList,
+        emitsInOrder([
+          listWithNoError,
+          listWithError,
+        ]));
+
+    viewModel.input.onStart.add(true);
+    Stream.value(false).delay(Duration(milliseconds: 100)).listen((event) {
+      viewModel.input.onApply.add(true);
+    });
+  });
+
+  test('apply changed value - no errors', () {
+    AppInputFieldModel updatedModel = AppInputFieldModel(
       fieldType: FieldType.firstNameField,
       value: "name2",
       error: null,
@@ -148,17 +212,25 @@ main() {
       phoneNumber: phoneNumber,
       locationInfo: locationInfo,
     );
+    List<AppInputFieldModel> updatedList = [];
+    updatedList.addAll(modelList);
+    updatedList.replaceRange(0, 1, [updatedModel]);
 
-    modelList.replaceRange(0, 1, [model1]);
     when(mockUserProfileRepo.fetchContactInfo())
-        .thenAnswer((_) => Stream.value(Result.success(newContactInfo)));
-    when(mockUserProfileRepo.saveContactInfo(contactInfo))
+        .thenAnswer((_) => Stream.value(Result.success(contactInfo)));
+    when(mockUserProfileRepo.saveContactInfo(newContactInfo))
         .thenAnswer((_) => Stream.value(Result.success(true)));
 
-    expect(viewModel.output.fieldList, emits(modelList));
-    viewModel.input.onValueChanged.add(model1);
-    viewModel.input.onApply.add(true);
+    expect(viewModel.output.fieldList,
+        emitsInOrder([modelList, updatedList, updatedList]));
+
     viewModel.input.onStart.add(true);
+    Stream.value(true).delay(Duration(milliseconds: 200)).listen((event) {
+      viewModel.input.onValueChanged.add(updatedModel);
+    });
+    Stream.value(true).delay(Duration(milliseconds: 300)).listen((event) {
+      viewModel.input.onApply.add(true);
+    });
   });
 
   test('test viewmodel onLocationButtonPressed', () {
@@ -199,6 +271,10 @@ main() {
       error: null,
     );
 
+    List<AppInputFieldModel> updatedList = [];
+    updatedList.addAll(modelList);
+    updatedList.replaceRange(4, 8, [street, city, country, zipcode]);
+
     when(mockLocationRepo.getCurrentLocation()).thenAnswer(
         (_) => Stream.value(Result<AppCoordinates>.success(testCoordinates)));
     when(mockLocationRepo.decodeUserLocation(testCoordinates)).thenAnswer(
@@ -206,10 +282,10 @@ main() {
     when(mockUserProfileRepo.fetchContactInfo())
         .thenAnswer((_) => Stream.value(Result.success(contactInfo)));
 
-    modelList.replaceRange(4, 8, [street, city, country, zipcode]);
-
-    expect(viewModel.output.fieldList, emits(modelList));
-    viewModel.input.onLocationButtonPressed.add(true);
+    expect(viewModel.output.fieldList, emitsInOrder([modelList, updatedList]));
     viewModel.input.onStart.add(true);
+    Stream.value(true).delay(Duration(milliseconds: 200)).listen((event) {
+      viewModel.input.onLocationButtonPressed.add(true);
+    });
   });
 }

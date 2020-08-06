@@ -28,6 +28,10 @@ class ContactInfoViewModel {
       input.onStart.flatMap((_) => _initFields()),
       input.onValueChanged.map((field) {
         field.error = null;
+        _list
+            .firstWhere((element) => element.fieldType == field.fieldType,
+                orElse: () => null)
+            ?.value = field.value;
         return _list;
       }),
       input.onApply.flatMap((event) {
@@ -36,7 +40,7 @@ class ContactInfoViewModel {
         });
         if (_list.areAllFieldsValid()) {
           ContactInfo contactInfo = _list.toContactInfo();
-          return _userProfileRepo.saveContactInfo(contactInfo).map((event) {
+          _userProfileRepo.saveContactInfo(contactInfo).map((event) {
             return _list;
           });
         }
