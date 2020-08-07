@@ -21,10 +21,8 @@ class UserProfileRepo {
     return SharedPreferences.getInstance().then((sharedPref) {
       return sharedPref
           .setString(key, json.encode(contactInfo?.toJson()))
-          .then((value) {
-        return value
-            ? Result.success(value)
-            : Result.error("Could not save contact info!");
+          .then((_) {
+        return Result.success(true);
       });
     }).asStream();
   }

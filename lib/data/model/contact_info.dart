@@ -40,4 +40,22 @@ class ContactInfo {
         jsonEmailAddress: emailAddress,
         jsonLocationInfo: locationInfo.toJson()
       };
+
+  @override
+  int get hashCode =>
+      firstName.hashCode ^
+      lastName.hashCode ^
+      phoneNumber.hashCode ^
+      emailAddress.hashCode ^
+      locationInfo.hashCode;
+
+  @override
+  bool operator ==(other) =>
+      identical(this, other) ||
+      other is ContactInfo &&
+          firstName == other.firstName &&
+          lastName == other.lastName &&
+          phoneNumber == other.phoneNumber &&
+          emailAddress == other.emailAddress &&
+          locationInfo == other.locationInfo;
 }
