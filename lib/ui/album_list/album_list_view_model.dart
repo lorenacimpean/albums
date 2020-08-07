@@ -29,7 +29,8 @@ class AlbumListViewModel {
         value.value.sortList();
       }
       return value;
-    });
+      //TODO read about this
+    }).startWith(Result.loading(null));
   }
 }
 

@@ -24,26 +24,31 @@ class AlbumListScreen extends StatefulWidget {
 class _AlbumListScreenState extends ErrorHandlingState<AlbumListScreen> {
   AlbumListViewModel _viewModel;
   AlbumList _albums = AlbumList();
+  Result<AlbumList> _result;
 
   void initState() {
     super.initState();
     _viewModel = AlbumListViewModel(
-        buildAlbumsRepo(),
-        AlbumListViewModelInput(
-          PublishSubject(),
-          PublishSubject(),
-        ));
+      buildAlbumsRepo(),
+      AlbumListViewModelInput(
+        PublishSubject(),
+        PublishSubject(),
+      ),
+    );
 
     disposeLater(
       _viewModel.output.albums.listen((result) {
         setState(() {
+          _result = result;
           if (result is SuccessState) {
             debugPrint('$result');
             _albums = (result as SuccessState).value;
           } else {
-           // handleError(error)
+            // handleError(error)
           }
         });
+      }, onError: (e) {
+        //TODO check if error is sent here or in listen
       }),
     );
     _viewModel.output.onNextScreen.listen((nextScreen) {
@@ -69,8 +74,10 @@ class _AlbumListScreenState extends ErrorHandlingState<AlbumListScreen> {
   Widget _albumList(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(top: AppPaddings.defaultPadding),
-      child: _albums.albumList == null
+      //TODO recheck this
+      child: (_result == null || _result is LoadingState)
           ? LoadingIndicator()
+          //TODO check if there are albums otherwise display no albums message same UI as ComingSoonWidget
           : ListView.separated(
               itemBuilder: (context, index) {
                 Album currentAlbum = _albums.albumAtIndex(index);

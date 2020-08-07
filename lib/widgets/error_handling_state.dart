@@ -10,8 +10,12 @@ abstract class ErrorHandlingState<T extends StatefulWidget>
   void handleError(Object error, {VoidCallback retry}) {
     if (error is SocketException) {
       handleNoInternetConnection(retry);
+    } if(error is String) {
+      //TODO display error popup
     }
   }
+
+
 
   void handleNoInternetConnection(VoidCallback retry) {
     Navigator.of(context).pushReplacement(
