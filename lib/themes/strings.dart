@@ -39,4 +39,7 @@ class AppStrings {
   static const String phoneFieldInvalidError = "Invalid phone number";
   static const String noInternet = "No internet connection!";
   static const String retry = "Retry";
+  static const String locationError = "Location not loaded!";
+  static const String noAddressesError = 'No addresses found!';
+
 }

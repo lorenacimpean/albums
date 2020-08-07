@@ -18,8 +18,6 @@ class ContactInfoViewModel {
   ContactInfoViewModelOutput output;
   List<AppInputFieldModel> _list = List<AppInputFieldModel>();
 
-  LocationDescription locationDescription = LocationDescription();
-
   ContactInfoViewModel(
     this.input,
     this._userProfileRepo,
@@ -30,6 +28,10 @@ class ContactInfoViewModel {
       input.onStart.flatMap((_) => _initFields()),
       input.onValueChanged.map((field) {
         field.error = null;
+        _list
+            .firstWhere((element) => element.fieldType == field.fieldType,
+                orElse: () => null)
+            ?.value = field.value;
         return _list;
       }),
       input.onApply.flatMap((event) {
@@ -38,7 +40,7 @@ class ContactInfoViewModel {
         });
         if (_list.areAllFieldsValid()) {
           ContactInfo contactInfo = _list.toContactInfo();
-          return _userProfileRepo.saveContactInfo(contactInfo).map((event) {
+          _userProfileRepo.saveContactInfo(contactInfo).map((event) {
             return _list;
           });
         }
@@ -48,11 +50,9 @@ class ContactInfoViewModel {
         return _locationRepo.getCurrentLocation().flatMap((result) {
           if (result is SuccessState) {
             return _locationRepo
-                .decodeUserLocation(result.value)
+                .decodeUserLocation((result as SuccessState).value)
                 .map((address) {
-              LocationDescription locationDescription =
-                  LocationDescription.fromAddress(address);
-              _updateLocationFields(locationDescription);
+              _updateLocationFields((address as SuccessState).value);
               return _list;
             });
           }
@@ -83,29 +83,32 @@ class ContactInfoViewModel {
           );
         });
       }
-
       return _list;
     });
   }
 
-  void _updateLocationFields(LocationDescription locationDescription) {
-    if (locationDescription != null) {
+  void _updateLocationFields(AppAddress address) {
+    if (address != null) {
+      String street = '${address.featureName} ${address.thoroughfare} ';
+      String country = address.countryName;
+      String city = address.cityName;
+      String zipcode = address.postalCode;
       _list.forEach((model) {
         if (model.fieldType == FieldType.streetAddressField) {
-          model.value = locationDescription.street;
-          model.textController.text = locationDescription.street;
-        }
-        if (model.fieldType == FieldType.cityField) {
-          model.value = locationDescription.city;
-          model.textController.text = locationDescription.city;
+          model.value = street;
+          model.textController.text = street;
         }
         if (model.fieldType == FieldType.countryField) {
-          model.value = locationDescription.country;
-          model.textController.text = locationDescription.country;
+          model.value = country;
+          model.textController.text = country;
+        }
+        if (model.fieldType == FieldType.cityField) {
+          model.value = city;
+          model.textController.text = city;
         }
         if (model.fieldType == FieldType.zipCodeField) {
-          model.value = locationDescription.zipcode;
-          model.textController.text = locationDescription.zipcode;
+          model.value = zipcode;
+          model.textController.text = zipcode;
         }
       });
     }

@@ -57,4 +57,20 @@ class LocationInfo {
       jsonZipCode: zipCode,
     };
   }
+
+  @override
+  int get hashCode =>
+      streetAddress.hashCode ^
+      city.hashCode ^
+      country.hashCode ^
+      zipCode.hashCode;
+
+  @override
+  bool operator ==(other) =>
+      identical(this, other) ||
+      other is LocationInfo &&
+          streetAddress == other.streetAddress &&
+          city == other.city &&
+          country == other.country &&
+          zipCode == other.zipCode;
 }
