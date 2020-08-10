@@ -17,11 +17,10 @@ class TapAction {
   get hashCode => actionType.hashCode ^ album.hashCode ^ toastMessage.hashCode;
 
   @override
-  bool operator ==(other) {
-    identical(this, other) ||
-        other is TapAction &&
-            this.actionType == other.actionType &&
-            this.album == other.album &&
-            this.toastMessage == other.toastMessage;
-  }
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is TapAction &&
+          actionType == other.actionType &&
+          album == other.album &&
+          toastMessage == other.toastMessage;
 }

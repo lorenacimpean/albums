@@ -28,11 +28,11 @@ class Photo {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is Photo &&
-          this.albumId == other.albumId &&
-          this.id == other.id &&
-          this.title == other.title &&
-          this.url == other.url &&
-          this.thumbnailUrl == other.thumbnailUrl;
+          albumId == other.albumId &&
+          id == other.id &&
+          title == other.title &&
+          url == other.url &&
+          thumbnailUrl == other.thumbnailUrl;
 }
 
 class PhotoList {
@@ -59,6 +59,5 @@ class PhotoList {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is PhotoList && this.photos == other.photos;
+      identical(this, other) || other is PhotoList && photos == other.photos;
 }

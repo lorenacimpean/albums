@@ -10,7 +10,7 @@ class AlbumInfo {
   });
 
   @override
-  get hasCode => albumName.hashCode ^ albumId.hashCode ^ photosCount.hashCode;
+  get hashCode => albumName.hashCode ^ albumId.hashCode ^ photosCount.hashCode;
 
   @override
   bool operator ==(Object other) =>
