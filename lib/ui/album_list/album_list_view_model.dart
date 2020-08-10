@@ -24,13 +24,12 @@ class AlbumListViewModel {
   }
 
   Stream<Result<AlbumList>> _getAlbums() {
-    return _albumsRepo.getAlbums().map((value) {
-      if (value is SuccessState) {
-        value.value.sortList();
+    return _albumsRepo.getAlbums().map((result) {
+      if (result is SuccessState<AlbumList>) {
+        result.value.sortList();
       }
-      return value;
-      //TODO read about this
-    }).startWith(Result.loading(null));
+      return result;
+    }).startWith(Result<AlbumList>.loading(null));
   }
 }
 

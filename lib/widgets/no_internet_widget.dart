@@ -1,8 +1,9 @@
 import 'package:albums/themes/colors.dart';
 import 'package:albums/themes/paddings.dart';
 import 'package:albums/themes/strings.dart';
-import 'package:albums/widgets/app_rounded_text_button.dart';
 import 'package:flutter/material.dart';
+
+import 'app_rounded_text_button.dart';
 
 class NoInternetConnectionWidget extends StatelessWidget {
   final VoidCallback retry;
@@ -12,28 +13,35 @@ class NoInternetConnectionWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        children: <Widget>[
-          Container(
-            padding: EdgeInsets.symmetric(
-                vertical: AppPaddings.defaultPadding,
-                horizontal: AppPaddings.extraLargePadding),
-            decoration: BoxDecoration(
-              shape: BoxShape.rectangle,
-              border: Border.all(
-                color: AppColors.lightGrey,
-              ),
-              borderRadius: AppPaddings.defaultRadius,
+    return Container(
+      color: AppColors.white,
+      child: Align(
+        child: Container(
+          margin: EdgeInsets.all(AppPaddings.defaultPadding),
+          padding: EdgeInsets.all(AppPaddings.smallPadding),
+          decoration: BoxDecoration(
+            shape: BoxShape.rectangle,
+            border: Border.all(
+              color: AppColors.lightGrey,
             ),
-            child: Text(AppStrings.noInternet,
-                style: Theme.of(context).textTheme.subtitle1),
+            borderRadius: AppPaddings.defaultRadius,
           ),
-          AppRoundedTextButton(
-            text: AppStrings.retry,
-            onTap: retry,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(AppStrings.noInternet,
+                    style: Theme.of(context).textTheme.subtitle1),
+              ),
+              AppRoundedTextButton(
+                text: AppStrings.retry,
+                onTap: retry,
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

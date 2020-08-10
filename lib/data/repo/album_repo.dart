@@ -1,4 +1,5 @@
 import 'package:albums/data/api/albums_remote_data_source.dart';
+import 'package:albums/data/model/albums.dart';
 import 'package:albums/data/model/result.dart';
 
 class AlbumsRepo {
@@ -6,7 +7,7 @@ class AlbumsRepo {
 
   AlbumsRepo(this._albumsRemoteDataSource);
 
-  Stream<Result> getAlbums() {
+  Stream<Result<AlbumList>> getAlbums() {
     return _albumsRemoteDataSource.getAlbums();
   }
 }

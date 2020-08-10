@@ -16,6 +16,23 @@ class Photo {
       url: json['url'],
       thumbnailUrl: json['thumbnailUrl']);
 
+  @override
+  int get hashCode =>
+      albumId.hashCode ^
+      id.hashCode ^
+      title.hashCode ^
+      url.hashCode ^
+      thumbnailUrl.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Photo &&
+          this.albumId == other.albumId &&
+          this.id == other.id &&
+          this.title == other.title &&
+          this.url == other.url &&
+          this.thumbnailUrl == other.thumbnailUrl;
 }
 
 class PhotoList {
@@ -36,4 +53,12 @@ class PhotoList {
   int selectedIndex(Photo selectedPhoto) {
     return this.photos?.indexWhere((photo) => photo == selectedPhoto);
   }
+
+  @override
+  int get hashCode => photos.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is PhotoList && this.photos == other.photos;
 }

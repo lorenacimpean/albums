@@ -10,7 +10,7 @@ class AppTheme {
       primaryColor: AppColors.darkBlue,
       primaryColorDark: AppColors.darkGrey,
       accentColor: AppColors.lightBlue,
-      errorColor: AppColors.brownRed,
+      errorColor: AppColors.red,
       visualDensity: VisualDensity.adaptivePlatformDensity,
       fontFamily: 'Nunito',
       textTheme: TextTheme(

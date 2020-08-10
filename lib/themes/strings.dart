@@ -4,9 +4,7 @@ class AppStrings {
   static const String newsTitle = "News";
   static const String profileTitle = "Profile";
   static const String albumDetailsTitle = "Album Details";
-
   static const String comingSoon = "Coming Soon";
-
   static const String backButtonText = "Back";
   static const String photos = "Photos";
   static const String saveToFavorites = "Save to favorites";
@@ -41,5 +39,8 @@ class AppStrings {
   static const String retry = "Retry";
   static const String locationError = "Location not loaded!";
   static const String noAddressesError = 'No addresses found!';
-
+  static const String errorWhileLoading = "Error while loading";
+  static const String albumListLoadingError = "Album list is not available";
+  static const String photoListError = "Photo list is not available";
+  static const String generalError = "Something went wrong!";
 }

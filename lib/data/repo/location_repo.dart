@@ -7,12 +7,12 @@ import 'package:location/location.dart';
 import 'package:rxdart/rxdart.dart';
 
 class LocationRepo {
-  final Location location;
-  final Geocoding geocoding;
+  Location location;
+  Geocoding geocoding;
 
   LocationRepo({this.location, this.geocoding}) {
-    this.location ?? Location();
-    this.geocoding ?? Geocoder.local;
+    this.location = location ?? Location();
+    this.geocoding = geocoding ?? Geocoder.local;
   }
 
   Stream<Result<AppCoordinates>> getCurrentLocation() {
