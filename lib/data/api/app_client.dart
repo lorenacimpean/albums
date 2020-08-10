@@ -12,13 +12,13 @@ class AppHttpClient {
 
   static const String _baseUrl = "http://jsonplaceholder.typicode.com";
 
-  Future<Response> request(
+  Stream<Response> request(
       {@required RequestType requestType,
       @required String path,
-      dynamic parameter = Nothing}) async {
+      dynamic parameter = Nothing}) {
     switch (requestType) {
       case RequestType.GET:
-        return client.get("$_baseUrl/$path");
+        return client.get("$_baseUrl/$path").asStream();
       default:
         return throw RequestTypeNotFoundException(
             "The HTTP request mentioned is not found");

@@ -10,10 +10,10 @@ class ListItem {
   });
 
   @override
-  int get hashCode => type.hashCode;
+  int get hashCode => type.hashCode ^ data.hashCode;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is ListItem && type == other.type;
+      other is ListItem && type == other.type && data == other.data;
 }

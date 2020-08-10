@@ -15,7 +15,6 @@ class PhotosRemoteDataSource {
     String path = "albums/$id/photos";
     return _appHttpClient
         .request(requestType: RequestType.GET, path: path)
-        .asStream()
         .map((response) {
       if (response.statusCode == 200) {
         return Result<PhotoList>.success(PhotoList.fromRawJson(response.body));

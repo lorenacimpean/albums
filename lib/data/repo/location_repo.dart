@@ -7,12 +7,12 @@ import 'package:location/location.dart';
 import 'package:rxdart/rxdart.dart';
 
 class LocationRepo {
-  Location location;
-  Geocoding geocoding;
+  final Location location;
+  final Geocoding geocoding;
 
-  LocationRepo({this.location, this.geocoding}) {
-    this.location = location ?? Location();
-    this.geocoding = geocoding ?? Geocoder.local;
+  LocationRepo(this.location, this.geocoding) {
+    location ?? Location();
+    geocoding ?? Geocoder.local;
   }
 
   Stream<Result<AppCoordinates>> getCurrentLocation() {
@@ -35,12 +35,10 @@ class LocationRepo {
         .findAddressesFromCoordinates(coordinates)
         .asStream()
         .map((addressList) {
-      if (addressList?.isNotEmpty ?? true) {
-        Address currentAddress = addressList?.first;
-        return Result<AppAddress>.success(
-            AppAddress.fromAddress(currentAddress));
-      }
-      return Result<AppAddress>.error(AppStrings.noAddressesError);
+      return addressList?.isNotEmpty ?? true
+          ? Result<AppAddress>.success(
+              AppAddress.fromAddress(addressList?.first))
+          : Result<AppAddress>.error(AppStrings.noAddressesError);
     });
   }
 }

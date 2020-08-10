@@ -14,8 +14,8 @@ void main() {
   MockLocation mockLocation = MockLocation();
   MockGeocoding mockGeocoding = MockGeocoding();
   LocationRepo locationRepo = LocationRepo(
-    location: mockLocation,
-    geocoding: mockGeocoding,
+    mockLocation,
+    mockGeocoding,
   );
   double longitude = 23.58;
   double latitude = 46.77;
@@ -118,15 +118,13 @@ void main() {
   });
 
   test('decode user location => error, address list null', () {
-    List<AppAddress> testList;
-
+    List<AppAddress> testList = [];
     when(mockGeocoding.findAddressesFromCoordinates(expectedCoordinates))
         .thenAnswer((_) => Future.value(testList));
     Stream<Result<AppAddress>> actualResult =
         locationRepo.decodeUserLocation(expectedCoordinates);
     expect(actualResult,
         emits(Result<AppAddress>.error(AppStrings.noAddressesError)));
-    expect(actualResult, isNotNull);
   });
 
   test('decode user location => error, address list empty', () {

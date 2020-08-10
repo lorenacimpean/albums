@@ -25,7 +25,6 @@ class AlbumListScreen extends StatefulWidget {
 
 class _AlbumListScreenState extends BaseState<AlbumListScreen> {
   AlbumListViewModel _viewModel;
-  AlbumList _albums = AlbumList();
   Result<AlbumList> _result;
 
   @override
@@ -53,7 +52,7 @@ class _AlbumListScreenState extends BaseState<AlbumListScreen> {
           _result = albumList;
           if (albumList is SuccessState<AlbumList>) {
             debugPrint('$albumList');
-            _albums = albumList.value;
+            (_result as SuccessState).value = albumList.value;
           }
         });
       }, onError: (e) {
@@ -75,13 +74,14 @@ class _AlbumListScreenState extends BaseState<AlbumListScreen> {
   Widget _albumList(BuildContext context) {
     return Container(
         padding: EdgeInsets.only(top: AppPaddings.defaultPadding),
-        child: _setupView(context));
+        child: _buildBody(context));
   }
 
   Widget _buildListView(BuildContext context) {
     return ListView.separated(
       itemBuilder: (context, index) {
-        Album currentAlbum = _albums.albumAtIndex(index);
+        Album currentAlbum =
+            (_result as SuccessState).value.albumAtIndex(index);
         return AppListTile(
           icon: AppIcons.albumIcon,
           title: currentAlbum.title,
@@ -97,12 +97,12 @@ class _AlbumListScreenState extends BaseState<AlbumListScreen> {
           height: AppPaddings.midPadding,
         );
       },
-      itemCount: _albums.albumList.length,
+      itemCount: (_result as SuccessState).value.albumList.length,
       physics: BouncingScrollPhysics(),
     );
   }
 
-  Widget _setupView(BuildContext context) {
+  Widget _buildBody(BuildContext context) {
     if (_result is LoadingState) {
       return LoadingIndicator();
     }

@@ -13,7 +13,6 @@ class AlbumsRemoteDataSource {
     try {
       return _appHttpClient
           .request(requestType: RequestType.GET, path: "albums")
-          .asStream()
           .map((response) {
         if (response.statusCode == 200) {
           return Result<AlbumList>.success(

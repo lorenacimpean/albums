@@ -39,7 +39,6 @@ class AlbumDetailsScreen extends StatefulWidget {
 class _AlbumDetailsScreenState extends BaseState<AlbumDetailsScreen> {
   AlbumDetailsViewModel _viewModel;
   FlutterToast _flutterToast;
-  List<ListItem> _listItems;
   Result<List<ListItem>> _result;
 
   void initState() {
@@ -58,7 +57,7 @@ class _AlbumDetailsScreenState extends BaseState<AlbumDetailsScreen> {
         _result = listItems;
         setState(() {
           if (listItems is SuccessState<List<ListItem>>) {
-            _listItems = listItems.value;
+            (_result as SuccessState).value = listItems.value;
           }
         });
       }, onError: (e) {
@@ -85,11 +84,11 @@ class _AlbumDetailsScreenState extends BaseState<AlbumDetailsScreen> {
     return AppScreen(
       title: AppStrings.albumListTitle,
       hasBackButton: true,
-      body: _setupViews(context),
+      body: _buildBody(context),
     );
   }
 
-  Widget _setupViews(BuildContext context) {
+  Widget _buildBody(BuildContext context) {
     if (_result is LoadingState) {
       return LoadingIndicator();
     }
@@ -97,9 +96,9 @@ class _AlbumDetailsScreenState extends BaseState<AlbumDetailsScreen> {
       return ListView.builder(
         padding: EdgeInsets.all(AppPaddings.defaultPadding),
         shrinkWrap: true,
-        itemCount: _listItems.length,
+        itemCount: (_result as SuccessState).value.length,
         itemBuilder: (context, index) {
-          return _listTile(context, _listItems[index]);
+          return _listTile(context, (_result as SuccessState).value[index]);
         },
       );
     }
