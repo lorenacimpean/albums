@@ -39,7 +39,7 @@ class AlbumDetailsScreen extends StatefulWidget {
 class _AlbumDetailsScreenState extends BaseState<AlbumDetailsScreen> {
   AlbumDetailsViewModel _viewModel;
   FlutterToast _flutterToast;
-  Result<List<ListItem>> _result;
+  Result<ListItems> _result;
 
   void initState() {
     super.initState();
@@ -56,7 +56,7 @@ class _AlbumDetailsScreenState extends BaseState<AlbumDetailsScreen> {
       _viewModel.output.listItems.listen((listItems) {
         _result = listItems;
         setState(() {
-          if (listItems is SuccessState<List<ListItem>>) {
+          if (listItems is SuccessState<ListItems>) {
             (_result as SuccessState).value = listItems.value;
           }
         });
@@ -89,16 +89,17 @@ class _AlbumDetailsScreenState extends BaseState<AlbumDetailsScreen> {
   }
 
   Widget _buildBody(BuildContext context) {
-    if (_result is LoadingState) {
+    if (_result is LoadingState<ListItems>) {
       return LoadingIndicator();
     }
-    if (_result is SuccessState) {
+    if (_result is SuccessState<ListItems>) {
       return ListView.builder(
         padding: EdgeInsets.all(AppPaddings.defaultPadding),
         shrinkWrap: true,
-        itemCount: (_result as SuccessState).value.length,
+        itemCount: (_result as SuccessState<ListItems>).value.listItems.length,
         itemBuilder: (context, index) {
-          return _listTile(context, (_result as SuccessState).value[index]);
+          return _listTile(context,
+              (_result as SuccessState<ListItems>).value.listItems[index]);
         },
       );
     }

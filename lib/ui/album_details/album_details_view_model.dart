@@ -23,7 +23,7 @@ class AlbumDetailsViewModel {
   PhotoList _photoList;
 
   AlbumDetailsViewModel(this._photosRepo, this.input) {
-    Stream<Result<List<ListItem>>> onList = input.onStart.flatMap((album) {
+    Stream<Result<ListItems>> onList = input.onStart.flatMap((album) {
       return _getListItemList(album);
     });
     Stream<NextScreen> onNextScreen = input.onPhotoTap.flatMap((photo) {
@@ -35,7 +35,7 @@ class AlbumDetailsViewModel {
     output = AlbumDetailsViewModelOutput(onList, onNextScreen, onToast);
   }
 
-  Stream<Result<List<ListItem>>> _getListItemList(Album album) {
+  Stream<Result<ListItems>> _getListItemList(Album album) {
     return _photosRepo.getPhotoList(album.id).map((result) {
       if (result is SuccessState<PhotoList>) {
         _photoList = result.value;
@@ -45,13 +45,13 @@ class AlbumDetailsViewModel {
           data: AlbumInfo(
             albumName: album.title,
             albumId: album.id,
-            photosCount: result.value.photosCount(),
+            photosCount: _photoList.photosCount(),
           ),
         );
         itemList.add(albumInfo);
         ListItem albumAction = ListItem(
           type: ListItemType.albumAction,
-          data: albumInfo.data.photosCount,
+          data: _photoList.photosCount(),
         );
         itemList.add(albumAction);
         itemList.addAll(
@@ -59,10 +59,11 @@ class AlbumDetailsViewModel {
             (e) => ListItem(type: ListItemType.photo, data: e),
           )),
         );
-        return Result<List<ListItem>>.success(itemList);
+        ListItems items = ListItems(itemList);
+        return Result<ListItems>.success(items);
       }
-      return Result<List<ListItem>>.error(AppStrings.photoListError);
-    }).startWith(Result<List<ListItem>>.loading(null));
+      return Result<ListItems>.error(AppStrings.photoListError);
+    }).startWith(Result<ListItems>.loading(null));
   }
 
   Stream<TapAction> _onActionTap(TapAction tapAction) {
@@ -107,7 +108,7 @@ class AlbumDetailsViewModelInput {
 }
 
 class AlbumDetailsViewModelOutput {
-  final Stream<Result<List<ListItem>>> listItems;
+  final Stream<Result<ListItems>> listItems;
   final Stream<NextScreen> nextScreen;
   final Stream<TapAction> toast;
 

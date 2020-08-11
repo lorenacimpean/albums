@@ -2,6 +2,7 @@ import 'package:albums/data/model/albums.dart';
 import 'package:albums/data/model/photos.dart';
 import 'package:albums/data/model/result.dart';
 import 'package:albums/data/repo/photos_repo.dart';
+import 'package:albums/themes/strings.dart';
 import 'package:albums/ui/album_details/album_details_view_model.dart';
 import 'package:albums/ui/album_details/album_info_model.dart';
 import 'package:albums/ui/album_details/gallery_details_model.dart';
@@ -51,8 +52,8 @@ void main() {
     itemsList.add(albumInfo);
     itemsList.add(albumAction);
     itemsList.add(photoListItem);
-    Result<List<ListItem>> expectedResult =
-        Result<List<ListItem>>.success(itemsList);
+    Result<ListItems> expectedResult =
+        Result<ListItems>.success(ListItems(itemsList));
     when(mockPhotosRepo.getPhotoList(album.id)).thenAnswer(
       (_) {
         return Stream.value(
@@ -61,7 +62,7 @@ void main() {
       },
     );
 
-    Stream<Result<List<ListItem>>> actualResult = viewModel.output.listItems;
+    Stream<Result<ListItems>> actualResult = viewModel.output.listItems;
     expect(
         actualResult,
         emitsInOrder([
@@ -72,20 +73,17 @@ void main() {
   });
 
   test('test get data error', () {
-    Result<List<ListItem>> expectedResult =
-        Result<List<ListItem>>.error('error');
+    Result<ListItems> expectedResult = Result<ListItems>.error(AppStrings.photoListError);
     when(mockPhotosRepo.getPhotoList(1)).thenAnswer(
       (_) {
-        return Stream.value(
-          Result.error('error'),
-        );
+        return Stream.value(Result<PhotoList>.error(AppStrings.photoListError));
       },
     );
-    Stream<Result<List<ListItem>>> actualResult = viewModel.output.listItems;
+    Stream<Result<ListItems>> actualResult = viewModel.output.listItems;
     expect(
         actualResult,
         emitsInOrder([
-          Result<List<ListItem>>.loading(null),
+          Result<ListItems>.loading(null),
           expectedResult,
         ]));
     viewModel.input.onStart.add(album);

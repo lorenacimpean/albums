@@ -7,7 +7,13 @@ class Photo {
   final String url;
   final String thumbnailUrl;
 
-  Photo({this.albumId, this.id, this.title, this.url, this.thumbnailUrl});
+  Photo({
+    this.albumId,
+    this.id,
+    this.title,
+    this.url,
+    this.thumbnailUrl,
+  });
 
   factory Photo.fromJson(Map<String, dynamic> json) => Photo(
       albumId: json['userId'],
@@ -17,22 +23,23 @@ class Photo {
       thumbnailUrl: json['thumbnailUrl']);
 
   @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Photo &&
+          runtimeType == other.runtimeType &&
+          albumId == other.albumId &&
+          id == other.id &&
+          title == other.title &&
+          url == other.url &&
+          thumbnailUrl == other.thumbnailUrl;
+
+  @override
   int get hashCode =>
       albumId.hashCode ^
       id.hashCode ^
       title.hashCode ^
       url.hashCode ^
       thumbnailUrl.hashCode;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Photo &&
-          albumId == other.albumId &&
-          id == other.id &&
-          title == other.title &&
-          url == other.url &&
-          thumbnailUrl == other.thumbnailUrl;
 }
 
 class PhotoList {
@@ -55,9 +62,12 @@ class PhotoList {
   }
 
   @override
-  int get hashCode => photos.hashCode;
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is PhotoList &&
+          runtimeType == other.runtimeType &&
+          photos == other.photos;
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) || other is PhotoList && photos == other.photos;
+  int get hashCode => photos.hashCode;
 }

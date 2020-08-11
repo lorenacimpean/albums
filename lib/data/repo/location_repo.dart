@@ -10,10 +10,7 @@ class LocationRepo {
   final Location location;
   final Geocoding geocoding;
 
-  LocationRepo(this.location, this.geocoding) {
-    location ?? Location();
-    geocoding ?? Geocoder.local;
-  }
+  LocationRepo(this.location, this.geocoding);
 
   Stream<Result<AppCoordinates>> getCurrentLocation() {
     return location.requestPermission().asStream().flatMap((permission) {
