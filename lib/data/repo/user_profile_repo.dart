@@ -22,7 +22,7 @@ class UserProfileRepo {
       return sharedPref
           .setString(key, json.encode(contactInfo?.toJson()))
           .then((_) {
-        return Result.success(true);
+        return Result<bool>.success(true);
       });
     }).asStream();
   }

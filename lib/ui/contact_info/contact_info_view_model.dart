@@ -24,7 +24,7 @@ class ContactInfoViewModel {
     this._validator,
     this._locationRepo,
   ) {
-    Stream<List<AppInputFieldModel>> onList = MergeStream([
+    Stream<Result<List<AppInputFieldModel>>> onList = MergeStream([
       input.onStart.flatMap((_) => _initFields()),
       input.onValueChanged.map((field) {
         field.error = null;
@@ -32,7 +32,7 @@ class ContactInfoViewModel {
             .firstWhere((element) => element.fieldType == field.fieldType,
                 orElse: () => null)
             ?.value = field.value;
-        return _list;
+        return Result<List<AppInputFieldModel>>.success(_list);
       }),
       input.onApply.flatMap((event) {
         _list.forEach((field) {
@@ -44,30 +44,39 @@ class ContactInfoViewModel {
             return _list;
           });
         }
-        return Stream.value(_list);
+        return Stream.value(
+          Result<List<AppInputFieldModel>>.success(_list),
+        );
       }),
       input.onLocationButtonPressed.flatMap((event) {
         return _locationRepo.getCurrentLocation().flatMap((result) {
-          if (result is SuccessState) {
+          if (result is SuccessState<AppCoordinates>) {
             return _locationRepo
-                .decodeUserLocation((result as SuccessState).value)
+                .decodeUserLocation(result.value)
                 .map((address) {
-              _updateLocationFields((address as SuccessState).value);
-              return _list;
+              _updateLocationFields(
+                  (address as SuccessState<AppAddress>).value);
+              return Result<List<AppInputFieldModel>>.success(_list);
             });
           }
-          return Stream.value(_list);
+          if (result is ErrorState<AppCoordinates>) {
+            return Stream.value(
+                Result<List<AppInputFieldModel>>.error(result.msg));
+          }
+          return Stream.value(
+            Result<List<AppInputFieldModel>>.loading(null),
+          );
         });
-      }),
+      })
     ]);
+
     output = ContactInfoViewModelOutput(onList);
   }
 
-  Stream<List<AppInputFieldModel>> _initFields() {
+  Stream<Result<List<AppInputFieldModel>>> _initFields() {
     return _userProfileRepo
         .fetchContactInfo()
         .map((Result<ContactInfo> result) {
-      //TODO handle error & loading state
       if (result is SuccessState<ContactInfo>) {
         FieldType.values.forEach((fieldType) {
           String fieldValue = fieldType.fromContactInfo(result.value);
@@ -83,8 +92,10 @@ class ContactInfoViewModel {
           );
         });
       }
-      return _list;
-    });
+      return Result<List<AppInputFieldModel>>.success(_list);
+    }).startWith(
+      Result<List<AppInputFieldModel>>.loading(null),
+    );
   }
 
   void _updateLocationFields(AppAddress address) {
@@ -130,7 +141,7 @@ class ContactInfoViewModelInput {
 }
 
 class ContactInfoViewModelOutput {
-  final Stream<List<AppInputFieldModel>> fieldList;
+  final Stream<Result<List<AppInputFieldModel>>> fieldList;
 
   ContactInfoViewModelOutput(this.fieldList);
 }

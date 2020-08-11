@@ -1,3 +1,5 @@
+import 'package:collection/collection.dart';
+
 class Result<T> {
   Result._();
 
@@ -36,10 +38,18 @@ class SuccessState<T> extends Result<T> {
   SuccessState(this.value) : super._();
   T value;
 
+  bool areValuesEqual(T valueA, T valueB) {
+    if (valueA is List && valueB is List) {
+      return ListEquality().equals(valueA, valueB);
+    }
+    return valueA == valueB;
+  }
+
   @override
   int get hashCode => value.hashCode;
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || other is SuccessState && value == other.value;
+      identical(this, other) ||
+      other is SuccessState && areValuesEqual(value, other.value);
 }

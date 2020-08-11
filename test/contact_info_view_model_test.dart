@@ -103,10 +103,19 @@ main() {
   modelList.add(model8);
 
   test('test viewmodel init fields correctly', () {
-    when(mockUserProfileRepo.fetchContactInfo())
-        .thenAnswer((_) => Stream.value(Result.success(contactInfo)));
-    expect(viewModel.output, isNotNull);
-    expect(viewModel.output.fieldList, emits(modelList));
+    Result<List<AppInputFieldModel>> expectedResult = Result.success(modelList);
+    when(mockUserProfileRepo.fetchContactInfo()).thenAnswer(
+      (_) => Stream.value(
+        Result<ContactInfo>.success(contactInfo),
+      ),
+    );
+    expect(
+      viewModel.output.fieldList,
+      emitsInOrder([
+        Result<List<AppInputFieldModel>>.loading(null),
+        expectedResult,
+      ]),
+    );
     viewModel.input.onStart.add(true);
   });
 
@@ -134,6 +143,10 @@ main() {
     List<AppInputFieldModel> updatedList = [];
     updatedList.addAll(modelList);
     updatedList.replaceRange(0, 1, [firstNameNoError]);
+    Result<List<AppInputFieldModel>> expectedResult1 =
+        Result.success(modelList);
+    Result<List<AppInputFieldModel>> expectedResult2 =
+        Result.success(updatedList);
 
     when(mockUserProfileRepo.fetchContactInfo()).thenAnswer((_) {
       return Stream.value(Result<ContactInfo>.success(contactInfo));
@@ -142,10 +155,31 @@ main() {
       return Stream.value(Result<bool>.success(true));
     });
 
-    expect(viewModel.output, isNotNull);
-    expect(viewModel.output.fieldList, emitsInOrder([modelList, updatedList]));
-    viewModel.input.onStart.add(true);
+//    viewModel.output.fieldList.listen((event) {
+//      if (event is SuccessState) {
+//        debugPrint((event as SuccessState<List<AppInputFieldModel>>)
+//            .value
+//            .first
+//            .error);
+//        print('SUCCESS');
+//        print((event as SuccessState<List<AppInputFieldModel>>)
+//            .value
+//            .first
+//            .error);
+//      }
+//      if (event is LoadingState) {
+//        print('LOADING');
+//      }
+//    });
 
+    expect(
+        viewModel.output.fieldList,
+        emitsInOrder([
+          Result<List<AppInputFieldModel>>.loading(null),
+          expectedResult1,
+          expectedResult2,
+        ]));
+    viewModel.input.onStart.add(true);
     Stream.value(true).delay(Duration(milliseconds: 100)).listen((event) {
       viewModel.input.onValueChanged.add(firstNameWithError);
     });
@@ -176,6 +210,10 @@ main() {
     listWithError.replaceRange(0, 1, [firstNameWithError]);
     listWithNoError.addAll(modelList);
     listWithNoError.replaceRange(0, 1, [firstNameNoError]);
+    Result<List<AppInputFieldModel>> expectedResult1 =
+        Result.success(listWithNoError);
+    Result<List<AppInputFieldModel>> expectedResult2 =
+        Result.success(listWithError);
 
     when(mockUserProfileRepo.fetchContactInfo()).thenAnswer((_) {
       return Stream.value(Result<ContactInfo>.success(newContactInfo));
@@ -184,12 +222,12 @@ main() {
       return Stream.value(Result<bool>.success(true));
     });
 
-    expect(viewModel.output, isNotNull);
     expect(
         viewModel.output.fieldList,
         emitsInOrder([
-          listWithNoError,
-          listWithError,
+          Result<List<AppInputFieldModel>>.loading(null),
+          expectedResult1,
+          expectedResult2,
         ]));
 
     viewModel.input.onStart.add(true);
@@ -215,14 +253,24 @@ main() {
     List<AppInputFieldModel> updatedList = [];
     updatedList.addAll(modelList);
     updatedList.replaceRange(0, 1, [updatedModel]);
+    Result<List<AppInputFieldModel>> expectedResult1 =
+        Result.success(modelList);
+    Result<List<AppInputFieldModel>> expectedResult2 =
+        Result.success(updatedList);
 
     when(mockUserProfileRepo.fetchContactInfo())
         .thenAnswer((_) => Stream.value(Result.success(contactInfo)));
     when(mockUserProfileRepo.saveContactInfo(newContactInfo))
         .thenAnswer((_) => Stream.value(Result.success(true)));
 
-    expect(viewModel.output.fieldList,
-        emitsInOrder([modelList, updatedList, updatedList]));
+    expect(
+        viewModel.output.fieldList,
+        emitsInOrder([
+          Result<List<AppInputFieldModel>>.loading(null),
+          expectedResult1,
+          expectedResult2,
+          expectedResult2,
+        ]));
 
     viewModel.input.onStart.add(true);
     Stream.value(true).delay(Duration(milliseconds: 200)).listen((event) {
@@ -276,13 +324,32 @@ main() {
     updatedList.replaceRange(4, 8, [street, city, country, zipcode]);
 
     when(mockLocationRepo.getCurrentLocation()).thenAnswer(
-        (_) => Stream.value(Result<AppCoordinates>.success(testCoordinates)));
+      (_) => Stream.value(
+        Result<AppCoordinates>.success(testCoordinates),
+      ),
+    );
     when(mockLocationRepo.decodeUserLocation(testCoordinates)).thenAnswer(
-        (_) => Stream.value(Result<AppAddress>.success(testAddress)));
-    when(mockUserProfileRepo.fetchContactInfo())
-        .thenAnswer((_) => Stream.value(Result.success(contactInfo)));
+      (_) => Stream.value(
+        Result<AppAddress>.success(testAddress),
+      ),
+    );
+    when(mockUserProfileRepo.fetchContactInfo()).thenAnswer(
+      (_) => Stream.value(
+        Result<ContactInfo>.success(contactInfo),
+      ),
+    );
+    Result<List<AppInputFieldModel>> expectedResult1 =
+        Result.success(modelList);
+    Result<List<AppInputFieldModel>> expectedResult2 =
+        Result.success(updatedList);
 
-    expect(viewModel.output.fieldList, emitsInOrder([modelList, updatedList]));
+    expect(
+        viewModel.output.fieldList,
+        emitsInOrder([
+          Result<List<AppInputFieldModel>>.loading(null),
+          expectedResult1,
+          expectedResult2,
+        ]));
     viewModel.input.onStart.add(true);
     Stream.value(true).delay(Duration(milliseconds: 200)).listen((event) {
       viewModel.input.onLocationButtonPressed.add(true);
