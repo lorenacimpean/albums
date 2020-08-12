@@ -38,7 +38,7 @@ class SuccessState<T> extends Result<T> {
   SuccessState(this.value) : super._();
   T value;
 
-  bool areValuesEqual(T valueA, T valueB) {
+  bool _areValuesEqual(T valueA, T valueB) {
     if (valueA is List && valueB is List) {
       return ListEquality().equals(valueA, valueB);
     }
@@ -51,5 +51,5 @@ class SuccessState<T> extends Result<T> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is SuccessState && areValuesEqual(value, other.value);
+      other is SuccessState && _areValuesEqual(value, other.value);
 }

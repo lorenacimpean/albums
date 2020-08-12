@@ -66,7 +66,7 @@ class ContactInfoViewModel {
           return Stream.value(
             Result<List<AppInputFieldModel>>.loading(null),
           );
-        });
+        }).startWith(Result<List<AppInputFieldModel>>.loading(null));
       })
     ]);
 

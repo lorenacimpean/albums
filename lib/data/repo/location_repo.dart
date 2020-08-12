@@ -24,7 +24,7 @@ class LocationRepo {
       }
       return Stream.value(
           Result<AppCoordinates>.error(AppStrings.locationError));
-    }).startWith(Result<AppCoordinates>.loading(null));
+    });
   }
 
   Stream<Result<AppAddress>> decodeUserLocation(AppCoordinates coordinates) {

@@ -155,23 +155,6 @@ main() {
       return Stream.value(Result<bool>.success(true));
     });
 
-//    viewModel.output.fieldList.listen((event) {
-//      if (event is SuccessState) {
-//        debugPrint((event as SuccessState<List<AppInputFieldModel>>)
-//            .value
-//            .first
-//            .error);
-//        print('SUCCESS');
-//        print((event as SuccessState<List<AppInputFieldModel>>)
-//            .value
-//            .first
-//            .error);
-//      }
-//      if (event is LoadingState) {
-//        print('LOADING');
-//      }
-//    });
-
     expect(
         viewModel.output.fieldList,
         emitsInOrder([
