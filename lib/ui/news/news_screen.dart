@@ -1,6 +1,6 @@
 import 'package:albums/themes/strings.dart';
 import 'package:albums/widgets/app_screen_widget.dart';
-import 'package:albums/widgets/coming_soon_widget.dart';
+import 'package:albums/widgets/app_center_continer_widget.dart';
 import 'package:flutter/cupertino.dart';
 
 class NewsScreen extends StatelessWidget {
@@ -11,7 +11,7 @@ class NewsScreen extends StatelessWidget {
     return AppScreen(
       title: AppStrings.newsTitle,
       key: Key(AppStrings.newsTitle),
-      body: ComingSoonWidget(),
+      body: AppCenterContainerWidget(),
     );
   }
 }

@@ -11,37 +11,27 @@ void main() {
     final mockClient = MockClient();
     final appClient = AppHttpClient(client: mockClient);
     final url = "http://jsonplaceholder.typicode.com/albums";
-    String jsonAlbumTitle = 'title": "quidem molestiae enim"';
-
     Response clientResponse = Response("response", 200);
-    when(await mockClient.get(url)).thenAnswer((_) => clientResponse);
+    when(mockClient.get(url)).thenAnswer((_) {
+      return Future.value(clientResponse);
+    });
+    Stream<Response> actualResponse =
+        appClient.request(requestType: RequestType.GET, path: 'albums');
 
-    Response actualResponse =
-        await appClient.request(requestType: RequestType.GET, path: 'albums');
-
-    expect(actualResponse, isNotNull);
-    expect(actualResponse, isA<Response>());
-    expect(actualResponse.statusCode, clientResponse.statusCode);
-    expect(actualResponse.statusCode, 200);
-    expect(actualResponse.body, isNotEmpty);
-    expect(actualResponse.body, contains(jsonAlbumTitle));
+    expect(actualResponse, emits(clientResponse));
   });
 
-  test('test response -  not found', () async {
+  test('test response -  not found', () {
     final mockClient = MockClient();
     final appClient = AppHttpClient(client: mockClient);
-    final url = "incorrect url";
-
+    final url = "http://jsonplaceholder.typicode.com/albums";
     Response clientResponse = Response("response", 404);
-    when(await mockClient.get(url)).thenAnswer((_) => clientResponse);
+    when(mockClient.get(url)).thenAnswer((_) {
+      return Future.value(clientResponse);
+    });
+    Stream<Response> actualResponse =
+        appClient.request(requestType: RequestType.GET, path: 'albums');
 
-    Response actualResponse =
-        await appClient.request(requestType: RequestType.GET, path: url);
-    expect(actualResponse, isNotNull);
-    expect(actualResponse, isA<Response>());
-    expect(actualResponse.statusCode, clientResponse.statusCode);
-    expect(actualResponse.statusCode, 404);
-    expect(actualResponse.body, isNotEmpty);
-    expect(actualResponse.body, "{}");
+    expect(actualResponse, emits(clientResponse));
   });
 }

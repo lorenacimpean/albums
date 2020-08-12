@@ -1,4 +1,3 @@
-import 'package:albums/themes/paddings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -12,8 +11,7 @@ class AppRoundedTextButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(AppPaddings.largePadding),
+    return Center(
       child: FlatButton(
         onPressed: onTap,
         child: Text(

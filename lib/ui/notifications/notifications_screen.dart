@@ -1,6 +1,6 @@
 import 'package:albums/themes/strings.dart';
 import 'package:albums/widgets/app_screen_widget.dart';
-import 'package:albums/widgets/coming_soon_widget.dart';
+import 'package:albums/widgets/app_center_continer_widget.dart';
 import 'package:albums/widgets/text_button_widget.dart';
 import 'package:flutter/widgets.dart';
 
@@ -17,7 +17,7 @@ class NotificationsScreen extends StatelessWidget {
         )
       ],
       key: Key(AppStrings.notifications),
-      body: ComingSoonWidget(),
+      body: AppCenterContainerWidget(),
     );
   }
 }

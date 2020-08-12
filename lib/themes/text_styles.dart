@@ -36,7 +36,7 @@ class AppTextStyle {
       fontWeight: FontWeight.normal);
 
   static const TextStyle button = TextStyle(
-    color: AppColors.brownRed,
+    color: AppColors.red,
     fontSize: AppTextSizes.subtitle1,
     fontWeight: FontWeight.normal,
   );

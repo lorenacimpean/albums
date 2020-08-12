@@ -6,6 +6,7 @@ import 'package:albums/themes/icons.dart';
 import 'package:albums/themes/paddings.dart';
 import 'package:albums/themes/strings.dart';
 import 'package:albums/ui/album_details/album_details_view_model.dart';
+import 'package:albums/ui/album_details/gallery_details_model.dart';
 import 'package:albums/widgets/text_button_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

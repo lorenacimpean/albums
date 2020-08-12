@@ -4,32 +4,45 @@ import 'package:albums/data/model/albums.dart';
 import 'package:albums/data/model/result.dart';
 import 'package:albums/data/repo/album_repo.dart';
 import 'package:albums/ui/next_screen.dart';
+import 'package:rxdart/rxdart.dart';
 
 class AlbumListViewModel {
+  final AlbumListViewModelInput input;
   final AlbumsRepo _albumsRepo;
-  StreamController<NextScreen> goToNext = StreamController();
+  AlbumListViewModelOutput output;
 
-  AlbumListViewModel(this._albumsRepo);
-
-  void dispose() {
-    goToNext.close();
-  }
-
-  Future<Result> getAlbums() {
-    Future<Result> futureAlbumList = _albumsRepo.getAlbums();
-
-    futureAlbumList.then((value) {
-      if (value is SuccessState) {
-        SuccessState<AlbumList> albums = value as SuccessState;
-        albums.value.sortList();
-      }
-      return value;
+  AlbumListViewModel(this._albumsRepo, this.input) {
+    Stream<Result<AlbumList>> onList = input.onStart.flatMap((_) {
+      return _getAlbums();
     });
-    return futureAlbumList;
+
+    Stream<NextScreen> nextScreen = input.onTap.map((album) {
+      return NextScreen(ScreenType.AlbumDetails, album);
+    });
+
+    output = AlbumListViewModelOutput(onList, nextScreen);
   }
 
-  void onAlbumTap(Album album) {
-    NextScreen nextScreen = NextScreen(ScreenType.AlbumDetails, album);
-    goToNext.add(nextScreen);
+  Stream<Result<AlbumList>> _getAlbums() {
+    return _albumsRepo.getAlbums().map((result) {
+      if (result is SuccessState<AlbumList>) {
+        result.value.sortList();
+      }
+      return result;
+    }).startWith(Result<AlbumList>.loading(null));
   }
+}
+
+class AlbumListViewModelInput {
+  final Subject<Album> onTap;
+  final Subject<bool> onStart;
+
+  AlbumListViewModelInput(this.onTap, this.onStart);
+}
+
+class AlbumListViewModelOutput {
+  final Stream<Result<AlbumList>> albums;
+  final Stream<NextScreen> onNextScreen;
+
+  AlbumListViewModelOutput(this.albums, this.onNextScreen);
 }

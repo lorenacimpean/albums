@@ -5,126 +5,116 @@ import 'package:albums/data/model/photos.dart';
 import 'package:albums/data/model/result.dart';
 import 'package:albums/data/repo/photos_repo.dart';
 import 'package:albums/themes/strings.dart';
+import 'package:albums/ui/album_details/tap_action_model.dart';
 import 'package:albums/ui/next_screen.dart';
+import 'package:rxdart/rxdart.dart';
+
+import 'album_info_model.dart';
+import 'gallery_details_model.dart';
+import 'list_item_model.dart';
 
 enum ActionType { saveToFavorites, addComment }
 enum ListItemType { albumInfo, albumAction, photo }
 
 class AlbumDetailsViewModel {
   final PhotosRepo _photosRepo;
-  final StreamController<TapAction> _onTapController =
-      StreamController<TapAction>();
-  final StreamController<NextScreen> _nextScreenController =
-      StreamController<NextScreen>();
+  final AlbumDetailsViewModelInput input;
+  AlbumDetailsViewModelOutput output;
   PhotoList _photoList;
 
-  Stream<NextScreen> get nextScreenStream => _nextScreenController.stream;
-
-  Stream<TapAction> get onTapStream => _onTapController.stream;
-
-  AlbumDetailsViewModel(this._photosRepo);
-
-  void dispose() {
-    _onTapController.close();
-    _nextScreenController.close();
+  AlbumDetailsViewModel(this._photosRepo, this.input) {
+    Stream<Result<ListItems>> onList = input.onStart.flatMap((album) {
+      return _getListItemList(album);
+    });
+    Stream<NextScreen> onNextScreen = input.onPhotoTap.flatMap((photo) {
+      return _onPhotoTap(photo);
+    });
+    Stream<TapAction> onToast = input.onActionTap.flatMap((tapAction) {
+      return _onActionTap(tapAction);
+    });
+    output = AlbumDetailsViewModelOutput(onList, onNextScreen, onToast);
   }
 
-  Future<Result<PhotoList>> _getPhotoList(Album album) {
-    return _photosRepo.getPhotoList(album.id);
-  }
-
-  Future<Result<List<ListItem>>> getData(Album album) {
-    return _getPhotoList(album).then((result) {
+  Stream<Result<ListItems>> _getListItemList(Album album) {
+    return _photosRepo.getPhotoList(album.id).map((result) {
       if (result is SuccessState<PhotoList>) {
         _photoList = result.value;
         List<ListItem> itemList = [];
-        if (result is SuccessState<PhotoList>) {
-          ListItem albumInfo = ListItem(
-              type: ListItemType.albumInfo,
-              data: AlbumInfo(
-                  albumName: album.title,
-                  albumId: album.id,
-                  photosCount: result.value.photosCount()));
-          itemList.add(albumInfo);
-
-          ListItem albumAction = ListItem(
-              type: ListItemType.albumAction, data: albumInfo.data.photosCount);
-          itemList.add(albumAction);
-
-          itemList.addAll((result as SuccessState<PhotoList>)
-              .value
-              .photos
-              .map((e) => ListItem(type: ListItemType.photo, data: e)));
-        }
-        return Result.success(itemList);
-      } else if (result is ErrorState) {
-        return Result.error((result as ErrorState<PhotoList>).msg);
+        ListItem albumInfo = ListItem(
+          type: ListItemType.albumInfo,
+          data: AlbumInfo(
+            albumName: album.title,
+            albumId: album.id,
+            photosCount: _photoList.photosCount(),
+          ),
+        );
+        itemList.add(albumInfo);
+        ListItem albumAction = ListItem(
+          type: ListItemType.albumAction,
+          data: _photoList.photosCount(),
+        );
+        itemList.add(albumAction);
+        itemList.addAll(
+          (result.value.photos.map(
+            (e) => ListItem(type: ListItemType.photo, data: e),
+          )),
+        );
+        ListItems items = ListItems(itemList);
+        return Result<ListItems>.success(items);
       }
-      return Result.loading(null);
-    });
+      return Result<ListItems>.error(AppStrings.photoListError);
+    }).startWith(Result<ListItems>.loading(null));
   }
 
-  void onActionTap(ActionType actionType, Album album) {
+  Stream<TapAction> _onActionTap(TapAction tapAction) {
     TapAction action;
     String toastMessage;
-    if (actionType == ActionType.saveToFavorites) {
-      toastMessage = "${AppStrings.saveToFavoritesToastMessage} ${album.id}";
+    if (tapAction.actionType == ActionType.saveToFavorites) {
+      toastMessage =
+          "${AppStrings.saveToFavoritesToastMessage} ${tapAction.album.id}";
     } else {
-      toastMessage = "${AppStrings.addCommentToastMessage} ${album.id}";
+      toastMessage =
+          "${AppStrings.addCommentToastMessage} ${tapAction.album.id}";
     }
-    action = TapAction(actionType, album, toastMessage);
-    _onTapController.add(action);
+    action = TapAction(
+        actionType: tapAction.actionType,
+        album: tapAction.album,
+        toastMessage: toastMessage);
+    return Stream.value(action);
   }
 
-  void onPhotoTap(Photo selectedPhoto) {
+  Stream<NextScreen> _onPhotoTap(Photo selectedPhoto) {
     int selectedPhotoIndex = _photoList.selectedIndex(selectedPhoto);
-
     NextScreen nextScreen = NextScreen(
         ScreenType.Photos,
         GalleryDetails(
-            photoList: _photoList, selectedIndex: selectedPhotoIndex));
-    _nextScreenController.add(nextScreen);
+          photoList: _photoList,
+          selectedIndex: selectedPhotoIndex,
+        ));
+    return Stream.value(nextScreen);
   }
 }
 
-class TapAction {
-  final ActionType actionType;
-  final Album album;
-  final String toastMessage;
+class AlbumDetailsViewModelInput {
+  final Subject<TapAction> onActionTap;
+  final Subject<Photo> onPhotoTap;
+  final Subject<Album> onStart;
 
-  TapAction(this.actionType, this.album, this.toastMessage);
+  AlbumDetailsViewModelInput(
+    this.onActionTap,
+    this.onPhotoTap,
+    this.onStart,
+  );
 }
 
-class ListItem {
-  final ListItemType type;
-  final dynamic data;
+class AlbumDetailsViewModelOutput {
+  final Stream<Result<ListItems>> listItems;
+  final Stream<NextScreen> nextScreen;
+  final Stream<TapAction> toast;
 
-  ListItem({this.type, this.data});
-
-  @override
-  int get hashCode => type.hashCode ^ data.hashCode;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is ListItem && type == other.type && data == other.data;
-}
-
-class AlbumInfo {
-  final String albumName;
-  final int albumId;
-  final int photosCount;
-
-  AlbumInfo({
-    this.albumName,
-    this.albumId,
-    this.photosCount,
-  });
-}
-
-class GalleryDetails {
-  final PhotoList photoList;
-  final int selectedIndex;
-
-  GalleryDetails({this.photoList, this.selectedIndex});
+  AlbumDetailsViewModelOutput(
+    this.listItems,
+    this.nextScreen,
+    this.toast,
+  );
 }

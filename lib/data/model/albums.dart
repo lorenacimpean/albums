@@ -11,6 +11,17 @@ class Album {
       Album(userId: json['userId'], id: json['id'], title: json['title']);
 
   Map<String, dynamic> toJson() => {"userId": userId, "id": id, "title": title};
+
+  @override
+  int get hashCode => userId.hashCode ^ id.hashCode ^ title.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Album &&
+          userId == other.userId &&
+          id == other.id &&
+          title == other.title;
 }
 
 class AlbumList {
@@ -34,4 +45,12 @@ class AlbumList {
   Album albumAtIndex(int index) {
     return this.albumList[index];
   }
+
+  @override
+  int get hashCode => albumList.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AlbumList && albumList == other.albumList;
 }
