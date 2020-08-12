@@ -10,10 +10,7 @@ class LocationRepo {
   final Location location;
   final Geocoding geocoding;
 
-  LocationRepo({this.location, this.geocoding}) {
-    this.location ?? Location();
-    this.geocoding ?? Geocoder.local;
-  }
+  LocationRepo(this.location, this.geocoding);
 
   Stream<Result<AppCoordinates>> getCurrentLocation() {
     return location.requestPermission().asStream().flatMap((permission) {
@@ -35,12 +32,10 @@ class LocationRepo {
         .findAddressesFromCoordinates(coordinates)
         .asStream()
         .map((addressList) {
-      if (addressList?.isNotEmpty ?? true) {
-        Address currentAddress = addressList?.first;
-        return Result<AppAddress>.success(
-            AppAddress.fromAddress(currentAddress));
-      }
-      return Result<AppAddress>.error(AppStrings.noAddressesError);
+      return addressList?.isNotEmpty ?? true
+          ? Result<AppAddress>.success(
+              AppAddress.fromAddress(addressList?.first))
+          : Result<AppAddress>.error(AppStrings.noAddressesError);
     });
   }
 }

@@ -7,7 +7,13 @@ class Photo {
   final String url;
   final String thumbnailUrl;
 
-  Photo({this.albumId, this.id, this.title, this.url, this.thumbnailUrl});
+  Photo({
+    this.albumId,
+    this.id,
+    this.title,
+    this.url,
+    this.thumbnailUrl,
+  });
 
   factory Photo.fromJson(Map<String, dynamic> json) => Photo(
       albumId: json['userId'],
@@ -16,6 +22,24 @@ class Photo {
       url: json['url'],
       thumbnailUrl: json['thumbnailUrl']);
 
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Photo &&
+          runtimeType == other.runtimeType &&
+          albumId == other.albumId &&
+          id == other.id &&
+          title == other.title &&
+          url == other.url &&
+          thumbnailUrl == other.thumbnailUrl;
+
+  @override
+  int get hashCode =>
+      albumId.hashCode ^
+      id.hashCode ^
+      title.hashCode ^
+      url.hashCode ^
+      thumbnailUrl.hashCode;
 }
 
 class PhotoList {
@@ -36,4 +60,14 @@ class PhotoList {
   int selectedIndex(Photo selectedPhoto) {
     return this.photos?.indexWhere((photo) => photo == selectedPhoto);
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is PhotoList &&
+          runtimeType == other.runtimeType &&
+          photos == other.photos;
+
+  @override
+  int get hashCode => photos.hashCode;
 }

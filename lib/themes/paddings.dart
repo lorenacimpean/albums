@@ -20,7 +20,8 @@ class AppPaddings {
   static final Size appBarHeight = Size.fromHeight(100.0);
 
   //widget radius
-  static final BorderRadius defaultRadius = BorderRadius.circular(5.0);
+  static final BorderRadius defaultRadius =
+      BorderRadius.all(Radius.circular(5.0));
 
   //durations
   static final Duration shortDuration = Duration(seconds: 1);

@@ -18,6 +18,14 @@ class NextScreen {
   final dynamic data;
 
   NextScreen(this.type, this.data);
+
+  @override
+  int get hashCode => type.hashCode ^ data.hashCode;
+
+  @override
+  bool operator ==(other) =>
+      identical(this, other) ||
+      other is NextScreen && this.type == other.type && this.data == other.data;
 }
 
 void openNextScreen(BuildContext context, NextScreen nextScreen) {
