@@ -1,4 +1,3 @@
-import 'package:albums/data/model/result.dart';
 import 'package:albums/themes/strings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:geocoder/geocoder.dart';
@@ -12,30 +11,28 @@ class LocationRepo {
 
   LocationRepo(this.location, this.geocoding);
 
-  Stream<Result<AppCoordinates>> getCurrentLocation() {
+  Stream<AppCoordinates> getCurrentLocation() {
     return location.requestPermission().asStream().flatMap((permission) {
       if (permission == PermissionStatus.granted) {
         return location.getLocation().asStream().map((locationData) {
           AppCoordinates coordinates = AppCoordinates(
               latitude: locationData.latitude,
               longitude: locationData.longitude);
-          return Result<AppCoordinates>.success(coordinates);
+          return coordinates;
         });
       }
-      return Stream.value(
-          Result<AppCoordinates>.error(AppStrings.locationError));
+      return Stream.error(AppStrings.locationError);
     });
   }
 
-  Stream<Result<AppAddress>> decodeUserLocation(AppCoordinates coordinates) {
+  Stream<AppAddress> decodeUserLocation(AppCoordinates coordinates) {
     return geocoding
         .findAddressesFromCoordinates(coordinates)
         .asStream()
         .map((addressList) {
       return addressList?.isNotEmpty ?? true
-          ? Result<AppAddress>.success(
-              AppAddress.fromAddress(addressList?.first))
-          : Result<AppAddress>.error(AppStrings.noAddressesError);
+          ? AppAddress.fromAddress(addressList?.first)
+          : Stream.error(AppStrings.noAddressesError);
     });
   }
 }

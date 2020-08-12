@@ -38,11 +38,16 @@ class _ContactInfoScreenState extends BaseState<ContactInfoScreen> {
       buildLocationRepo(),
     );
 
-    disposeLater(_viewModel.output.fieldList.listen((list) {
-      setState(() {
-        _result = list;
-      });
-    }));
+    disposeLater(
+      _viewModel.output.fieldList.listen((result) {
+        setState(() {
+          if (result is SuccessState<List<AppInputFieldModel>>)
+            _result = result;
+        });
+      }, onError: (e) {
+        handleError(error: (e));
+      }),
+    );
     _viewModel.input.onStart.add(true);
   }
 
@@ -70,7 +75,6 @@ class _ContactInfoScreenState extends BaseState<ContactInfoScreen> {
       if (list?.isNotEmpty ?? true) {
         return _buildTextFields(context, list);
       }
-      handleStringError();
     }
     return LoadingIndicator();
   }

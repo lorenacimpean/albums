@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:albums/data/model/contact_info.dart';
 import 'package:albums/data/model/location_info.dart';
-import 'package:albums/data/model/result.dart';
 import 'package:albums/data/repo/user_profile_repo.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -79,11 +78,8 @@ void main() {
       return null;
     });
 
-    Stream<Result<ContactInfo>> actualResult = repo.fetchContactInfo();
-    Result<ContactInfo> expectedResult =
-        Result<ContactInfo>.success(contactInfo);
-
-    expect(actualResult, emits(expectedResult));
+    Stream<ContactInfo> actualResult = repo.fetchContactInfo();
+    expect(actualResult, emits(contactInfo));
     expect(actualResult, isNotNull);
   });
 
@@ -114,10 +110,8 @@ void main() {
       return null;
     });
 
-    Stream<Result<bool>> actualResult = repo.saveContactInfo(contactInfo);
-    Result<bool> expectedResult = Result<bool>.success(true);
-
-    expect(actualResult, emits(expectedResult));
+    Stream<bool> actualResult = repo.saveContactInfo(contactInfo);
+    expect(actualResult, emits(true));
     expect(actualResult, isNotNull);
   });
 }

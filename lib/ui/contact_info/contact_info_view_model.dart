@@ -4,6 +4,7 @@ import 'package:albums/data/model/contact_info.dart';
 import 'package:albums/data/model/result.dart';
 import 'package:albums/data/repo/location_repo.dart';
 import 'package:albums/data/repo/user_profile_repo.dart';
+import 'package:albums/themes/strings.dart';
 import 'package:albums/ui/contact_info/validator.dart';
 import 'package:albums/ui/extensions.dart';
 import 'package:albums/widgets/app_input_field_widget.dart';
@@ -25,7 +26,9 @@ class ContactInfoViewModel {
     this._locationRepo,
   ) {
     Stream<Result<List<AppInputFieldModel>>> onList = MergeStream([
-      input.onStart.flatMap((_) => _initFields()),
+      input.onStart.flatMap((_) {
+        return _initFields();
+      }),
       input.onValueChanged.map((field) {
         field.error = null;
         _list
@@ -49,49 +52,43 @@ class ContactInfoViewModel {
         );
       }),
       input.onLocationButtonPressed.flatMap((event) {
-        return _locationRepo.getCurrentLocation().flatMap((result) {
-          if (result is SuccessState<AppCoordinates>) {
-            return _locationRepo
-                .decodeUserLocation(result.value)
-                .map((address) {
-              _updateLocationFields(
-                  (address as SuccessState<AppAddress>).value);
-              return Result<List<AppInputFieldModel>>.success(_list);
-            });
-          }
-          if (result is ErrorState<AppCoordinates>) {
-            return Stream.value(
-                Result<List<AppInputFieldModel>>.error(result.msg));
-          }
-          return Stream.value(
-            Result<List<AppInputFieldModel>>.loading(null),
-          );
-        }).startWith(Result<List<AppInputFieldModel>>.loading(null));
-      })
+        return _locationRepo.getCurrentLocation().flatMap((coordinates) {
+          return coordinates != null
+              ? _locationRepo
+                  .decodeUserLocation(coordinates)
+                  .flatMap((address) {
+                  if (address != null) {
+                    _updateLocationFields((address));
+                    return Stream.value(
+                      Result<List<AppInputFieldModel>>.success(_list),
+                    );
+                  }
+                  return Stream.error(AppStrings.noAddressesError);
+                })
+              : Stream.error(AppStrings.locationError);
+        }).startWith(
+          Result<List<AppInputFieldModel>>.loading(null),
+        );
+      }),
     ]);
-
     output = ContactInfoViewModelOutput(onList);
   }
 
   Stream<Result<List<AppInputFieldModel>>> _initFields() {
-    return _userProfileRepo
-        .fetchContactInfo()
-        .map((Result<ContactInfo> result) {
-      if (result is SuccessState<ContactInfo>) {
-        FieldType.values.forEach((fieldType) {
-          String fieldValue = fieldType.fromContactInfo(result.value);
-          _list.add(
-            AppInputFieldModel(
-              fieldType: fieldType,
-              value: fieldValue,
-              textController: TextEditingController()..text = fieldValue,
-              onValueChanged: (model) {
-                input.onValueChanged.add(model);
-              },
-            ),
-          );
-        });
-      }
+    return _userProfileRepo.fetchContactInfo().map((result) {
+      FieldType.values.forEach((fieldType) {
+        String fieldValue = fieldType.fromContactInfo(result);
+        _list.add(
+          AppInputFieldModel(
+            fieldType: fieldType,
+            value: fieldValue,
+            textController: TextEditingController()..text = fieldValue,
+            onValueChanged: (model) {
+              input.onValueChanged.add(model);
+            },
+          ),
+        );
+      });
       return Result<List<AppInputFieldModel>>.success(_list);
     }).startWith(
       Result<List<AppInputFieldModel>>.loading(null),
