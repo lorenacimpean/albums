@@ -25,7 +25,7 @@ abstract class BaseState<T extends StatefulWidget> extends State<T> {
     }
   }
 
-  void handleStringError({String errorText}) {
+  void handleStringError({String errorText = AppStrings.errorWhileLoading}) {
     showDialog(
         context: context,
         barrierDismissible: false,
@@ -33,7 +33,7 @@ abstract class BaseState<T extends StatefulWidget> extends State<T> {
           return AppCenterContainerWidget(
             textColor: AppColors.red,
             borderColor: AppColors.red,
-            text: errorText = null ? AppStrings.errorWhileLoading : errorText,
+            text: errorText,
           );
         });
   }

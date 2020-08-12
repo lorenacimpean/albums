@@ -1,6 +1,7 @@
 import 'package:albums/data/model/albums.dart';
 import 'package:albums/data/model/result.dart';
 import 'package:albums/data/repo/album_repo.dart';
+import 'package:albums/themes/strings.dart';
 import 'package:albums/ui/album_list/album_list_view_model.dart';
 import 'package:albums/ui/next_screen.dart';
 import 'package:mockito/mockito.dart';
@@ -25,7 +26,7 @@ main() {
 
     AlbumList expectedList = AlbumList(albumList: list);
     when(mockAlbumsRepo.getAlbums()).thenAnswer((_) {
-      return Stream.value(Result<AlbumList>.success(expectedList));
+      return Stream.value(expectedList);
     });
     Stream<Result<AlbumList>> actualResult = viewModel.output.albums;
 
@@ -39,28 +40,19 @@ main() {
   });
 
   test('getAlbums error ', () {
-    Result<AlbumList> expectedResult = Result<AlbumList>.error('error');
-
+    Result<AlbumList> expectedResult =
+        Result<AlbumList>.error(AppStrings.generalError);
     when(mockAlbumsRepo.getAlbums()).thenAnswer((_) {
-      return Stream.value(expectedResult);
+      return Stream.error('error');
     });
     Stream<Result<AlbumList>> actualResult = viewModel.output.albums;
-
-    expect(actualResult,
-        emitsInOrder([Result<AlbumList>.loading(null), expectedResult]));
-    viewModel.input.onStart.add(true);
-  });
-
-  test('getAlbums loading ', () {
-    Result<AlbumList> expectedResult = Result<AlbumList>.loading(null);
-
-    when(mockAlbumsRepo.getAlbums()).thenAnswer((_) {
-      return Stream.value(expectedResult);
-    });
-    Stream<Result<AlbumList>> actualResult = viewModel.output.albums;
-
-    expect(actualResult,
-        emitsInOrder([Result<AlbumList>.loading(null), expectedResult]));
+    expect(
+      actualResult,
+      emitsInOrder([
+        Result<AlbumList>.loading(null),
+        expectedResult,
+      ]),
+    );
     viewModel.input.onStart.add(true);
   });
 
@@ -69,7 +61,6 @@ main() {
     NextScreen nextScreen = NextScreen(ScreenType.AlbumDetails, album);
 
     Stream<NextScreen> actualResult = viewModel.output.onNextScreen;
-
     expect(actualResult, emits(nextScreen));
     viewModel.input.onTap.add(album);
   });

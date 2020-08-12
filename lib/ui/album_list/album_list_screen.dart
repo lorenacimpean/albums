@@ -51,18 +51,16 @@ class _AlbumListScreenState extends BaseState<AlbumListScreen> {
         setState(() {
           _result = albumList;
           if (albumList is SuccessState<AlbumList>) {
-            debugPrint('$albumList');
             (_result as SuccessState).value = albumList.value;
           }
         });
       }, onError: (e) {
-        debugPrint(e.toString());
-        handleError(
-            error: e,
-            retry: () {
-              _viewModel.input.onStart.add(true);
-              Navigator.pop(context);
-            });
+            handleError(
+                error: e,
+                retry: () {
+                  Navigator.pop(context);
+                  _viewModel.input.onStart.add(true);
+                });
       }),
     );
     _viewModel.output.onNextScreen.listen((nextScreen) {
