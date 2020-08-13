@@ -18,12 +18,13 @@ class MockPhotosRepo extends Mock implements PhotosRepo {}
 void main() {
   final mockPhotosRepo = MockPhotosRepo();
   final viewModel = AlbumDetailsViewModel(
-      mockPhotosRepo,
-      AlbumDetailsViewModelInput(
-        PublishSubject(),
-        PublishSubject(),
-        PublishSubject(),
-      ));
+    mockPhotosRepo,
+    AlbumDetailsViewModelInput(
+      PublishSubject(),
+      PublishSubject(),
+      PublishSubject(),
+    ),
+  );
   Album album = Album(userId: 1, id: 1, title: "title 1");
   test('test get data success', () {
     Photo photo = Photo(
@@ -57,7 +58,7 @@ void main() {
     when(mockPhotosRepo.getPhotoList(album.id)).thenAnswer(
       (_) {
         return Stream.value(
-          Result.success(photoList),
+          photoList,
         );
       },
     );
@@ -73,19 +74,19 @@ void main() {
   });
 
   test('test get data error', () {
-    Result<ListItems> expectedResult = Result<ListItems>.error(AppStrings.photoListError);
     when(mockPhotosRepo.getPhotoList(1)).thenAnswer(
       (_) {
-        return Stream.value(Result<PhotoList>.error(AppStrings.photoListError));
+        return Stream<PhotoList>.error(AppStrings.photoListError);
       },
     );
     Stream<Result<ListItems>> actualResult = viewModel.output.listItems;
     expect(
-        actualResult,
-        emitsInOrder([
-          Result<ListItems>.loading(null),
-          expectedResult,
-        ]));
+      actualResult,
+      emitsInOrder([
+        Result<ListItems>.loading(null),
+        Result<ListItems>.error(AppStrings.photoListError),
+      ]),
+    );
     viewModel.input.onStart.add(album);
   });
 

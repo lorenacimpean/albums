@@ -44,12 +44,13 @@ class _AlbumDetailsScreenState extends BaseState<AlbumDetailsScreen> {
   void initState() {
     super.initState();
     _viewModel = AlbumDetailsViewModel(
-        buildPhotosRepo(),
-        AlbumDetailsViewModelInput(
-          BehaviorSubject(),
-          BehaviorSubject(),
-          BehaviorSubject(),
-        ));
+      buildPhotosRepo(),
+      AlbumDetailsViewModelInput(
+        BehaviorSubject(),
+        BehaviorSubject(),
+        BehaviorSubject(),
+      ),
+    );
     _flutterToast = FlutterToast(context);
 
     disposeLater(
@@ -89,10 +90,8 @@ class _AlbumDetailsScreenState extends BaseState<AlbumDetailsScreen> {
   }
 
   Widget _buildBody(BuildContext context) {
-    if (_result is LoadingState<ListItems>) {
-      return LoadingIndicator();
-    }
-    if (_result is SuccessState<ListItems>) {
+    if (_result is LoadingState<ListItems>) return LoadingIndicator();
+    if (_result is SuccessState<ListItems>)
       return ListView.builder(
         padding: EdgeInsets.all(AppPaddings.defaultPadding),
         shrinkWrap: true,
@@ -102,7 +101,6 @@ class _AlbumDetailsScreenState extends BaseState<AlbumDetailsScreen> {
               (_result as SuccessState<ListItems>).value.listItems[index]);
         },
       );
-    }
     return AppCenterContainerWidget(
       text: AppStrings.errorWhileLoading,
       textColor: AppColors.red,
