@@ -1,10 +1,12 @@
 import 'package:albums/data/model/result.dart';
 import 'package:albums/data/repo/repo_factory.dart';
+import 'package:albums/themes/colors.dart';
 import 'package:albums/themes/paddings.dart';
 import 'package:albums/themes/strings.dart';
 import 'package:albums/ui/contact_info/contact_info_view_model.dart';
 import 'package:albums/ui/contact_info/validator.dart';
 import 'package:albums/ui/extensions.dart';
+import 'package:albums/widgets/app_center_continer_widget.dart';
 import 'package:albums/widgets/app_input_field_widget.dart';
 import 'package:albums/widgets/app_rounded_text_button.dart';
 import 'package:albums/widgets/app_screen_widget.dart';
@@ -41,11 +43,12 @@ class _ContactInfoScreenState extends BaseState<ContactInfoScreen> {
     disposeLater(
       _viewModel.output.fieldList.listen((result) {
         setState(() {
-          if (result is SuccessState<List<AppInputFieldModel>>)
-            _result = result;
+          _result = result;
         });
       }, onError: (e) {
-        handleError(error: (e));
+        handleError(
+          error: (e),
+        );
       }),
     );
     _viewModel.input.onStart.add(true);
@@ -64,22 +67,29 @@ class _ContactInfoScreenState extends BaseState<ContactInfoScreen> {
           },
         ),
       ],
-      body: _buildBody(context),
+      body: _buildBody(),
     );
   }
 
-  Widget _buildBody(BuildContext context) {
-    if (_result is SuccessState<List<AppInputFieldModel>>) {
-      List<AppInputFieldModel> list =
-          (_result as SuccessState<List<AppInputFieldModel>>).value;
-      if (list?.isNotEmpty ?? true) {
-        return _buildTextFields(context, list);
-      }
-    }
-    return LoadingIndicator();
+  Widget _buildBody() {
+    List<AppInputFieldModel> list;
+    String error;
+    if (_result is SuccessState<List<AppInputFieldModel>>)
+      list = (_result as SuccessState<List<AppInputFieldModel>>).value;
+    if (_result is LoadingState<List<AppInputFieldModel>>)
+      list = (_result as LoadingState<List<AppInputFieldModel>>).value;
+    if (_result is ErrorState)
+      error = (_result as ErrorState<List<AppInputFieldModel>>).msg;
+    return Stack(
+      children: <Widget>[
+        if (list?.isNotEmpty ?? false) _buildTextFields(list),
+        if (_result is LoadingState) LoadingIndicator(),
+        if (_result is ErrorState) _buildError(error),
+      ],
+    );
   }
 
-  Widget _buildTextFields(BuildContext context, List<AppInputFieldModel> list) {
+  Widget _buildTextFields(List<AppInputFieldModel> list) {
     return SingleChildScrollView(
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: AppPaddings.defaultPadding),
@@ -178,6 +188,14 @@ class _ContactInfoScreenState extends BaseState<ContactInfoScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildError(String error) {
+    return AppCenterContainerWidget(
+      textColor: AppColors.red,
+      borderColor: AppColors.red,
+      text: error,
     );
   }
 }

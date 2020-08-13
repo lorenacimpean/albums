@@ -44,12 +44,12 @@ class AlbumListViewModelInput {
   final Subject<Album> onTap;
   final Subject<bool> onStart;
 
-  AlbumListViewModelInput(this.onTap, this.onStart);
+  AlbumListViewModelInput(this.onTap, this.onStart,);
 }
 
 class AlbumListViewModelOutput {
   final Stream<Result<AlbumList>> albums;
   final Stream<NextScreen> onNextScreen;
 
-  AlbumListViewModelOutput(this.albums, this.onNextScreen);
+  AlbumListViewModelOutput(this.albums, this.onNextScreen,);
 }

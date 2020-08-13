@@ -55,12 +55,12 @@ class _AlbumListScreenState extends BaseState<AlbumListScreen> {
           }
         });
       }, onError: (e) {
-            handleError(
-                error: e,
-                retry: () {
-                  Navigator.pop(context);
-                  _viewModel.input.onStart.add(true);
-                });
+        handleError(
+            error: e,
+            retry: () {
+              Navigator.pop(context);
+              _viewModel.input.onStart.add(true);
+            });
       }),
     );
     _viewModel.output.onNextScreen.listen((nextScreen) {
@@ -101,7 +101,7 @@ class _AlbumListScreenState extends BaseState<AlbumListScreen> {
   }
 
   Widget _buildBody(BuildContext context) {
-    if (_result is LoadingState) {
+    if (_result is LoadingState || _result == null) {
       return LoadingIndicator();
     }
     if (_result is SuccessState) {

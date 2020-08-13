@@ -52,23 +52,34 @@ class ContactInfoViewModel {
         );
       }),
       input.onLocationButtonPressed.flatMap((event) {
-        return _locationRepo.getCurrentLocation().flatMap((coordinates) {
-          return coordinates != null
-              ? _locationRepo
-                  .decodeUserLocation(coordinates)
-                  .flatMap((address) {
+        return _locationRepo
+            .getCurrentLocation()
+            .flatMap((coordinates) {
+              if (coordinates != null) {
+                return _locationRepo
+                    .decodeUserLocation(coordinates)
+                    .map((address) {
                   if (address != null) {
                     _updateLocationFields((address));
-                    return Stream.value(
-                      Result<List<AppInputFieldModel>>.success(_list),
-                    );
+                    return Result<List<AppInputFieldModel>>.success(_list);
                   }
-                  return Stream.error(AppStrings.noAddressesError);
-                })
-              : Stream.error(AppStrings.locationError);
-        }).startWith(
-          Result<List<AppInputFieldModel>>.loading(null),
-        );
+                  return Result<List<AppInputFieldModel>>.error(
+                      AppStrings.noAddressesError);
+                });
+              }
+              return Stream.value(
+                Result<List<AppInputFieldModel>>.error(
+                    AppStrings.locationError),
+              );
+            })
+            .startWith(
+              Result<List<AppInputFieldModel>>.loading(_list),
+            )
+            .onErrorReturnWith((error) {
+              return Result<List<AppInputFieldModel>>.error(
+                error.toString(),
+              );
+            });
       }),
     ]);
     output = ContactInfoViewModelOutput(onList);

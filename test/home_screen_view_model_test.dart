@@ -1,40 +1,40 @@
+import 'package:albums/ui/home_screen/app_tab_model.dart';
 import 'package:albums/ui/home_screen/home_view_model.dart';
 import 'package:mockito/mockito.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:test/test.dart';
 
 class MockHome extends Mock implements HomeViewModel {}
 
 main() {
+  final _viewModel = HomeViewModel(
+    HomeViewModelInput(
+      PublishSubject(),
+      PublishSubject(),
+    ),
+  );
   test('test stream returns correct default values', () async {
-    final viewModel = HomeViewModel();
     expect(
-        viewModel.tabs,
-        emits(NavBarTabs([
+        _viewModel.output.tabs,
+        emits(([
           AppTab.fromType(NavBarItem.BROWSE, isSelected: true),
           AppTab.fromType(NavBarItem.FRIENDS),
           AppTab.fromType(NavBarItem.NEWS),
           AppTab.fromType(NavBarItem.PROFILE),
         ])));
+    _viewModel.input.onStart.add(true);
   });
 
   test('on profile tab selected', () async {
-    final viewModel = HomeViewModel();
     expect(
-        viewModel.tabs,
-        emitsInOrder([
-          NavBarTabs([
-            AppTab.fromType(NavBarItem.BROWSE, isSelected: true),
-            AppTab.fromType(NavBarItem.FRIENDS),
-            AppTab.fromType(NavBarItem.NEWS),
-            AppTab.fromType(NavBarItem.PROFILE),
-          ]),
-          NavBarTabs([
-            AppTab.fromType(NavBarItem.BROWSE),
-            AppTab.fromType(NavBarItem.FRIENDS),
-            AppTab.fromType(NavBarItem.NEWS, isSelected: true),
-            AppTab.fromType(NavBarItem.PROFILE),
-          ])
-        ]));
-    viewModel.onTabSelected(AppTab.fromType(NavBarItem.NEWS));
+      _viewModel.output.tabs,
+      emits([
+        AppTab.fromType(NavBarItem.BROWSE),
+        AppTab.fromType(NavBarItem.FRIENDS),
+        AppTab.fromType(NavBarItem.NEWS, isSelected: true),
+        AppTab.fromType(NavBarItem.PROFILE),
+      ]),
+    );
+    _viewModel.input.onTap.add(AppTab.fromType(NavBarItem.NEWS));
   });
 }

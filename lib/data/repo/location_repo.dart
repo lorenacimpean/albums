@@ -21,7 +21,7 @@ class LocationRepo {
           return coordinates;
         });
       }
-      return Stream.error(AppStrings.locationError);
+      return Stream<AppCoordinates>.error(AppStrings.locationError);
     });
   }
 
@@ -32,7 +32,7 @@ class LocationRepo {
         .map((addressList) {
       return addressList?.isNotEmpty ?? true
           ? AppAddress.fromAddress(addressList?.first)
-          : Stream.error(AppStrings.noAddressesError);
+          : Stream<AppAddress>.error(AppStrings.noAddressesError);
     });
   }
 }
