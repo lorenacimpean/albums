@@ -1,7 +1,4 @@
-import 'dart:async';
-
 import 'package:albums/data/model/contact_info.dart';
-import 'package:albums/data/model/result.dart';
 import 'package:albums/data/repo/repo_factory.dart';
 import 'package:albums/themes/icons.dart';
 import 'package:albums/themes/paddings.dart';
@@ -13,7 +10,9 @@ import 'package:albums/widgets/app_bar_icon_widget.dart';
 import 'package:albums/widgets/app_header_info_widget.dart';
 import 'package:albums/widgets/app_list_tile_widget.dart';
 import 'package:albums/widgets/app_screen_widget.dart';
+import 'package:albums/widgets/base_state.dart';
 import 'package:flutter/widgets.dart';
+import 'package:rxdart/rxdart.dart';
 
 class YourProfileScreen extends StatefulWidget {
   const YourProfileScreen({Key key}) : super(key: key);
@@ -22,27 +21,28 @@ class YourProfileScreen extends StatefulWidget {
   _YourProfileScreenState createState() => _YourProfileScreenState();
 }
 
-class _YourProfileScreenState extends State<YourProfileScreen> {
+class _YourProfileScreenState extends BaseState<YourProfileScreen> {
   YourProfileViewModel _viewModel;
-  StreamSubscription _nextScreenSubscription;
   ContactInfo _contactInfo;
 
   void initState() {
     super.initState();
-    _viewModel = YourProfileViewModel(buildUserProfileRepo());
-    _nextScreenSubscription = _viewModel.nextScreenStream.listen((nextScreen) {
+    _viewModel = YourProfileViewModel(
+        buildUserProfileRepo(),
+        YourProfileViewModelInput(
+          PublishSubject(),
+          PublishSubject(),
+        ));
+
+    disposeLater(_viewModel.output.contactInfo.listen((result) {
+      setState(() {
+        _contactInfo = result;
+      });
+    }));
+    _viewModel.output.onNextScreen.listen((nextScreen) {
       openNextScreen(context, nextScreen);
     });
-    _viewModel.userProfile().listen((Result<ContactInfo> value) {
-      setState(() {
-        _contactInfo = (value as SuccessState<ContactInfo>)?.value;
-      });
-    });
-  }
-
-  void dispose() {
-    _nextScreenSubscription.cancel();
-    super.dispose();
+    _viewModel.input.onStart.add(true);
   }
 
   @override
@@ -53,7 +53,7 @@ class _YourProfileScreenState extends State<YourProfileScreen> {
         AppBarIconWidget(
             icon: AppIcons.notificationsIcon,
             onPressed: () {
-              _viewModel.onNotificationIconTapped();
+              _viewModel.input.onTap.add(ScreenType.NotificationsScreen);
             }),
       ],
       key: Key(AppStrings.profileTitle),
@@ -78,7 +78,7 @@ class _YourProfileScreenState extends State<YourProfileScreen> {
                 : "",
             icon: AppIcons.contactInfoIcon,
             onTap: () {
-              _viewModel.onContactInfoTapped();
+              _viewModel.input.onTap.add(ScreenType.ContactInfo);
             },
           ),
         ],

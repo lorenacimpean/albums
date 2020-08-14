@@ -1,4 +1,3 @@
-import 'package:albums/data/model/result.dart';
 import 'package:albums/data/repo/location_repo.dart';
 import 'package:albums/themes/strings.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -41,33 +40,35 @@ void main() {
         .thenAnswer((_) => Future.value(PermissionStatus.granted));
     when(mockLocation.getLocation())
         .thenAnswer((_) => Future.value(locationData));
-    Stream<Result<AppCoordinates>> actualResult =
-        locationRepo.getCurrentLocation();
+    Stream<AppCoordinates> actualResult = locationRepo.getCurrentLocation();
 
-    expect(actualResult, isNotNull);
-    expect(actualResult,
-        emits(Result<AppCoordinates>.success(expectedCoordinates)));
+    expect(
+      actualResult,
+      emits(expectedCoordinates),
+    );
   });
 
   test('getCurrentLocation permission denied => Error', () {
     when(mockLocation.requestPermission())
         .thenAnswer((_) => Future.value(PermissionStatus.denied));
-    Stream<Result<AppCoordinates>> actualResult =
-        locationRepo.getCurrentLocation();
-
+    Stream<AppCoordinates> actualResult = locationRepo.getCurrentLocation();
     expect(actualResult, isNotNull);
-    expect(actualResult,
-        emits(Result<AppCoordinates>.error(AppStrings.locationError)));
+    expect(
+      actualResult,
+      emitsError(AppStrings.locationError),
+    );
   });
 
   test('getCurrentLocation permission denied forever => Error', () {
     when(mockLocation.requestPermission())
         .thenAnswer((_) => Future.value(PermissionStatus.deniedForever));
-    Stream<Result<AppCoordinates>> actualResult =
-        locationRepo.getCurrentLocation();
+    Stream<AppCoordinates> actualResult = locationRepo.getCurrentLocation();
     expect(actualResult, isNotNull);
-    expect(actualResult,
-        emits(Result<AppCoordinates>.error(AppStrings.locationError)));
+    expect(actualResult, isNotNull);
+    expect(
+      actualResult,
+      emitsError(AppStrings.locationError),
+    );
   });
 
   test('decode user location => appAdress', () {
@@ -82,10 +83,15 @@ void main() {
 
     when(mockGeocoding.findAddressesFromCoordinates(expectedCoordinates))
         .thenAnswer((_) => Future.value([testAddress]));
-    Stream<Result<AppAddress>> actualResult =
+    Stream<AppAddress> actualResult =
         locationRepo.decodeUserLocation(expectedCoordinates);
-    expect(actualResult, emits(Result<AppAddress>.success(testAddress)));
     expect(actualResult, isNotNull);
+    expect(
+      actualResult,
+      emits(
+        testAddress,
+      ),
+    );
   });
 
   test('decode user location => first Adress from list', () {
@@ -111,9 +117,14 @@ void main() {
 
     when(mockGeocoding.findAddressesFromCoordinates(expectedCoordinates))
         .thenAnswer((_) => Future.value(testList));
-    Stream<Result<AppAddress>> actualResult =
+    Stream<AppAddress> actualResult =
         locationRepo.decodeUserLocation(expectedCoordinates);
-    expect(actualResult, emits(Result<AppAddress>.success(testAddress1)));
+    expect(
+      actualResult,
+      emits(
+        testAddress1,
+      ),
+    );
     expect(actualResult, isNotNull);
   });
 
@@ -121,10 +132,14 @@ void main() {
     List<AppAddress> testList = [];
     when(mockGeocoding.findAddressesFromCoordinates(expectedCoordinates))
         .thenAnswer((_) => Future.value(testList));
-    Stream<Result<AppAddress>> actualResult =
+    Stream<AppAddress> actualResult =
         locationRepo.decodeUserLocation(expectedCoordinates);
-    expect(actualResult,
-        emits(Result<AppAddress>.error(AppStrings.noAddressesError)));
+    expect(
+      actualResult,
+      emitsError(
+        AppStrings.noAddressesError,
+      ),
+    );
   });
 
   test('decode user location => error, address list empty', () {
@@ -132,10 +147,14 @@ void main() {
 
     when(mockGeocoding.findAddressesFromCoordinates(expectedCoordinates))
         .thenAnswer((_) => Future.value(testList));
-    Stream<Result<AppAddress>> actualResult =
+    Stream<AppAddress> actualResult =
         locationRepo.decodeUserLocation(expectedCoordinates);
-    expect(actualResult,
-        emits(Result<AppAddress>.error(AppStrings.noAddressesError)));
+    expect(
+      actualResult,
+      emitsError(
+        AppStrings.noAddressesError,
+      ),
+    );
     expect(actualResult, isNotNull);
   });
 }

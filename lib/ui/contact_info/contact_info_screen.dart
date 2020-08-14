@@ -1,9 +1,12 @@
+import 'package:albums/data/model/result.dart';
 import 'package:albums/data/repo/repo_factory.dart';
+import 'package:albums/themes/colors.dart';
 import 'package:albums/themes/paddings.dart';
 import 'package:albums/themes/strings.dart';
 import 'package:albums/ui/contact_info/contact_info_view_model.dart';
 import 'package:albums/ui/contact_info/validator.dart';
 import 'package:albums/ui/extensions.dart';
+import 'package:albums/widgets/app_center_continer_widget.dart';
 import 'package:albums/widgets/app_input_field_widget.dart';
 import 'package:albums/widgets/app_rounded_text_button.dart';
 import 'package:albums/widgets/app_screen_widget.dart';
@@ -20,7 +23,7 @@ class ContactInfoScreen extends StatefulWidget {
 
 class _ContactInfoScreenState extends BaseState<ContactInfoScreen> {
   ContactInfoViewModel _viewModel;
-  List<AppInputFieldModel> _list = [];
+  Result<List<AppInputFieldModel>> _result;
 
   @override
   void initState() {
@@ -37,12 +40,17 @@ class _ContactInfoScreenState extends BaseState<ContactInfoScreen> {
       buildLocationRepo(),
     );
 
-    disposeLater(_viewModel.output.fieldList.listen((list) {
-      setState(() {
-        _list = list;
-      });
-    }));
-
+    disposeLater(
+      _viewModel.output.fieldList.listen((result) {
+        setState(() {
+          _result = result;
+        });
+      }, onError: (e) {
+        handleError(
+          error: (e),
+        );
+      }),
+    );
     _viewModel.input.onStart.add(true);
   }
 
@@ -59,13 +67,29 @@ class _ContactInfoScreenState extends BaseState<ContactInfoScreen> {
           },
         ),
       ],
-      body: (_list?.isNotEmpty ?? false)
-          ? _buildTextFields(context)
-          : LoadingIndicator(),
+      body: _buildBody(),
     );
   }
 
-  Widget _buildTextFields(BuildContext context) {
+  Widget _buildBody() {
+    List<AppInputFieldModel> list;
+    String error;
+    if (_result is SuccessState<List<AppInputFieldModel>>)
+      list = (_result as SuccessState<List<AppInputFieldModel>>).value;
+    if (_result is LoadingState<List<AppInputFieldModel>>)
+      list = (_result as LoadingState<List<AppInputFieldModel>>).value;
+    if (_result is ErrorState)
+      error = (_result as ErrorState<List<AppInputFieldModel>>).msg;
+    return Stack(
+      children: <Widget>[
+        if (list?.isNotEmpty ?? false) _buildTextFields(list),
+        if (_result is LoadingState) LoadingIndicator(),
+        if (_result is ErrorState) _buildError(error),
+      ],
+    );
+  }
+
+  Widget _buildTextFields(List<AppInputFieldModel> list) {
     return SingleChildScrollView(
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: AppPaddings.defaultPadding),
@@ -79,7 +103,7 @@ class _ContactInfoScreenState extends BaseState<ContactInfoScreen> {
                     padding: EdgeInsets.only(right: AppPaddings.defaultPadding),
                     child: AppInputFieldWidget.fromModel(
                       model:
-                          _list.getModelFromFieldType(FieldType.firstNameField),
+                          list.getModelFromFieldType(FieldType.firstNameField),
                     ),
                   ),
                 ),
@@ -88,7 +112,7 @@ class _ContactInfoScreenState extends BaseState<ContactInfoScreen> {
                     padding: EdgeInsets.only(right: AppPaddings.defaultPadding),
                     child: AppInputFieldWidget.fromModel(
                       model:
-                          _list.getModelFromFieldType(FieldType.lastNameField),
+                          list.getModelFromFieldType(FieldType.lastNameField),
                     ),
                   ),
                 ),
@@ -97,7 +121,7 @@ class _ContactInfoScreenState extends BaseState<ContactInfoScreen> {
             Padding(
               padding: EdgeInsets.only(right: AppPaddings.defaultPadding),
               child: AppInputFieldWidget.fromModel(
-                model: _list.getModelFromFieldType(FieldType.emailAddressField),
+                model: list.getModelFromFieldType(FieldType.emailAddressField),
               ),
             ),
             Row(
@@ -106,7 +130,7 @@ class _ContactInfoScreenState extends BaseState<ContactInfoScreen> {
                   child: Padding(
                     padding: EdgeInsets.only(right: AppPaddings.defaultPadding),
                     child: AppInputFieldWidget.fromModel(
-                        model: _list
+                        model: list
                             .getModelFromFieldType(FieldType.phoneNumberField)),
                   ),
                 ),
@@ -117,7 +141,7 @@ class _ContactInfoScreenState extends BaseState<ContactInfoScreen> {
               padding: EdgeInsets.all(AppPaddings.defaultPadding),
             ),
             AppInputFieldWidget.fromModel(
-              model: _list.getModelFromFieldType(FieldType.streetAddressField),
+              model: list.getModelFromFieldType(FieldType.streetAddressField),
             ),
             Row(
               children: <Widget>[
@@ -125,16 +149,15 @@ class _ContactInfoScreenState extends BaseState<ContactInfoScreen> {
                   child: Padding(
                     padding: EdgeInsets.only(right: AppPaddings.defaultPadding),
                     child: AppInputFieldWidget.fromModel(
-                        model:
-                            _list.getModelFromFieldType(FieldType.cityField)),
+                        model: list.getModelFromFieldType(FieldType.cityField)),
                   ),
                 ),
                 Expanded(
                   child: Padding(
                     padding: EdgeInsets.only(right: AppPaddings.defaultPadding),
                     child: AppInputFieldWidget.fromModel(
-                        model: _list
-                            .getModelFromFieldType(FieldType.countryField)),
+                        model:
+                            list.getModelFromFieldType(FieldType.countryField)),
                   ),
                 ),
               ],
@@ -145,8 +168,8 @@ class _ContactInfoScreenState extends BaseState<ContactInfoScreen> {
                   child: Padding(
                     padding: EdgeInsets.only(right: AppPaddings.defaultPadding),
                     child: AppInputFieldWidget.fromModel(
-                        model: _list
-                            .getModelFromFieldType(FieldType.zipCodeField)),
+                        model:
+                            list.getModelFromFieldType(FieldType.zipCodeField)),
                   ),
                 ),
                 Expanded(
@@ -165,6 +188,14 @@ class _ContactInfoScreenState extends BaseState<ContactInfoScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildError(String error) {
+    return AppCenterContainerWidget(
+      textColor: AppColors.red,
+      borderColor: AppColors.red,
+      text: error,
     );
   }
 }

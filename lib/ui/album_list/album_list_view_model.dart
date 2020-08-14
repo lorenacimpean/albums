@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:albums/data/model/albums.dart';
 import 'package:albums/data/model/result.dart';
 import 'package:albums/data/repo/album_repo.dart';
+import 'package:albums/themes/strings.dart';
 import 'package:albums/ui/next_screen.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -24,12 +25,18 @@ class AlbumListViewModel {
   }
 
   Stream<Result<AlbumList>> _getAlbums() {
-    return _albumsRepo.getAlbums().map((result) {
-      if (result is SuccessState<AlbumList>) {
-        result.value.sortList();
-      }
-      return result;
-    }).startWith(Result<AlbumList>.loading(null));
+    return _albumsRepo.getAlbums().map(
+      (result) {
+        result is AlbumList ?? result?.sortList();
+        return Result<AlbumList>.success(result);
+      },
+    ).onErrorReturnWith(
+      (error) {
+        return Result<AlbumList>.error(AppStrings.generalError);
+      },
+    ).startWith(
+      Result<AlbumList>.loading(null),
+    );
   }
 }
 
@@ -37,12 +44,12 @@ class AlbumListViewModelInput {
   final Subject<Album> onTap;
   final Subject<bool> onStart;
 
-  AlbumListViewModelInput(this.onTap, this.onStart);
+  AlbumListViewModelInput(this.onTap, this.onStart,);
 }
 
 class AlbumListViewModelOutput {
   final Stream<Result<AlbumList>> albums;
   final Stream<NextScreen> onNextScreen;
 
-  AlbumListViewModelOutput(this.albums, this.onNextScreen);
+  AlbumListViewModelOutput(this.albums, this.onNextScreen,);
 }

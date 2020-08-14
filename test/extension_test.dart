@@ -1,7 +1,8 @@
 import 'package:albums/data/model/contact_info.dart';
 import 'package:albums/themes/icons.dart';
-import 'package:albums/ui/home_screen/home_view_model.dart';
 import 'package:albums/ui/extensions.dart';
+import 'package:albums/ui/home_screen/app_tab_model.dart';
+import 'package:albums/ui/home_screen/home_view_model.dart';
 import 'package:albums/widgets/app_input_field_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:test/test.dart';
@@ -123,6 +124,4 @@ void main() {
     expect(modelList.toContactInfo().emailAddress, contactInfo.emailAddress);
     expect(modelList.toContactInfo().phoneNumber, contactInfo.phoneNumber);
   });
-
-
 }

@@ -21,11 +21,11 @@ abstract class BaseState<T extends StatefulWidget> extends State<T> {
       handleNoInternetConnection(retry: retry);
     }
     if (error is ErrorState) {
-      handleStringError(error.msg);
+      handleStringError(errorText: error.msg);
     }
   }
 
-  void handleStringError(String errorText) {
+  void handleStringError({String errorText = AppStrings.errorWhileLoading}) {
     showDialog(
         context: context,
         barrierDismissible: false,
@@ -33,7 +33,7 @@ abstract class BaseState<T extends StatefulWidget> extends State<T> {
           return AppCenterContainerWidget(
             textColor: AppColors.red,
             borderColor: AppColors.red,
-            text: errorText = null ? AppStrings.errorWhileLoading : errorText,
+            text: errorText,
           );
         });
   }

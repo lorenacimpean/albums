@@ -1,7 +1,9 @@
+import 'package:collection/collection.dart';
+
 class Result<T> {
   Result._();
 
-  factory Result.loading(T msg) = LoadingState<T>;
+  factory Result.loading(T value) = LoadingState<T>;
 
   factory Result.success(T value) = SuccessState<T>;
 
@@ -9,15 +11,15 @@ class Result<T> {
 }
 
 class LoadingState<T> extends Result<T> {
-  LoadingState(this.msg) : super._();
-  final T msg;
+  LoadingState(this.value) : super._();
+  final T value;
 
   @override
-  int get hashCode => msg.hashCode;
+  int get hashCode => value.hashCode;
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || other is LoadingState && msg == other.msg;
+      identical(this, other) || other is LoadingState && value == other.value;
 }
 
 class ErrorState<T> extends Result<T> {
@@ -36,10 +38,18 @@ class SuccessState<T> extends Result<T> {
   SuccessState(this.value) : super._();
   T value;
 
+  bool _areValuesEqual(T valueA, T valueB) {
+    if (valueA is List && valueB is List) {
+      return ListEquality().equals(valueA, valueB);
+    }
+    return valueA == valueB;
+  }
+
   @override
   int get hashCode => value.hashCode;
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || other is SuccessState && value == other.value;
+      identical(this, other) ||
+      other is SuccessState && _areValuesEqual(value, other.value);
 }

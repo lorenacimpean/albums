@@ -1,7 +1,8 @@
 import 'package:albums/data/model/contact_info.dart';
 import 'package:albums/data/model/location_info.dart';
-import 'package:albums/ui/home_screen/home_view_model.dart';
 import 'package:albums/widgets/app_input_field_widget.dart';
+
+import 'home_screen/app_tab_model.dart';
 
 extension ListExtensions<T> on List<T> {
   int get hash => this.fold(

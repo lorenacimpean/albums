@@ -37,8 +37,8 @@ class AlbumDetailsViewModel {
 
   Stream<Result<ListItems>> _getListItemList(Album album) {
     return _photosRepo.getPhotoList(album.id).map((result) {
-      if (result is SuccessState<PhotoList>) {
-        _photoList = result.value;
+      if (result.photosCount() > 0) {
+        _photoList = result;
         List<ListItem> itemList = [];
         ListItem albumInfo = ListItem(
           type: ListItemType.albumInfo,
@@ -55,14 +55,18 @@ class AlbumDetailsViewModel {
         );
         itemList.add(albumAction);
         itemList.addAll(
-          (result.value.photos.map(
+          (result.photos.map(
             (e) => ListItem(type: ListItemType.photo, data: e),
           )),
         );
         ListItems items = ListItems(itemList);
         return Result<ListItems>.success(items);
       }
-      return Result<ListItems>.error(AppStrings.photoListError);
+      return Result<ListItems>.loading(null);
+    }).onErrorReturnWith((error) {
+      return Result<ListItems>.error(
+        error.toString(),
+      );
     }).startWith(Result<ListItems>.loading(null));
   }
 
@@ -92,6 +96,32 @@ class AlbumDetailsViewModel {
           selectedIndex: selectedPhotoIndex,
         ));
     return Stream.value(nextScreen);
+  }
+
+  Result<ListItems> _createListItems(Album album, PhotoList result) {
+    _photoList = result;
+    List<ListItem> itemList = [];
+    ListItem albumInfo = ListItem(
+      type: ListItemType.albumInfo,
+      data: AlbumInfo(
+        albumName: album.title,
+        albumId: album.id,
+        photosCount: _photoList.photosCount(),
+      ),
+    );
+    itemList.add(albumInfo);
+    ListItem albumAction = ListItem(
+      type: ListItemType.albumAction,
+      data: _photoList.photosCount(),
+    );
+    itemList.add(albumAction);
+    itemList.addAll(
+      (result.photos.map(
+        (photo) => ListItem(type: ListItemType.photo, data: photo),
+      )),
+    );
+    ListItems items = ListItems(itemList);
+    return Result<ListItems>.success(items);
   }
 }
 

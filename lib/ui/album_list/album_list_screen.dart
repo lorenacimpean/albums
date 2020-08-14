@@ -51,17 +51,15 @@ class _AlbumListScreenState extends BaseState<AlbumListScreen> {
         setState(() {
           _result = albumList;
           if (albumList is SuccessState<AlbumList>) {
-            debugPrint('$albumList');
             (_result as SuccessState).value = albumList.value;
           }
         });
       }, onError: (e) {
-        debugPrint(e.toString());
         handleError(
             error: e,
             retry: () {
-              _viewModel.input.onStart.add(true);
               Navigator.pop(context);
+              _viewModel.input.onStart.add(true);
             });
       }),
     );
@@ -103,7 +101,7 @@ class _AlbumListScreenState extends BaseState<AlbumListScreen> {
   }
 
   Widget _buildBody(BuildContext context) {
-    if (_result is LoadingState) {
+    if (_result is LoadingState || _result == null) {
       return LoadingIndicator();
     }
     if (_result is SuccessState) {
