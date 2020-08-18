@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:albums/data/model/contact_info.dart';
+import 'package:albums/data/repo/deeplink_repo.dart';
 import 'package:albums/data/repo/user_profile_repo.dart';
 import 'package:albums/ui/next_screen.dart';
 import 'package:rxdart/rxdart.dart';
@@ -20,14 +21,23 @@ class YourProfileViewModel {
         return info ?? _contactInfo;
       });
     });
-    Stream<NextScreen> onTap = input.onTap.map((event) {
-      if (event == ScreenType.ContactInfo) {
-        return NextScreen(event, null);
-      }
-      return NextScreen(event, null);
+    Stream<NextScreen> onNextScreen = input.onTap.map((event) {
+      return event;
     });
 
-    output = YourProfileViewModelOutput(onContactInfo, onTap);
+    Stream<NextScreen> onExtraParams =
+        input.onExtraParams.map((deepLinkResult) {
+      if (deepLinkResult != null) {
+        return NextScreen.fromDeepLinkResult(deepLinkResult);
+      }
+      return null;
+    });
+
+    output = YourProfileViewModelOutput(
+      onContactInfo,
+      onNextScreen,
+      onExtraParams,
+    );
   }
 
   Stream<ContactInfo> _getUserProfile() {
@@ -36,21 +46,25 @@ class YourProfileViewModel {
 }
 
 class YourProfileViewModelInput {
+  final Subject<DeepLinkResult> onExtraParams;
   final Subject<bool> onStart;
-  final Subject<ScreenType> onTap;
+  final Subject<NextScreen> onTap;
 
   YourProfileViewModelInput(
     this.onStart,
     this.onTap,
+    this.onExtraParams,
   );
 }
 
 class YourProfileViewModelOutput {
   final Stream<ContactInfo> contactInfo;
   final Stream<NextScreen> onNextScreen;
+  final Stream<NextScreen> onExtraParams;
 
   YourProfileViewModelOutput(
     this.contactInfo,
     this.onNextScreen,
+    this.onExtraParams,
   );
 }

@@ -1,8 +1,12 @@
 import 'package:albums/data/model/contact_info.dart';
 import 'package:albums/data/model/location_info.dart';
+import 'package:albums/data/repo/deeplink_repo.dart';
+import 'package:albums/ui/home_screen/home_view_model.dart';
 import 'package:albums/widgets/app_input_field_widget.dart';
 
 import 'home_screen/app_tab_model.dart';
+import 'home_screen/home_view_model.dart';
+import 'home_screen/home_view_model.dart';
 
 extension ListExtensions<T> on List<T> {
   int get hash => this.fold(
@@ -113,3 +117,19 @@ extension ContactInfoFromEnum on FieldType {
     }
   }
 }
+
+extension AppTabsFromDeeplinkResult on NavBarItem {
+  List<AppTab> tabsFromNavBarItem() {
+    return NavBarItem.values.map((element) {
+      if (element == this) {
+        return AppTab.fromType(
+          element,
+          isSelected: true,
+        );
+      }
+      return AppTab.fromType(element);
+    }).toList();
+  }
+}
+
+

@@ -1,5 +1,6 @@
 import 'dart:core';
 
+import 'package:albums/data/repo/deeplink_repo.dart';
 import 'package:albums/data/repo/repo_factory.dart';
 import 'package:albums/themes/colors.dart';
 import 'package:albums/ui/album_list/album_list_screen.dart';
@@ -7,7 +8,6 @@ import 'package:albums/ui/extensions.dart';
 import 'package:albums/ui/friends/friends_screen.dart';
 import 'package:albums/ui/home_screen/home_view_model.dart';
 import 'package:albums/ui/news/news_screen.dart';
-import 'package:albums/ui/next_screen.dart';
 import 'package:albums/ui/profile/your_profile_screen.dart';
 import 'package:albums/widgets/base_state.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +23,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends BaseState<HomeScreen> {
   HomeViewModel _viewModel;
   List<AppTab> _tabs;
+  DeepLinkResult _deepLinkResult;
 
   @override
   void initState() {
@@ -43,11 +44,15 @@ class _HomeScreenState extends BaseState<HomeScreen> {
       }),
     );
     disposeLater(
-      _viewModel.output.nextScreen.listen((nextScreen) {
-        openNextScreen(context, nextScreen);
+      _viewModel.output.onNotificationOpened.listen((deepLinkResult) {
+        setState(() {
+          _tabs = deepLinkResult
+              .getNavBarItemFromDeepLinkResult()
+              .tabsFromNavBarItem();
+        });
+        _deepLinkResult = deepLinkResult;
       }),
     );
-
     _viewModel.input.onStart.add(true);
   }
 
@@ -83,7 +88,9 @@ class _HomeScreenState extends BaseState<HomeScreen> {
       case NavBarItem.NEWS:
         return NewsScreen();
       case NavBarItem.PROFILE:
-        return YourProfileScreen();
+        return _deepLinkResult != null
+            ? YourProfileScreen(deepLinkResult: _deepLinkResult)
+            : YourProfileScreen();
       case NavBarItem.BROWSE:
       default:
         return AlbumListScreen();

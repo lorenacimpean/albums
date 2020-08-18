@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:albums/data/model/contact_info.dart';
 import 'package:albums/data/model/result.dart';
-import 'package:albums/data/repo/deeplink_repo.dart';
 import 'package:albums/data/repo/location_repo.dart';
 import 'package:albums/data/repo/user_profile_repo.dart';
 import 'package:albums/themes/strings.dart';
@@ -17,20 +16,18 @@ class ContactInfoViewModel {
   final UserProfileRepo _userProfileRepo;
   final AppTextValidator _validator;
   final LocationRepo _locationRepo;
-  final DeepLinkRepo _deepLinkRepo;
   ContactInfoViewModelOutput output;
   List<AppInputFieldModel> _list = List<AppInputFieldModel>();
 
   ContactInfoViewModel(
     this.input,
-    this._deepLinkRepo,
     this._userProfileRepo,
     this._validator,
     this._locationRepo,
   ) {
     Stream<Result<List<AppInputFieldModel>>> onList = MergeStream([
-      input.onStart.flatMap((_) {
-        return _initFields();
+      input.onStart.flatMap((extraParams) {
+        return _initFields(extraParams);
       }),
       input.onValueChanged.map((field) {
         field.error = null;
@@ -88,13 +85,13 @@ class ContactInfoViewModel {
     output = ContactInfoViewModelOutput(onList);
   }
 
-  Stream<Result<List<AppInputFieldModel>>> _initFields() {
+  Stream<Result<List<AppInputFieldModel>>> _initFields(
+      Map<String, String> extraParams) {
     return _userProfileRepo.fetchContactInfo().map((result) {
       FieldType.values.forEach((fieldType) {
-        String fieldValue = fieldType.fromContactInfo(result);
-        _updateFieldsValueFromDeeplink(fieldType).map((value) {
-          if (value != null) fieldValue = value;
-        });
+        String fieldValue = extraParams != null
+            ? _getFieldValuesFromExtraParams(fieldType, extraParams)
+            : fieldType.fromContactInfo(result);
         _list.add(
           AppInputFieldModel(
             fieldType: fieldType,
@@ -112,38 +109,36 @@ class ContactInfoViewModel {
     );
   }
 
-  Stream<String> _updateFieldsValueFromDeeplink(FieldType fieldType) {
-    return _deepLinkRepo.getDeepLinkResult().map((deepLinkResult) {
-      debugPrint(deepLinkResult.value.values.first);
-      switch (fieldType) {
-        case FieldType.firstNameField:
-          return deepLinkResult.value['firstname'];
-          break;
-        case FieldType.lastNameField:
-          return deepLinkResult.value['lastname'];
-          break;
-        case FieldType.emailAddressField:
-          return deepLinkResult.value['email'];
-          break;
-        case FieldType.phoneNumberField:
-          return deepLinkResult.value['phone'];
-          break;
-        case FieldType.streetAddressField:
-          return deepLinkResult.value['street'];
-          break;
-        case FieldType.cityField:
-          return deepLinkResult.value['city'];
-          break;
-        case FieldType.countryField:
-          return deepLinkResult.value['country'];
-          break;
-        case FieldType.zipCodeField:
-          return deepLinkResult.value['zipcode'];
-          break;
-        default:
-          return null;
-      }
-    });
+  String _getFieldValuesFromExtraParams(
+      FieldType fieldType, Map<String, String> extraParams) {
+    switch (fieldType) {
+      case FieldType.firstNameField:
+        return extraParams['firstname'];
+        break;
+      case FieldType.lastNameField:
+        return extraParams['lastname'];
+        break;
+      case FieldType.emailAddressField:
+        return extraParams['email'];
+        break;
+      case FieldType.phoneNumberField:
+        return extraParams['phone'];
+        break;
+      case FieldType.streetAddressField:
+        return extraParams['street'];
+        break;
+      case FieldType.cityField:
+        return extraParams['city'];
+        break;
+      case FieldType.countryField:
+        return extraParams['country'];
+        break;
+      case FieldType.zipCodeField:
+        return extraParams['zipcode'];
+        break;
+      default:
+        return null;
+    }
   }
 
   void _updateLocationFields(AppAddress address) {
@@ -175,7 +170,7 @@ class ContactInfoViewModel {
 }
 
 class ContactInfoViewModelInput {
-  final Subject<bool> onStart;
+  final Subject<Map<String, String>> onStart;
   final Subject<bool> onApply;
   final Subject<AppInputFieldModel> onValueChanged;
   final Subject<bool> onLocationButtonPressed;

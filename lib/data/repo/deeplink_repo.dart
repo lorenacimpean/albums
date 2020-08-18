@@ -1,60 +1,25 @@
+import 'package:albums/ui/home_screen/home_view_model.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:rxdart/rxdart.dart';
 
 //Example url:
 // app://albums.com/contactinfo?firstname=john&lastname=snow);
-// app://albums.com/albuminfo?albumid=1);
 
 class DeepLinkRepo {
-  Subject<Uri> deepLinkUri;
+  final OneSignal oneSignal;
+  final Subject<Uri> _deepLinkUri;
 
-  DeepLinkRepo(this.deepLinkUri);
+  DeepLinkRepo(this._deepLinkUri, this.oneSignal);
 
-  void setUri() {
-    OneSignal.shared.setNotificationOpenedHandler((openedResult) {
-      deepLinkUri.add(
+  Stream<DeepLinkResult> getDeepLinkResult() {
+    oneSignal.setNotificationOpenedHandler((openedResult) {
+      _deepLinkUri.add(
         Uri.parse(openedResult.notification.payload.launchUrl ?? ""),
       );
     });
-  }
-
-  Stream<Uri> getUri() {
-    setUri();
-    return deepLinkUri;
-  }
-
-  Stream<DeepLinkResult> getDeepLinkResult() {
-    return deepLinkUri.map((uri) {
-      DeepLinkAction action = _getActionFromUri(uri);
-      Map<String, String> screenData = uri.queryParameters;
-      return DeepLinkResult(
-        action,
-        value: screenData,
-      );
+    return _deepLinkUri.map((uri) {
+      return DeepLinkResult.fromUri(uri);
     });
-  }
-
-  DeepLinkAction _getActionFromUri(Uri uri) {
-    switch (uri.pathSegments.last) {
-      case 'home':
-        return DeepLinkAction.openHome;
-        break;
-      case 'albumdetails':
-        return DeepLinkAction.openAlbumDetails;
-        break;
-      case 'photos':
-        return DeepLinkAction.openPhotos;
-        break;
-      case 'notifications':
-        return DeepLinkAction.openNotifications;
-        break;
-      case 'contactinfo':
-        return DeepLinkAction.openContactInfo;
-        break;
-      default:
-        return DeepLinkAction.openHome;
-        break;
-    }
   }
 }
 
@@ -66,12 +31,71 @@ class DeepLinkResult {
     this.action, {
     this.value,
   });
+
+  factory DeepLinkResult.fromUri(Uri uri) {
+    DeepLinkAction action;
+    switch (uri.pathSegments.last) {
+      //tabs
+      case 'home':
+        action = DeepLinkAction.openHome;
+        break;
+      case 'friends':
+        action = DeepLinkAction.openFriends;
+        break;
+      case 'news':
+        action = DeepLinkAction.openNews;
+        break;
+      case 'profile':
+        action = DeepLinkAction.openProfile;
+        break;
+      //screens
+      case 'contactinfo':
+        action = DeepLinkAction.openContactInfo;
+        break;
+      case 'notifications':
+        action = DeepLinkAction.openNotifications;
+        break;
+      default:
+        action = DeepLinkAction.openHome;
+        break;
+    }
+    Map<String, String> screenData = uri.queryParameters;
+    return DeepLinkResult(
+      action,
+      value: screenData,
+    );
+  }
+
+  NavBarItem getNavBarItemFromDeepLinkResult() {
+    DeepLinkAction action = this.action;
+    switch (action) {
+      case DeepLinkAction.openHome:
+        return NavBarItem.BROWSE;
+        break;
+      case DeepLinkAction.openFriends:
+        return NavBarItem.FRIENDS;
+        break;
+      case DeepLinkAction.openNews:
+        return NavBarItem.NEWS;
+        break;
+      case DeepLinkAction.openProfile:
+      case DeepLinkAction.openContactInfo:
+      case DeepLinkAction.openNotifications:
+        return NavBarItem.PROFILE;
+        break;
+      default:
+        return null;
+    }
+  }
 }
 
 enum DeepLinkAction {
+  //tabs
   openHome,
-  openAlbumDetails,
-  openPhotos,
+  openFriends,
+  openNews,
+  openProfile,
+  //screens
   openContactInfo,
   openNotifications,
 }

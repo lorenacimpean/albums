@@ -17,6 +17,11 @@ import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
 class ContactInfoScreen extends StatefulWidget {
+  final Map<String, String> fieldValuesFromDeepLink;
+
+  const ContactInfoScreen({Key key, this.fieldValuesFromDeepLink})
+      : super(key: key);
+
   @override
   _ContactInfoScreenState createState() => _ContactInfoScreenState();
 }
@@ -35,7 +40,6 @@ class _ContactInfoScreenState extends BaseState<ContactInfoScreen> {
         PublishSubject(),
         PublishSubject(),
       ),
-      buildDeepLinkRepo(),
       buildUserProfileRepo(),
       AppTextValidator(),
       buildLocationRepo(),
@@ -52,7 +56,8 @@ class _ContactInfoScreenState extends BaseState<ContactInfoScreen> {
         );
       }),
     );
-    _viewModel.input.onStart.add(true);
+    //add fieldValuesFromDeepLink
+    _viewModel.input.onStart.add(widget.fieldValuesFromDeepLink);
   }
 
   @override
