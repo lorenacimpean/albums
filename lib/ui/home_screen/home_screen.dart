@@ -1,11 +1,13 @@
 import 'dart:core';
 
+import 'package:albums/data/repo/repo_factory.dart';
 import 'package:albums/themes/colors.dart';
 import 'package:albums/ui/album_list/album_list_screen.dart';
 import 'package:albums/ui/extensions.dart';
 import 'package:albums/ui/friends/friends_screen.dart';
 import 'package:albums/ui/home_screen/home_view_model.dart';
 import 'package:albums/ui/news/news_screen.dart';
+import 'package:albums/ui/next_screen.dart';
 import 'package:albums/ui/profile/your_profile_screen.dart';
 import 'package:albums/widgets/base_state.dart';
 import 'package:flutter/material.dart';
@@ -30,6 +32,7 @@ class _HomeScreenState extends BaseState<HomeScreen> {
         PublishSubject(),
         PublishSubject(),
       ),
+      buildDeepLinkRepo(),
     );
 
     disposeLater(
@@ -39,6 +42,12 @@ class _HomeScreenState extends BaseState<HomeScreen> {
         });
       }),
     );
+    disposeLater(
+      _viewModel.output.nextScreen.listen((nextScreen) {
+        openNextScreen(context, nextScreen);
+      }),
+    );
+
     _viewModel.input.onStart.add(true);
   }
 
@@ -69,14 +78,15 @@ class _HomeScreenState extends BaseState<HomeScreen> {
   Widget _currentScreen(List<AppTab> tabs) {
     AppTab selectedTab = tabs?.getSelectedTab();
     switch (selectedTab?.type) {
-      case NavBarItem.BROWSE:
-        return AlbumListScreen();
       case NavBarItem.FRIENDS:
         return FriendsScreen();
       case NavBarItem.NEWS:
         return NewsScreen();
       case NavBarItem.PROFILE:
         return YourProfileScreen();
+      case NavBarItem.BROWSE:
+      default:
+        return AlbumListScreen();
     }
   }
 

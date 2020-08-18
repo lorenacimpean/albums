@@ -1,3 +1,4 @@
+import 'package:albums/data/repo/repo_factory.dart';
 import 'package:albums/ui/home_screen/app_tab_model.dart';
 import 'package:albums/ui/home_screen/home_view_model.dart';
 import 'package:mockito/mockito.dart';
@@ -12,6 +13,7 @@ main() {
       PublishSubject(),
       PublishSubject(),
     ),
+    buildDeepLinkRepo(),
   );
   test('test stream returns correct default values', () async {
     expect(

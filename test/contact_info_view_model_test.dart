@@ -1,6 +1,7 @@
 import 'package:albums/data/model/contact_info.dart';
 import 'package:albums/data/model/location_info.dart';
 import 'package:albums/data/model/result.dart';
+import 'package:albums/data/repo/deeplink_repo.dart';
 import 'package:albums/data/repo/location_repo.dart';
 import 'package:albums/data/repo/user_profile_repo.dart';
 import 'package:albums/ui/contact_info/contact_info_view_model.dart';
@@ -14,10 +15,13 @@ class MockUserProfileRepo extends Mock implements UserProfileRepo {}
 
 class MockLocationRepo extends Mock implements LocationRepo {}
 
+class MockDeepLinkRepo extends Mock implements DeepLinkRepo {}
+
 main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   final mockUserProfileRepo = MockUserProfileRepo();
   final mockLocationRepo = MockLocationRepo();
+  final mockDeeplinkRepo = MockDeepLinkRepo();
   final Subject<bool> onStart = PublishSubject();
   final Subject<bool> onApply = PublishSubject();
   final Subject<bool> onLocationButtonPressed = PublishSubject();
@@ -29,8 +33,14 @@ main() {
     onLocationButtonPressed,
   );
   final AppTextValidator validator = AppTextValidator();
+
   final ContactInfoViewModel viewModel = ContactInfoViewModel(
-      input, mockUserProfileRepo, validator, mockLocationRepo);
+    input,
+    mockDeeplinkRepo,
+    mockUserProfileRepo,
+    validator,
+    mockLocationRepo,
+  );
   String firstName = 'initial';
   String lastName = 'lastName';
   String email = 'test@test.com';

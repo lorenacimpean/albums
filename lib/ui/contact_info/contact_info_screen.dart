@@ -35,6 +35,7 @@ class _ContactInfoScreenState extends BaseState<ContactInfoScreen> {
         PublishSubject(),
         PublishSubject(),
       ),
+      buildDeepLinkRepo(),
       buildUserProfileRepo(),
       AppTextValidator(),
       buildLocationRepo(),
