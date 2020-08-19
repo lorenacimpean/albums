@@ -41,16 +41,9 @@ class _HomeScreenState extends BaseState<HomeScreen> {
         setState(() {
           _tabs = tabs;
         });
-      }),
-    );
-    disposeLater(
-      _viewModel.output.onNotificationOpened.listen((deepLinkResult) {
-        setState(() {
-          _tabs = deepLinkResult
-              .getNavBarItemFromDeepLinkResult()
-              .tabsFromNavBarItem();
-        });
-        _deepLinkResult = deepLinkResult;
+        if (tabs.getDeepLinkResultFromAppTab() != null) {
+          _deepLinkResult = tabs.getDeepLinkResultFromAppTab();
+        }
       }),
     );
     _viewModel.input.onStart.add(true);
@@ -89,7 +82,9 @@ class _HomeScreenState extends BaseState<HomeScreen> {
         return NewsScreen();
       case NavBarItem.PROFILE:
         return _deepLinkResult != null
-            ? YourProfileScreen(deepLinkResult: _deepLinkResult)
+            ? YourProfileScreen(
+                deepLinkResult: _deepLinkResult,
+              )
             : YourProfileScreen();
       case NavBarItem.BROWSE:
       default:

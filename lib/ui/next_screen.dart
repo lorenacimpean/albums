@@ -17,10 +17,10 @@ class NextScreen {
   factory NextScreen.fromDeepLinkResult(DeepLinkResult deepLinkResult) {
     switch (deepLinkResult.action) {
       case DeepLinkAction.openContactInfo:
-        return NextScreen(ScreenType.ContactInfo, deepLinkResult.value);
+        return NextScreen(ScreenType.ContactInfo, deepLinkResult);
         break;
       case DeepLinkAction.openNotifications:
-        return NextScreen(ScreenType.Notifications, deepLinkResult.value);
+        return NextScreen(ScreenType.Notifications, deepLinkResult);
         break;
       default:
         return null;
@@ -66,7 +66,7 @@ void openNextScreen(BuildContext context, NextScreen nextScreen) {
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) =>
-              ContactInfoScreen(fieldValuesFromDeepLink: nextScreen.data),
+              ContactInfoScreen(deepLinkResult: nextScreen.data),
         ),
       );
       break;

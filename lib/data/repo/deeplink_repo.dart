@@ -1,4 +1,5 @@
 import 'package:albums/ui/home_screen/home_view_model.dart';
+import 'package:flutter/material.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -6,18 +7,19 @@ import 'package:rxdart/rxdart.dart';
 // app://albums.com/contactinfo?firstname=john&lastname=snow);
 
 class DeepLinkRepo {
-  final OneSignal oneSignal;
+  final OneSignal _oneSignal;
   final Subject<Uri> _deepLinkUri;
 
-  DeepLinkRepo(this._deepLinkUri, this.oneSignal);
+  DeepLinkRepo(this._deepLinkUri, this._oneSignal);
 
   Stream<DeepLinkResult> getDeepLinkResult() {
-    oneSignal.setNotificationOpenedHandler((openedResult) {
+    _oneSignal.setNotificationOpenedHandler((openedResult) {
       _deepLinkUri.add(
         Uri.parse(openedResult.notification.payload.launchUrl ?? ""),
       );
     });
-    return _deepLinkUri.map((uri) {
+    return  _deepLinkUri.map((uri) {
+      debugPrint(uri.toString());
       return DeepLinkResult.fromUri(uri);
     });
   }
@@ -87,6 +89,17 @@ class DeepLinkResult {
         return null;
     }
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is DeepLinkResult &&
+          runtimeType == other.runtimeType &&
+          action == other.action &&
+          value == other.value;
+
+  @override
+  int get hashCode => action.hashCode ^ value.hashCode;
 }
 
 enum DeepLinkAction {

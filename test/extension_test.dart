@@ -1,4 +1,5 @@
 import 'package:albums/data/model/contact_info.dart';
+import 'package:albums/data/repo/deeplink_repo.dart';
 import 'package:albums/themes/icons.dart';
 import 'package:albums/ui/extensions.dart';
 import 'package:albums/ui/home_screen/app_tab_model.dart';
@@ -123,5 +124,17 @@ void main() {
     expect(modelList.toContactInfo().lastName, contactInfo.lastName);
     expect(modelList.toContactInfo().emailAddress, contactInfo.emailAddress);
     expect(modelList.toContactInfo().phoneNumber, contactInfo.phoneNumber);
+  });
+
+  test('getDeepLinkResultFromAppTab', () {
+    DeepLinkResult deepLinkResult = DeepLinkResult(
+        DeepLinkAction.openContactInfo,
+        value: {'phone': '123456789', 'email': 'test@test.com'});
+    List<AppTab> list = [];
+    list.add(AppTab(NavBarItem.BROWSE, 'BROWSE', AppIcons.browseIcon, false));
+    list.add(AppTab(NavBarItem.PROFILE, 'BROWSE', AppIcons.profileIcon, true,
+        deepLinkResult: deepLinkResult));
+
+    expect(list.getDeepLinkResultFromAppTab(), deepLinkResult);
   });
 }

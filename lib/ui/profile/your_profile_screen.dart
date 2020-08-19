@@ -53,15 +53,10 @@ class _YourProfileScreenState extends BaseState<YourProfileScreen> {
         openNextScreen(context, nextScreen);
       }),
     );
-    disposeLater(
-      _viewModel.output.onExtraParams.listen((nextScreen) {
-        if (nextScreen != null) {
-          openNextScreen(context, nextScreen);
-        }
-      }),
-    );
     _viewModel.input.onStart.add(true);
-    _viewModel.input.onExtraParams.add(widget.deepLinkResult);
+    if (widget.deepLinkResult != null) {
+      _viewModel.input.onDeepLinkResult.add(widget.deepLinkResult);
+    }
   }
 
   @override
@@ -73,8 +68,7 @@ class _YourProfileScreenState extends BaseState<YourProfileScreen> {
             icon: AppIcons.notificationsIcon,
             onPressed: () {
               _viewModel.input.onTap.add(
-                NextScreen(
-                    ScreenType.Notifications, widget.deepLinkResult),
+                NextScreen(ScreenType.Notifications, null),
               );
             }),
       ],
@@ -101,7 +95,7 @@ class _YourProfileScreenState extends BaseState<YourProfileScreen> {
             icon: AppIcons.contactInfoIcon,
             onTap: () {
               _viewModel.input.onTap.add(
-                NextScreen(ScreenType.ContactInfo, widget.deepLinkResult),
+                NextScreen(ScreenType.ContactInfo, null),
               );
             },
           ),

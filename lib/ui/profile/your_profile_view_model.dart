@@ -21,22 +21,18 @@ class YourProfileViewModel {
         return info ?? _contactInfo;
       });
     });
-    Stream<NextScreen> onNextScreen = input.onTap.map((event) {
-      return event;
-    });
-
-    Stream<NextScreen> onExtraParams =
-        input.onExtraParams.map((deepLinkResult) {
-      if (deepLinkResult != null) {
+    Stream<NextScreen> onNextScreen = MergeStream([
+      input.onTap.map((event) {
+        return event;
+      }),
+      input.onDeepLinkResult.map((deepLinkResult) {
         return NextScreen.fromDeepLinkResult(deepLinkResult);
-      }
-      return null;
-    });
+      }),
+    ]);
 
     output = YourProfileViewModelOutput(
       onContactInfo,
       onNextScreen,
-      onExtraParams,
     );
   }
 
@@ -46,25 +42,23 @@ class YourProfileViewModel {
 }
 
 class YourProfileViewModelInput {
-  final Subject<DeepLinkResult> onExtraParams;
+  final Subject<DeepLinkResult> onDeepLinkResult;
   final Subject<bool> onStart;
   final Subject<NextScreen> onTap;
 
   YourProfileViewModelInput(
     this.onStart,
     this.onTap,
-    this.onExtraParams,
+    this.onDeepLinkResult,
   );
 }
 
 class YourProfileViewModelOutput {
   final Stream<ContactInfo> contactInfo;
   final Stream<NextScreen> onNextScreen;
-  final Stream<NextScreen> onExtraParams;
 
   YourProfileViewModelOutput(
     this.contactInfo,
     this.onNextScreen,
-    this.onExtraParams,
   );
 }

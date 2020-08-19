@@ -1,4 +1,5 @@
 import 'package:albums/data/model/result.dart';
+import 'package:albums/data/repo/deeplink_repo.dart';
 import 'package:albums/data/repo/repo_factory.dart';
 import 'package:albums/themes/colors.dart';
 import 'package:albums/themes/paddings.dart';
@@ -17,10 +18,9 @@ import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
 class ContactInfoScreen extends StatefulWidget {
-  final Map<String, String> fieldValuesFromDeepLink;
+  final DeepLinkResult deepLinkResult;
 
-  const ContactInfoScreen({Key key, this.fieldValuesFromDeepLink})
-      : super(key: key);
+  const ContactInfoScreen({Key key, this.deepLinkResult}) : super(key: key);
 
   @override
   _ContactInfoScreenState createState() => _ContactInfoScreenState();
@@ -57,7 +57,7 @@ class _ContactInfoScreenState extends BaseState<ContactInfoScreen> {
       }),
     );
     //add fieldValuesFromDeepLink
-    _viewModel.input.onStart.add(widget.fieldValuesFromDeepLink);
+    _viewModel.input.onStart.add(widget.deepLinkResult);
   }
 
   @override

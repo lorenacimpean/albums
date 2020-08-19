@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:albums/data/model/contact_info.dart';
 import 'package:albums/data/model/result.dart';
+import 'package:albums/data/repo/deeplink_repo.dart';
 import 'package:albums/data/repo/location_repo.dart';
 import 'package:albums/data/repo/user_profile_repo.dart';
 import 'package:albums/themes/strings.dart';
@@ -26,8 +27,8 @@ class ContactInfoViewModel {
     this._locationRepo,
   ) {
     Stream<Result<List<AppInputFieldModel>>> onList = MergeStream([
-      input.onStart.flatMap((extraParams) {
-        return _initFields(extraParams);
+      input.onStart.flatMap((deepLinkResult) {
+        return _initFields(deepLinkResult);
       }),
       input.onValueChanged.map((field) {
         field.error = null;
@@ -86,11 +87,11 @@ class ContactInfoViewModel {
   }
 
   Stream<Result<List<AppInputFieldModel>>> _initFields(
-      Map<String, String> extraParams) {
+      DeepLinkResult deepLinkResult) {
     return _userProfileRepo.fetchContactInfo().map((result) {
       FieldType.values.forEach((fieldType) {
-        String fieldValue = extraParams != null
-            ? _getFieldValuesFromExtraParams(fieldType, extraParams)
+        String fieldValue = deepLinkResult?.value != null
+            ? _getFieldValuesFromExtraParams(fieldType, deepLinkResult.value)
             : fieldType.fromContactInfo(result);
         _list.add(
           AppInputFieldModel(
@@ -170,7 +171,7 @@ class ContactInfoViewModel {
 }
 
 class ContactInfoViewModelInput {
-  final Subject<Map<String, String>> onStart;
+  final Subject<DeepLinkResult> onStart;
   final Subject<bool> onApply;
   final Subject<AppInputFieldModel> onValueChanged;
   final Subject<bool> onLocationButtonPressed;

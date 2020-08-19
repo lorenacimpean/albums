@@ -2,8 +2,6 @@ import 'dart:async';
 import 'dart:core';
 
 import 'package:albums/data/repo/deeplink_repo.dart';
-import 'package:albums/ui/extensions.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'app_tab_model.dart';
@@ -23,24 +21,34 @@ class HomeViewModel {
   ) {
     Stream<List<AppTab>> onList = MergeStream([
       input.onStart.map((_) {
-        return _defaultItem.tabsFromNavBarItem();
+        return _getTabsFromNavBarItem(selected: _defaultItem);
       }),
       input.onTap.map((tab) {
-        return tab.type.tabsFromNavBarItem();
+        return _getTabsFromNavBarItem(selected: tab.type);
+      }),
+      _deeplinkRepo.getDeepLinkResult()?.map((deepLinkResult) {
+        return _getTabsFromNavBarItem(deepLinkResult: deepLinkResult);
       }),
     ]);
 
-    // Stream<NextScreen> onNextScreen =
-    Stream<DeepLinkResult> onNotificationOpened =
-        _deeplinkRepo.getDeepLinkResult().map((deepLinkResult) {
-      debugPrint(deepLinkResult.action.toString());
-      return deepLinkResult;
-    });
+    output = HomeViewModelOutput(onList);
+  }
 
-    output = HomeViewModelOutput(
-      onList,
-      onNotificationOpened,
-    );
+  List<AppTab> _getTabsFromNavBarItem(
+      {NavBarItem selected, DeepLinkResult deepLinkResult}) {
+    if (deepLinkResult != null) {
+      selected = deepLinkResult.getNavBarItemFromDeepLinkResult();
+    }
+    return NavBarItem.values.map((element) {
+      if (element == selected) {
+        return AppTab.fromType(
+          element,
+          isSelected: true,
+          deepLinkResult: deepLinkResult,
+        );
+      }
+      return AppTab.fromType(element);
+    }).toList();
   }
 }
 
@@ -49,17 +57,15 @@ class HomeViewModelInput {
   final Subject<AppTab> onTap;
 
   HomeViewModelInput(
-    this.onTap,
     this.onStart,
+    this.onTap,
   );
 }
 
 class HomeViewModelOutput {
   final Stream<List<AppTab>> tabs;
-  final Stream<DeepLinkResult> onNotificationOpened;
 
   HomeViewModelOutput(
     this.tabs,
-    this.onNotificationOpened,
   );
 }
