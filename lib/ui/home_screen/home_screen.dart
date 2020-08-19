@@ -1,6 +1,5 @@
 import 'dart:core';
 
-import 'package:albums/data/repo/deeplink_repo.dart';
 import 'package:albums/data/repo/repo_factory.dart';
 import 'package:albums/themes/colors.dart';
 import 'package:albums/ui/album_list/album_list_screen.dart';
@@ -23,7 +22,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends BaseState<HomeScreen> {
   HomeViewModel _viewModel;
   List<AppTab> _tabs;
-  DeepLinkResult _deepLinkResult;
 
   @override
   void initState() {
@@ -41,9 +39,6 @@ class _HomeScreenState extends BaseState<HomeScreen> {
         setState(() {
           _tabs = tabs;
         });
-        if (tabs.getDeepLinkResultFromAppTab() != null) {
-          _deepLinkResult = tabs.getDeepLinkResultFromAppTab();
-        }
       }),
     );
     _viewModel.input.onStart.add(true);
@@ -81,11 +76,9 @@ class _HomeScreenState extends BaseState<HomeScreen> {
       case NavBarItem.NEWS:
         return NewsScreen();
       case NavBarItem.PROFILE:
-        return _deepLinkResult != null
-            ? YourProfileScreen(
-                deepLinkResult: _deepLinkResult,
-              )
-            : YourProfileScreen();
+        return YourProfileScreen(
+          deepLinkResult: tabs.getDeepLinkResultFromAppTab(),
+        );
       case NavBarItem.BROWSE:
       default:
         return AlbumListScreen();
