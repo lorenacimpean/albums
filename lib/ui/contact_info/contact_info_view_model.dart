@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:albums/data/model/contact_info.dart';
 import 'package:albums/data/model/result.dart';
+import 'package:albums/data/repo/deeplink_repo.dart';
 import 'package:albums/data/repo/location_repo.dart';
 import 'package:albums/data/repo/user_profile_repo.dart';
 import 'package:albums/themes/strings.dart';
@@ -26,8 +27,8 @@ class ContactInfoViewModel {
     this._locationRepo,
   ) {
     Stream<Result<List<AppInputFieldModel>>> onList = MergeStream([
-      input.onStart.flatMap((_) {
-        return _initFields();
+      input.onStart.flatMap((deepLinkResult) {
+        return _initFields(deepLinkResult);
       }),
       input.onValueChanged.map((field) {
         field.error = null;
@@ -85,10 +86,13 @@ class ContactInfoViewModel {
     output = ContactInfoViewModelOutput(onList);
   }
 
-  Stream<Result<List<AppInputFieldModel>>> _initFields() {
+  Stream<Result<List<AppInputFieldModel>>> _initFields(
+      DeepLinkResult deepLinkResult) {
     return _userProfileRepo.fetchContactInfo().map((result) {
       FieldType.values.forEach((fieldType) {
-        String fieldValue = fieldType.fromContactInfo(result);
+        String fieldValue = deepLinkResult?.value != null
+            ? _getFieldValuesFromExtraParams(fieldType, deepLinkResult.value)
+            : fieldType.fromContactInfo(result);
         _list.add(
           AppInputFieldModel(
             fieldType: fieldType,
@@ -104,6 +108,38 @@ class ContactInfoViewModel {
     }).startWith(
       Result<List<AppInputFieldModel>>.loading(null),
     );
+  }
+
+  String _getFieldValuesFromExtraParams(
+      FieldType fieldType, Map<String, String> extraParams) {
+    switch (fieldType) {
+      case FieldType.firstNameField:
+        return extraParams['firstname'];
+        break;
+      case FieldType.lastNameField:
+        return extraParams['lastname'];
+        break;
+      case FieldType.emailAddressField:
+        return extraParams['email'];
+        break;
+      case FieldType.phoneNumberField:
+        return extraParams['phone'];
+        break;
+      case FieldType.streetAddressField:
+        return extraParams['street'];
+        break;
+      case FieldType.cityField:
+        return extraParams['city'];
+        break;
+      case FieldType.countryField:
+        return extraParams['country'];
+        break;
+      case FieldType.zipCodeField:
+        return extraParams['zipcode'];
+        break;
+      default:
+        return null;
+    }
   }
 
   void _updateLocationFields(AppAddress address) {
@@ -135,7 +171,7 @@ class ContactInfoViewModel {
 }
 
 class ContactInfoViewModelInput {
-  final Subject<bool> onStart;
+  final Subject<DeepLinkResult> onStart;
   final Subject<bool> onApply;
   final Subject<AppInputFieldModel> onValueChanged;
   final Subject<bool> onLocationButtonPressed;

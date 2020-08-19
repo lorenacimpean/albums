@@ -1,12 +1,16 @@
 import 'package:albums/data/model/contact_info.dart';
 import 'package:albums/data/model/location_info.dart';
+import 'package:albums/data/repo/deeplink_repo.dart';
 import 'package:albums/widgets/app_input_field_widget.dart';
 
 import 'home_screen/app_tab_model.dart';
 
 extension ListExtensions<T> on List<T> {
-  int get hash => this.fold(
-      1, (previousValue, element) => previousValue.hashCode ^ element.hashCode);
+  int get hash {
+    return this.fold(1, (previousValue, element) {
+      return previousValue.hashCode ^ element.hashCode;
+    });
+  }
 
   bool compare(List<T> other) {
     if (length != other.length) {
@@ -32,6 +36,12 @@ extension SelectedItems on List<AppTab> {
     AppTab selectedTab =
         this?.firstWhere((tab) => tab.isSelected, orElse: () => null);
     return selectedTab;
+  }
+
+  DeepLinkResult getDeepLinkResultFromAppTab() {
+    AppTab tabWithDeepLinkResult = this
+        ?.firstWhere((tab) => tab.deepLinkResult != null, orElse: () => null);
+    return tabWithDeepLinkResult?.deepLinkResult;
   }
 }
 

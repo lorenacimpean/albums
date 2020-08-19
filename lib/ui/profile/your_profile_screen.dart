@@ -1,4 +1,5 @@
 import 'package:albums/data/model/contact_info.dart';
+import 'package:albums/data/repo/deeplink_repo.dart';
 import 'package:albums/data/repo/repo_factory.dart';
 import 'package:albums/themes/icons.dart';
 import 'package:albums/themes/paddings.dart';
@@ -15,7 +16,12 @@ import 'package:flutter/widgets.dart';
 import 'package:rxdart/rxdart.dart';
 
 class YourProfileScreen extends StatefulWidget {
-  const YourProfileScreen({Key key}) : super(key: key);
+  final DeepLinkResult deepLinkResult;
+
+  const YourProfileScreen({
+    Key key,
+    this.deepLinkResult,
+  }) : super(key: key);
 
   @override
   _YourProfileScreenState createState() => _YourProfileScreenState();
@@ -32,17 +38,25 @@ class _YourProfileScreenState extends BaseState<YourProfileScreen> {
         YourProfileViewModelInput(
           PublishSubject(),
           PublishSubject(),
+          PublishSubject(),
         ));
 
-    disposeLater(_viewModel.output.contactInfo.listen((result) {
-      setState(() {
-        _contactInfo = result;
-      });
-    }));
-    _viewModel.output.onNextScreen.listen((nextScreen) {
-      openNextScreen(context, nextScreen);
-    });
+    disposeLater(
+      _viewModel.output.contactInfo.listen((result) {
+        setState(() {
+          _contactInfo = result;
+        });
+      }),
+    );
+    disposeLater(
+      _viewModel.output.onNextScreen.listen((nextScreen) {
+        openNextScreen(context, nextScreen);
+      }),
+    );
     _viewModel.input.onStart.add(true);
+    if (widget.deepLinkResult != null) {
+      _viewModel.input.onDeepLinkResult.add(widget.deepLinkResult);
+    }
   }
 
   @override
@@ -53,7 +67,9 @@ class _YourProfileScreenState extends BaseState<YourProfileScreen> {
         AppBarIconWidget(
             icon: AppIcons.notificationsIcon,
             onPressed: () {
-              _viewModel.input.onTap.add(ScreenType.NotificationsScreen);
+              _viewModel.input.onTap.add(
+                NextScreen(ScreenType.Notifications, null),
+              );
             }),
       ],
       key: Key(AppStrings.profileTitle),
@@ -78,7 +94,9 @@ class _YourProfileScreenState extends BaseState<YourProfileScreen> {
                 : "",
             icon: AppIcons.contactInfoIcon,
             onTap: () {
-              _viewModel.input.onTap.add(ScreenType.ContactInfo);
+              _viewModel.input.onTap.add(
+                NextScreen(ScreenType.ContactInfo, null),
+              );
             },
           ),
         ],
